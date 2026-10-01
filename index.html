@@ -1,0 +1,4195 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deckbuilder Pro - Game Design Edition</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --panel-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --border-color: #333;
+            --accent-color: #4CAF50;
+            --accent-blue: #2196F3;
+            --accent-orange: #ff9800;
+            --danger-color: #f44336;
+            --warning-color: #ff9800;
+            --transfer-color: #2196F3;
+            --ui-bg: #2a2a2a;
+        }
+
+        html {
+            background-color: var(--bg-color);
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: font-size 0.2s;
+        }
+
+        body.zoom-120 {
+            zoom: 1.2;
+            height: 83.33vh;
+            width: 83.33vw;
+        }
+
+        body.zoom-110 {
+            zoom: 1.1;
+            height: 90.9vh;
+            width: 90.9vw;
+        }
+
+        body.zoom-100 {
+            zoom: 1;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        body.zoom-90 {
+            zoom: 0.9;
+            height: 111.11vh;
+            width: 111.11vw;
+        }
+
+        body.zoom-80 {
+            zoom: 0.8;
+            height: 125vh;
+            width: 125vw;
+        }
+
+        body.text-small {
+            font-size: 12px;
+        }
+
+        body.text-large {
+            font-size: 16px;
+        }
+
+        .top-controls {
+            display: block;
+            flex-shrink: 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--panel-bg);
+            padding: 8px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .header-title-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .header-title-group h2 {
+            margin: 0;
+            font-size: 1.3em;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .deck-manager {
+            display: flex;
+            align-items: center;
+            background-color: var(--panel-bg);
+            padding: 8px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .deck-list-tabs {
+            display: flex;
+            gap: 5px;
+            flex-grow: 1;
+            align-items: center;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-color) var(--panel-bg);
+        }
+
+        .deck-list-tabs::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .deck-list-tabs::-webkit-scrollbar-thumb {
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+
+        .deck-tab {
+            padding: 6px 12px;
+            background: var(--ui-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .deck-tab.active {
+            background: var(--accent-color);
+            font-weight: bold;
+            border-color: var(--accent-color);
+            color: white;
+        }
+
+        .deck-creation {
+            display: flex;
+            gap: 5px;
+            border-left: 2px solid var(--border-color);
+            padding-left: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background: var(--ui-bg);
+            color: white;
+            font-size: 0.95em;
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            font-size: 0.95em;
+            white-space: nowrap;
+        }
+
+        button:hover:not(:disabled) {
+            filter: brightness(1.1);
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+            filter: grayscale(100%);
+        }
+
+        .btn-export {
+            background-color: #ff9800;
+        }
+
+        .btn-import {
+            background-color: #00bcd4;
+        }
+
+        .btn-backup {
+            background-color: #9c27b0;
+        }
+
+        .btn-restore {
+            background-color: #673ab7;
+        }
+
+        .btn-delete {
+            background-color: var(--danger-color);
+            padding: 4px 8px;
+        }
+
+        .btn-undo-redo {
+            background-color: #00897b;
+        }
+
+        .btn-undo-redo:disabled {
+            background-color: #444;
+        }
+
+        .btn-toggle {
+            background-color: #555;
+            padding: 5px 10px;
+            font-size: 0.85em;
+        }
+
+        .btn-reload {
+            background-color: #1976d2;
+            padding: 5px 10px;
+            font-size: 0.85em;
+        }
+
+        .btn-global-stats {
+            background-color: #e91e63;
+            border: 1px solid #c2185b;
+        }
+
+        .btn-global-stats:hover {
+            background-color: #d81b60;
+        }
+
+        .btn-global-stats.active {
+            background-color: #c2185b;
+            box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.5), 0 0 8px rgba(233, 30, 99, 0.6);
+        }
+
+        .btn-patch-notes {
+            background-color: #ff9800;
+            border: 1px solid #e68a00;
+            color: #000;
+        }
+
+        .btn-patch-notes:hover {
+            background-color: #e68a00;
+        }
+
+        .btn-patch-notes.active {
+            background-color: #cc7a00;
+            color: #fff;
+            box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .mobile-nav {
+            display: none;
+            width: 100%;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .mobile-nav button {
+            flex: 1;
+            padding: 10px;
+            font-size: 1.1em;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            color: #aaa;
+            border-radius: 8px;
+        }
+
+        .mobile-nav button.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .main-container {
+            display: flex;
+            gap: 10px;
+            flex-grow: 1;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .panel {
+            background-color: var(--panel-bg);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: flex-basis 0.2s ease-out;
+        }
+
+        .library-panel {
+            flex: 0 0 380px;
+        }
+
+        .library-panel.expanded {
+            flex: 0 0 750px;
+        }
+
+        .deck-panel {
+            flex: 1;
+            min-width: 400px;
+        }
+
+        .global-stats-panel {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            background-color: var(--panel-bg);
+            border-radius: 8px;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .filters {
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .filters-dropdowns {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+        }
+
+        .library-panel.expanded .filters-dropdowns {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .card-list {
+            flex-grow: 1;
+            overflow-y: scroll;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 4px;
+            background: #181818;
+        }
+
+        #libraryList {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 6px;
+            align-content: start;
+        }
+
+        .library-panel.expanded #libraryList {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        /* GRILLE GALERIE FLEXIBLE ET ALIGNEMENT GÉRÉ PAR LES PARAMÈTRES */
+        #libraryList.gallery-grid,
+        .deck-items-grid.gallery-grid {
+            display: flex !important;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            justify-content: flex-start;
+            /* Aligné à gauche par défaut */
+            gap: 12px;
+        }
+
+        body.centered-layout #libraryList.gallery-grid,
+        body.centered-layout .deck-items-grid.gallery-grid {
+            justify-content: center;
+        }
+
+        body.centered-layout .deck-group h3 {
+            text-align: center;
+        }
+
+        .card-item {
+            background: var(--ui-bg);
+            padding: 6px 8px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            border-left: 4px solid var(--border-color);
+            transition: background-color 0.2s;
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        .card-item.maxed-out {
+            opacity: 0.5;
+            background: #1a1a1a;
+            border-left-color: #555;
+        }
+
+        .card-item-content {
+            display: flex;
+            gap: 10px;
+        }
+
+        .card-item-details {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* MINIATURES INTELLIGENTES */
+        .thumb-wrapper {
+            position: relative;
+            width: 45px;
+            height: 63px;
+            flex-shrink: 0;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background: #111;
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            will-change: transform;
+        }
+
+        .thumb-wrapper:hover {
+            transform: scale(1.15);
+            border-color: var(--accent-color);
+            z-index: 5;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+        }
+
+        .thumb-wrapper.horizontal-thumb {
+            width: 63px;
+            height: 45px;
+        }
+
+        .thumb-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            display: block;
+        }
+
+        .thumb-wrapper.horizontal-thumb .thumb-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 63px;
+            height: 63px;
+            transform: translate(-50%, -50%) rotate(-90deg);
+            object-position: center;
+        }
+
+        /* STYLE DES BADGES DE QUANTITÉ (0, 1, 2) */
+        .qty-badge {
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 6px;
+            display: inline-block;
+            line-height: 1;
+            flex-shrink: 0;
+            min-width: 22px;
+            text-align: center;
+            box-sizing: border-box;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .qty-badge.zero {
+            background: transparent;
+            color: #666;
+            border-color: #555;
+        }
+
+        .qty-badge.one {
+            background: var(--accent-blue);
+            color: white;
+            border-color: var(--accent-blue);
+        }
+
+        .qty-badge.two {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .qty-badge.three {
+            background: var(--accent-orange);
+            color: white;
+            border-color: var(--accent-orange);
+        }
+
+        .qty-badge.maxed {
+            background: #555;
+            border-color: #555;
+            color: #ccc;
+        }
+
+        .qg-badge {
+            background-color: #9c27b0;
+            color: white;
+            font-size: 0.65em;
+            padding: 2px 5px;
+            border-radius: 4px;
+            margin-left: 6px;
+            font-weight: bold;
+            text-transform: uppercase;
+            vertical-align: middle;
+        }
+
+        .clickable-name {
+            cursor: pointer;
+            transition: color 0.2s;
+            border-bottom: 1px dashed transparent;
+        }
+
+        .clickable-name:hover {
+            color: var(--transfer-color);
+            border-bottom: 1px dashed var(--transfer-color);
+        }
+
+        .kw-tooltip {
+            font-variant: small-caps;
+            text-transform: capitalize;
+            text-decoration: underline;
+            cursor: help;
+            color: #64b5f6;
+            font-weight: bold;
+            font-size: 1.15em;
+            letter-spacing: 0.5px;
+        }
+
+        .card-traits {
+            font-size: 0.85em;
+            color: #a5d6a7;
+            text-transform: uppercase;
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 2px;
+        }
+
+        .card-keywords-line {
+            font-size: 0.9em;
+            color: #b3e5fc;
+            margin-top: 0px;
+            margin-bottom: 3px;
+            background: rgba(100, 181, 246, 0.1);
+            padding: 3px 6px;
+            border-radius: 4px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            align-items: center;
+            margin-bottom: 3px;
+            min-height: 22px;
+        }
+
+        .card-stats {
+            display: flex;
+            gap: 6px;
+            font-size: 0.85em;
+            flex-wrap: wrap;
+            margin-bottom: 2px;
+        }
+
+        .stat-badge {
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-pouvoir {
+            font-size: 0.85em;
+            color: #ccc;
+            margin-top: 2px;
+            line-height: 1.25;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .card-actions button {
+            padding: 3px 8px;
+            font-size: 0.85em;
+        }
+
+        .deck-items-grid {
+            display: grid;
+            gap: 8px;
+        }
+
+        .deck-items-grid.grid-auto {
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        }
+
+        .deck-item {
+            padding: 6px 8px;
+            background: var(--ui-bg);
+            border-radius: 3px;
+            border-left: 3px solid var(--border-color);
+            margin-bottom: 0;
+        }
+
+        .deck-item-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .deck-item-title {
+            flex: 1 1 auto;
+            line-height: 1.2;
+        }
+
+        .deck-item-controls {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            flex: 0 0 auto;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .inner-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .tab-group {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 4px;
+        }
+
+        .view-controls {
+            display: flex;
+            gap: 8px;
+            padding-bottom: 4px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .inner-tab {
+            padding: 8px 16px;
+            background: var(--ui-bg);
+            cursor: pointer;
+            border-radius: 4px 4px 0 0;
+            font-weight: bold;
+            color: #aaa;
+        }
+
+        .inner-tab.active {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .view-select {
+            background-color: transparent;
+            color: #ccc;
+            border: 1px solid #555;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: normal;
+            cursor: pointer;
+            font-size: 0.85em;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .view-select:hover {
+            border-color: #888;
+            color: #fff;
+        }
+
+        .view-select option {
+            background-color: var(--panel-bg);
+            color: white;
+        }
+
+        .view-select-main {
+            background-color: #3f51b5;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.85em;
+            outline: none;
+            transition: filter 0.2s;
+        }
+
+        .view-select-main:hover {
+            filter: brightness(1.1);
+        }
+
+        .view-select-main option {
+            background-color: var(--panel-bg);
+            color: white;
+        }
+
+        .settings-dropdown {
+            position: relative;
+            display: inline-block;
+            z-index: 50;
+        }
+
+        .settings-panel {
+            position: absolute;
+            top: 110%;
+            right: 0;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+            min-width: 260px;
+        }
+
+        .settings-panel label {
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #aaa;
+            margin-bottom: -5px;
+        }
+
+        .settings-panel select {
+            width: 100%;
+        }
+
+        .deck-stats-bar {
+            background: var(--ui-bg);
+            padding: 8px 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .validity-badge {
+            font-size: 1.3em;
+            cursor: help;
+            padding: 0;
+        }
+
+        .deck-group h3 {
+            margin: 10px 0 6px 0;
+            font-size: 1.1em;
+            color: var(--accent-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 3px;
+            transition: text-align 0.2s;
+        }
+
+        .sideboard-group h3 {
+            color: #ff9800;
+            border-bottom: 1px solid #ff9800;
+        }
+
+        .deck-item.compact {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 4px 6px;
+            border-left-color: transparent;
+        }
+
+        .deck-item.compact .card-traits,
+        .deck-item.compact .card-keywords-line,
+        .deck-item.compact .card-pouvoir,
+        .deck-item.compact .thumb-wrapper {
+            display: none;
+        }
+
+        .deck-item.compact .deck-item-top {
+            width: 100%;
+            align-items: center;
+        }
+
+        .card-item.compact {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 4px 6px;
+            border-left-color: transparent;
+        }
+
+        .card-item.compact .card-traits,
+        .card-item.compact .card-keywords-line,
+        .card-item.compact .card-pouvoir,
+        .card-item.compact .thumb-wrapper {
+            display: none;
+        }
+
+        /* ======= MODE GALERIE (Taille de carte préservée à 240px) ======= */
+        .gallery-mode {
+            width: 240px;
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px;
+            background: var(--ui-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .gallery-mode.is-horizontal {
+            width: 345px;
+        }
+
+        .card-image-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 63 / 88;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: transparent;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .card-image-wrapper.horizontal-layout {
+            aspect-ratio: 88 / 63;
+        }
+
+        .card-image-wrapper img.gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.2s;
+            cursor: pointer;
+            will-change: transform;
+        }
+
+        .card-image-wrapper.horizontal-layout img.gallery-image {
+            width: 139.68%;
+            height: 139.68%;
+            object-fit: contain;
+            transform: rotate(-90deg);
+        }
+
+        .card-image-wrapper:not(.horizontal-layout) img.gallery-image:hover {
+            transform: scale(1.04);
+        }
+
+        .card-image-wrapper.horizontal-layout img.gallery-image:hover {
+            transform: rotate(-90deg) scale(1.04);
+        }
+
+        .gallery-controls {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            margin-top: 8px;
+            gap: 4px;
+        }
+
+        .gallery-controls button {
+            padding: 5px 4px;
+            flex: 1;
+            font-size: 0.9em;
+        }
+
+        .badge-gallery-overlay {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            padding: 4px 8px;
+            font-weight: bold;
+            border-radius: 0 6px 0 6px;
+            font-size: 1.1em;
+            box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.5);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .badge-gallery-overlay.zero {
+            background: rgba(50, 50, 50, 0.8);
+            color: #ccc;
+        }
+
+        .badge-gallery-overlay.one {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .badge-gallery-overlay.two {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .badge-gallery-overlay.three {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .badge-gallery-overlay.maxed {
+            background: #444;
+            color: #999;
+        }
+
+        .gallery-fallback {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #222;
+            border: 1px dashed #555;
+            border-radius: 6px;
+            padding: 10px;
+            box-sizing: border-box;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        /* Stats & Goldfish */
+        .stats-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+            padding-right: 5px;
+            height: 100%;
+        }
+
+        .stat-box {
+            background: var(--ui-bg);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-box h3 {
+            margin: 0 0 12px 0;
+            font-size: 1.05em;
+            color: var(--accent-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            text-align: center;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 8px;
+            height: 140px;
+            padding-bottom: 25px;
+            margin-top: 10px;
+            border-bottom: 2px solid #555;
+        }
+
+        .bar-col {
+            flex: 1;
+            max-width: 35px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+            height: 100%;
+        }
+
+        .bar {
+            width: 100%;
+            background: #2196F3;
+            border-radius: 4px 4px 0 0;
+            min-height: 2px;
+            transition: height 0.5s ease;
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -22px;
+            font-weight: bold;
+            color: #aaa;
+            font-size: 0.85em;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -18px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #333;
+            font-size: 0.9em;
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        /* ======= GOLDFISH STICKY HEADER & CORRECTIONS ======= */
+        .goldfish-header {
+            position: sticky;
+            top: -10px;
+            margin-top: -10px;
+            margin-left: -10px;
+            margin-right: -10px;
+            padding: 10px;
+            background: var(--panel-bg);
+            z-index: 20;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+        }
+
+        .goldfish-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .goldfish-hand {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            padding: 5px;
+        }
+
+        /* GESTION DE L'EMPILEMENT DES PLANS */
+        body.stack-plans #gfPlansList.gallery-grid {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 15px;
+        }
+
+        body.stack-plans #gfPlansList.gallery-grid .gf-card {
+            width: 95% !important;
+            /* Laisse de l'espace pour le décalage */
+            transition: transform 0.2s;
+        }
+
+        body.stack-plans #gfPlansList.gallery-grid .gf-card:not(:first-child) {
+            margin-top: -38%;
+            /* Remonte la carte pour cacher l'image et garder le texte */
+        }
+
+        body.stack-plans #gfPlansList.gallery-grid .gf-card:nth-child(even) {
+            transform: translateX(10px);
+        }
+
+        body.stack-plans #gfPlansList.gallery-grid .gf-card:nth-child(odd):not(:first-child) {
+            transform: translateX(-10px);
+        }
+
+        body.stack-plans #gfPlansList.gallery-grid .gf-card:hover {
+            transform: translate(0, -10px) scale(1.05) !important;
+            z-index: 1000 !important;
+        }
+
+        .gf-card {
+            background: #222;
+            border: 2px solid #555;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+            position: relative;
+            will-change: transform;
+        }
+
+        .gf-card:hover {
+            border-color: #888;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .gf-card.played {
+            filter: grayscale(100%);
+            opacity: 0.4;
+            border-color: #333;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .gf-plan {
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            background: #1e1e1e;
+            border-color: #444;
+        }
+
+        .gf-plan .card-stats {
+            gap: 4px;
+        }
+
+        .gf-plan .stat-badge {
+            padding: 1px 4px;
+            font-size: 0.85em;
+        }
+
+        .gf-plan .clickable-name {
+            font-size: 1em;
+        }
+
+        .orphan-card {
+            background: rgba(244, 67, 54, 0.15);
+            border-left: 4px solid var(--danger-color);
+            padding: 8px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 4px;
+        }
+
+        .changed-card {
+            background: rgba(255, 152, 0, 0.15);
+            border-left: 4px solid var(--warning-color);
+            padding: 8px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 4px;
+        }
+
+        /* Modals (Entièrement cliquables pour fermer l'overlay) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .modal-box {
+            background: var(--panel-bg);
+            padding: 15px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid var(--accent-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            cursor: auto;
+        }
+
+        /* Layout Modal Notation Modifié */
+        .modal-box.rating-modal {
+            max-width: 780px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .rating-img-container {
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .rating-form-container {
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .modal-box h3 {
+            margin-top: 0;
+            color: var(--accent-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 10px 0;
+            font-size: 28px;
+        }
+
+        .star-rating span {
+            cursor: pointer;
+            color: #444;
+            transition: color 0.2s;
+        }
+
+        .star-rating span.active {
+            color: #ffeb3b;
+            text-shadow: 0 0 5px rgba(255, 235, 59, 0.5);
+        }
+
+        .modal-box textarea {
+            width: 100%;
+            height: 80px;
+            margin-bottom: 10px;
+            background: var(--ui-bg);
+            color: #fff;
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Image Viewer Modal spécifique : Centrage Absolu ! */
+        .image-viewer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        #fullSizeImage {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+            pointer-events: auto;
+            cursor: auto;
+            transition: transform 0.2s;
+            object-fit: contain;
+        }
+
+        #fullSizeImage.rotated {
+            transform: rotate(-90deg);
+            max-height: 90vw;
+            max-width: 90vh;
+        }
+
+        #closeTextHint {
+            margin-top: 15px;
+            color: #aaa;
+            font-style: italic;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 6px 12px;
+            border-radius: 20px;
+            pointer-events: none;
+        }
+
+        .global-stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        .global-stats-table th,
+        .global-stats-table td {
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .global-stats-table th {
+            background: var(--ui-bg);
+            cursor: pointer;
+            color: var(--accent-color);
+            user-select: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .global-stats-table th:hover {
+            background: #333;
+        }
+
+        .global-stats-table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .global-stats-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        @keyframes flashRed {
+            0% {
+                background-color: var(--danger-color);
+            }
+
+            100% {
+                background-color: var(--ui-bg);
+            }
+        }
+
+        .flash-error {
+            animation: flashRed 0.6s ease-out;
+        }
+
+        /* TABS PATCH NOTES */
+        .pn-tabs-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-color) var(--panel-bg);
+        }
+
+        .pn-tab {
+            padding: 6px 12px;
+            background: #444;
+            border: 1px solid #555;
+            color: #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .pn-tab:hover {
+            background: #555;
+            color: #fff;
+        }
+
+        .pn-tab.active {
+            background: var(--accent-orange);
+            color: #fff;
+            border-color: var(--accent-orange);
+            font-weight: bold;
+        }
+
+        /* GOLDFISH FULLSCREEN */
+        #view-test:-webkit-full-screen {
+            background-color: var(--bg-color);
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        #view-test:fullscreen {
+            background-color: var(--bg-color);
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+                overflow: hidden;
+            }
+
+            .mobile-nav {
+                display: flex;
+            }
+
+            .main-container {
+                flex-direction: column;
+                gap: 0;
+                flex-grow: 1;
+            }
+
+            .top-controls {
+                display: none;
+            }
+
+            .top-controls.mobile-active {
+                display: flex;
+                flex-direction: column;
+                overflow-y: auto;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 8px;
+            }
+
+            .header-title-group {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .header-controls {
+                justify-content: center;
+            }
+
+            .library-panel:not(.mobile-active),
+            .deck-panel:not(.mobile-active),
+            .global-stats-panel:not(.mobile-active),
+            #panel-patch-notes:not(.mobile-active) {
+                display: none !important;
+            }
+
+            .library-panel.mobile-active,
+            .deck-panel.mobile-active,
+            .global-stats-panel.mobile-active,
+            #panel-patch-notes.mobile-active {
+                display: flex !important;
+                flex: 1;
+                min-width: 100%;
+                border-radius: 0;
+                padding: 5px;
+                height: 100%;
+            }
+
+            .view-controls .btn-toggle[onclick="toggleLibrary()"] {
+                display: none !important;
+            }
+
+            .deck-items-grid:not(.gallery-grid) {
+                grid-template-columns: 1fr !important;
+            }
+
+            .gallery-mode {
+                width: calc(50% - 6px);
+            }
+
+            .gallery-mode.is-horizontal {
+                width: 100%;
+            }
+
+            .deck-creation {
+                flex-direction: column;
+                align-items: stretch;
+                border-left: none;
+                padding-left: 0;
+            }
+
+            .deck-creation input,
+            .deck-creation button,
+            .deck-creation .btn-global-stats {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+
+            .hide-on-mobile {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="text-normal zoom-100">
+
+    <!-- Modal Visionneuse d'Image Centrée au poil -->
+    <div id="imageModal" class="modal-overlay" onclick="closeImageModal()">
+        <div class="image-viewer-container">
+            <img id="fullSizeImage" src="" alt="Carte">
+            <div id="closeTextHint">Cliquez n'importe où pour fermer</div>
+        </div>
+    </div>
+
+    <!-- Modal d'Évaluation -->
+    <div id="ratingModal" class="modal-overlay" onclick="if(event.target.id==='ratingModal') closeRatingModal();">
+        <div class="modal-box rating-modal" onclick="event.stopPropagation()">
+            <div class="rating-img-container">
+                <div id="ratingImageWrapper" class="card-image-wrapper">
+                    <img id="ratingModalImage" class="gallery-image" src=""
+                        style="border: 1px solid var(--border-color);">
+                </div>
+            </div>
+            <div class="rating-form-container">
+                <h3 id="ratingCardName" style="margin-top:0;">Nom de la carte</h3>
+                <div style="text-align: center; font-size: 0.9em; color: #aaa;">Évaluez l'impact de cette carte :</div>
+                <div class="star-rating" id="starContainer">
+                    <span id="star-1" title="Nul" onclick="setRating(1)">★</span>
+                    <span id="star-2" title="Faible" onclick="setRating(2)">★</span>
+                    <span id="star-3" title="Moyen" onclick="setRating(3)">★</span>
+                    <span id="star-4" title="Fort" onclick="setRating(4)">★</span>
+                    <span id="star-5" title="OP" onclick="setRating(5)">★</span>
+                </div>
+                <textarea id="ratingComment" placeholder="Remarques éventuelles sur l'équilibrage..."></textarea>
+                <div class="modal-buttons">
+                    <button onclick="clearRating()" style="background: var(--danger-color);"
+                        title="Effacer la note et le commentaire">🗑️ Effacer</button>
+                    <div style="display:flex; gap:10px;">
+                        <button onclick="closeRatingModal()" style="background: #555;">Annuler</button>
+                        <button onclick="saveRating()">Sauvegarder</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu mobile -->
+    <div class="mobile-nav">
+        <button onclick="switchMobileView('library')" id="btnMobLib" class="active">📚 Bibliothèque</button>
+        <button onclick="switchMobileView('deck')" id="btnMobDeck">🃏 Mon Deck</button>
+        <button onclick="switchMobileView('tools')" id="btnMobTools">⚙️ Gestion</button>
+    </div>
+
+    <!-- En-tête -->
+    <div id="top-controls" class="top-controls">
+        <header>
+            <div class="header-title-group">
+                <h2 style="margin: 0;">Deckbuilder Pro</h2>
+                <div style="display:flex; gap:5px;">
+                    <button id="btnUndo" onclick="undo()" class="btn-undo-redo" disabled
+                        title="Annuler la dernière action (Ctrl+Z)">↩️</button>
+                    <button id="btnRedo" onclick="redo()" class="btn-undo-redo" disabled
+                        title="Rétablir l'action annulée (Ctrl+Y)">↪️</button>
+                </div>
+            </div>
+
+            <div class="header-controls">
+                <span id="statusIndicator" style="color: #aaa; font-size: 1em; margin-right: 15px;">Recherche...</span>
+
+                <button onclick="reloadCSV()" class="btn-reload"
+                    title="Forcer la mise à jour de la base de données depuis le serveur">🔄 Actualiser CSV</button>
+                <button onclick="forceImageRefresh()" class="btn-reload" style="background-color: #00897b;"
+                    title="Forcer le rechargement des images sans vider le cache global">🖼️ Actualiser Images</button>
+
+                <span style="color:#555" class="hide-on-mobile">|</span>
+                <button id="btnPatchNotes" onclick="openPatchNotes()" class="btn-patch-notes"
+                    title="Voir les dernières modifications de cartes">🆕 Patch Notes</button>
+                <button id="btnGlobalStatsMain" onclick="openGlobalStats()" class="btn-global-stats"
+                    title="Analyser la fréquence et les notes de vos cartes">📈 Stats Globales</button>
+                <span style="color:#555" class="hide-on-mobile">|</span>
+
+                <input type="file" id="restoreGlobalInput" accept=".json" style="display:none;"
+                    onchange="restoreGlobal(event)">
+                <button onclick="document.getElementById('restoreGlobalInput').click()" class="btn-restore"
+                    title="Chargez un fichier de sauvegarde contenant vos decks, stats et notes">📂 Restaurer mes
+                    données</button>
+                <button onclick="backupGlobal()" class="btn-backup"
+                    title="Téléchargez tous vos decks, stats et notes dans un fichier JSON">💾 Sauvegarder mes
+                    données</button>
+            </div>
+        </header>
+
+        <div class="deck-manager">
+            <div class="deck-list-tabs" id="deckTabs">
+                <!-- Tabs generated by JS -->
+            </div>
+
+            <div class="deck-creation">
+                <input type="text" id="newDeckName" placeholder="Nom du deck..."
+                    onkeypress="if(event.key === 'Enter') createDeck()">
+                <button onclick="createDeck()">+ Créer</button>
+                <button onclick="renameCurrentDeck()" class="btn-toggle" title="Renommer le deck actuel">✏️
+                    Renommer</button>
+                <button onclick="deleteCurrentDeck()" class="btn-delete" title="Supprimer le deck actuel">🗑️
+                    Supprimer</button>
+
+                <span style="color:#555; margin: 0 5px;" class="hide-on-mobile">|</span>
+
+                <button onclick="exportDeckTXT()" class="btn-export" id="btnExport"
+                    title="Exporter ce deck en fichier TXT">💾 Export Deck</button>
+
+                <input type="file" id="importTxtInput" accept=".txt" style="display:none;"
+                    onchange="importDeckTXT(event)">
+                <button onclick="document.getElementById('importTxtInput').click()" class="btn-import"
+                    title="Importer un deck depuis un fichier TXT">📂 Import Deck</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Bibliothèque -->
+        <div class="panel library-panel mobile-active" id="panel-library">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0; flex-wrap: wrap; gap: 5px;">
+                <h3 style="margin: 0; display:flex; align-items:center; gap:8px;">
+                    Bibliothèque
+                    <span id="libCardCount" style="font-size: 0.8em; font-weight: normal; color: #aaa;">(0)</span>
+                </h3>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <select id="libViewSelect" onchange="setLibViewMode(this.value)" class="view-select">
+                        <option value="detailed">Vue : Texte</option>
+                        <option value="detailed-img">Vue : Minis</option>
+                        <option value="compact">Vue : Compacte</option>
+                        <option value="gallery">Vue : Galerie</option>
+                    </select>
+                    <button onclick="resetFilters()"
+                        style="background: transparent; color: #aaa; border: 1px solid #555; padding: 4px 8px; font-size: 0.85em; border-radius: 4px; transition: all 0.2s;"
+                        onmouseover="this.style.color='#fff'; this.style.borderColor='#888';"
+                        onmouseout="this.style.color='#aaa'; this.style.borderColor='#555';"
+                        title="Réinitialiser tous les filtres">↺ Reset</button>
+                    <button onclick="toggleLibrarySize()" id="btnSizeLib" class="btn-toggle" style="padding: 4px 8px;"
+                        title="Élargir / Réduire la bibliothèque">⤢</button>
+                </div>
+            </div>
+
+            <div class="filters">
+                <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+                    <input type="text" id="searchInput" placeholder="Texte libre (Nom, Pouvoir)..."
+                        onkeyup="debouncedRenderLibrary()" style="flex: 1; min-width: 0;">
+                    <input type="text" id="traitInput" placeholder="Traits (ex: nain elite)..."
+                        onkeyup="debouncedRenderLibrary()" title="Séparez par un espace ou une virgule"
+                        style="flex: 1; min-width: 0;">
+                </div>
+                <div class="filters-dropdowns">
+                    <select id="typeFilter" onchange="renderLibrary()">
+                        <option value="">Tous Types</option>
+                    </select>
+                    <select id="keywordFilter" onchange="renderLibrary()">
+                        <option value="">Tous Mots-clés</option>
+                    </select>
+                    <select id="costFilter" onchange="renderLibrary()">
+                        <option value="">Tous Coûts</option>
+                    </select>
+                    <select id="sortFilter" onchange="renderLibrary()">
+                        <option value="nom">Tri : Nom (A-Z)</option>
+                        <option value="pv">Tri : PV Max</option>
+                        <option value="atk">Tri : FOR Max</option>
+                        <option value="cout">Tri : Coût/Initiative Max</option>
+                    </select>
+                </div>
+                <div style="margin-top: 6px;">
+                    <label
+                        style="display:inline-flex; align-items:center; cursor:pointer; background:var(--ui-bg); padding:4px 10px; border-radius:4px; border:1px solid var(--border-color); font-size:0.9em; user-select:none;">
+                        <input type="checkbox" id="uniqueFilter" onchange="renderLibrary()" style="margin-right:8px;">
+                        ⭐ Cartes Uniques uniquement
+                    </label>
+                </div>
+            </div>
+
+            <div class="card-list" id="libraryList">
+                <div style="padding: 20px; text-align: center; color: #666;">Veuillez charger un fichier CSV ou
+                    restaurer une sauvegarde.</div>
+            </div>
+        </div>
+
+        <!-- Deck Actuel -->
+        <div class="panel deck-panel" id="panel-deck">
+            <div class="inner-tabs">
+                <div class="tab-group">
+                    <div class="inner-tab active" id="tab-list" onclick="switchInnerTab('list')">📄 Liste</div>
+                    <div class="inner-tab" id="tab-stats" onclick="switchInnerTab('stats')">📊 Stats du Deck</div>
+                    <div class="inner-tab" id="tab-test" onclick="switchInnerTab('test')">🃏 Goldfish</div>
+                    <div class="inner-tab" id="tab-notes" onclick="switchInnerTab('notes')">📝 Notes</div>
+                </div>
+
+                <!-- Contrôles d'affichage -->
+                <div class="view-controls">
+                    <input type="text" id="deckSearchInput" placeholder="Rechercher dans le deck..."
+                        onkeyup="debouncedRenderDeck()"
+                        style="padding: 4px 8px; font-size: 0.85em; width: 160px; margin-right: 5px;">
+
+                    <select id="mainViewSelect" onchange="setDeckViewMode(this.value)" class="view-select-main">
+                        <option value="detailed">Vue : Texte</option>
+                        <option value="detailed-img">Vue : Minis</option>
+                        <option value="compact">Vue : Compacte</option>
+                        <option value="gallery">Vue : Galerie</option>
+                    </select>
+
+                    <div class="settings-dropdown">
+                        <button onclick="toggleSettings()" class="btn-toggle" style="background: #607d8b;">⚙️</button>
+                        <div id="settingsPanel" class="settings-panel">
+
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #fff;">
+                                <input type="checkbox" id="showHeaderToggle" onchange="toggleTopHeader(this.checked)">
+                                Afficher Menu Supérieur
+                            </label>
+
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #fff;">
+                                <input type="checkbox" id="showLibToggle" onchange="toggleLibrary(this.checked)">
+                                Afficher Bibliothèque
+                            </label>
+
+                            <hr style="border:0; border-top:1px solid #444; width:100%; margin: 5px 0;">
+
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #fff;">
+                                <input type="checkbox" id="centerCardsToggle"
+                                    onchange="toggleCenterCards(this.checked)"> Centrer les cartes (Galerie)
+                            </label>
+
+                            <label
+                                style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #fff; margin-top:5px;">
+                                <input type="checkbox" id="stackPlansToggle" onchange="toggleStackPlans(this.checked)">
+                                Empiler les plans (Goldfish)
+                            </label>
+
+                            <hr style="border:0; border-top:1px solid #444; width:100%; margin: 5px 0;">
+
+                            <label>Taille du deck (hors Lieux/Plans)</label>
+                            <input type="number" id="deckSizeInput" min="40" max="50" value="40"
+                                onchange="changeDeckSize(this.value)"
+                                style="width:100%; margin-bottom:5px; background: var(--ui-bg); color: white; border: 1px solid var(--border-color); padding: 6px; border-radius: 4px; box-sizing: border-box;">
+
+                            <label>Nombre de plans</label>
+                            <input type="number" id="planSizeInput" min="0" max="20" value="6"
+                                onchange="changePlanSize(this.value)"
+                                style="width:100%; margin-bottom:5px; background: var(--ui-bg); color: white; border: 1px solid var(--border-color); padding: 6px; border-radius: 4px; box-sizing: border-box;">
+
+                            <hr style="border:0; border-top:1px solid #444; width:100%; margin: 5px 0;">
+
+                            <label>Zoom de l'Interface globale</label>
+                            <select id="zoomSelect" onchange="changeZoom(this.value)">
+                                <option value="120">120% (Très Grand)</option>
+                                <option value="110">110% (Grand)</option>
+                                <option value="100">100% (Standard)</option>
+                                <option value="90">90% (Compact)</option>
+                                <option value="80">80% (Mini)</option>
+                            </select>
+
+                            <hr style="border:0; border-top:1px solid #444; width:100%; margin: 5px 0;">
+
+                            <label>Taille de la police (Listes)</label>
+                            <select id="textSizeSelect" onchange="changeTextSize(this.value)">
+                                <option value="text-small">Petite</option>
+                                <option value="text-normal" selected>Moyenne</option>
+                                <option value="text-large">Grande</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-list" style="display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;">
+                <div class="deck-stats-bar" id="deckStatsBar"></div>
+                <div class="card-list" id="deckList"></div>
+            </div>
+
+            <div id="view-stats" class="card-list stats-container" style="display: none;"></div>
+
+            <div id="view-test" class="card-list stats-container" style="display: none; padding: 0;">
+                <div
+                    style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-start; height: 100%; width: 100%;">
+
+                    <!-- Colonne de gauche (Plans) -->
+                    <div id="gfPlansArea"
+                        style="display: none; flex: 0 0 280px; background: #1a1a1a; padding: 10px; border-right: 1px solid var(--border-color); height: 100%; overflow-y: auto;">
+                        <h3
+                            style="color: var(--accent-color); margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; font-size: 1.1em; text-align: center;">
+                            Plans Disponibles</h3>
+                        <div id="gfPlansList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                    </div>
+
+                    <!-- Colonne de droite (Main) -->
+                    <div style="flex: 1; min-width: 300px; height: 100%; overflow-y: auto; position: relative;">
+                        <div class="goldfish-header">
+                            <div class="goldfish-controls">
+                                <button onclick="startGoldfish()" style="background: #3f51b5;">🔄 Nouvelle
+                                    Partie</button>
+                                <button onclick="drawGoldfishCards(1)">🃏 Piocher 1</button>
+                                <button onclick="drawUpToSix()">🖐️ Refaire main (6)</button>
+                                <button onclick="toggleGoldfishFullscreen()" style="background: #9c27b0;">🖵 Plein
+                                    Écran</button>
+                                <div style="color: #aaa; font-size: 0.95em; white-space: nowrap; margin-left: 10px;">
+                                    <strong>Deck : <span id="gfDeckCount"
+                                            style="color:white; font-size:1.1em;">0</span></strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="goldfish-hand" id="gfHand"></div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Onglet Notes du Deck -->
+            <div id="view-notes" class="card-list stats-container"
+                style="display: none; padding: 15px; flex-direction: column;">
+                <h3
+                    style="margin-top:0; color:var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom:10px;">
+                    Remarques sur le Deck</h3>
+                <textarea id="deckNotesArea" oninput="saveDeckNotes()"
+                    placeholder="Écrivez vos notes, remarques de test, stratégies ou idées de combos ici..."
+                    style="width: 100%; flex-grow: 1; background: var(--ui-bg); color: #fff; border: 1px solid var(--border-color); padding: 15px; border-radius: 4px; box-sizing: border-box; font-family: inherit; resize: none; font-size: 1.05em; line-height: 1.5;"></textarea>
+            </div>
+        </div>
+
+        <!-- Panneau Global : Patch Notes -->
+        <div class="global-stats-panel" id="panel-patch-notes">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
+                <h2 style="margin: 0; color: var(--accent-orange);">🆕 Patch Notes (Historique)</h2>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="clearChangelog()"
+                        style="background:var(--danger-color); padding: 4px 8px; font-size:0.85em;"
+                        title="Effacer l'historique complet">🗑️ Vider</button>
+                    <button onclick="closeGlobalPanels()" class="btn-toggle">Retour au Deck</button>
+                </div>
+            </div>
+            <!-- Conteneur pour les onglets des dates -->
+            <div id="changelogTabs" class="pn-tabs-container"></div>
+            <div id="changelogContent" style="overflow-y: auto; flex-grow: 1; padding-right: 5px;"></div>
+        </div>
+
+        <!-- Panneau Global : Stats -->
+        <div class="global-stats-panel" id="panel-global-stats">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
+                <h2 style="margin: 0; color: #e91e63;">📈 Statistiques Globales & Évaluation</h2>
+                <button onclick="closeGlobalPanels()" class="btn-toggle">Retour au Deck</button>
+            </div>
+            <div style="color: #aaa; margin-bottom: 20px; flex-shrink: 0;">
+                Ce tableau analyse l'utilisation de vos cartes à travers <strong>tous vos decks</strong>. Une carte
+                compte pour 1 inclusion par deck, peu importe le nombre de copies.<br>
+                Cliquez sur les en-têtes des colonnes pour trier les données, ou cliquez sur le nom d'une carte pour
+                modifier sa note (⭐) et ses remarques.
+            </div>
+            <div id="globalStatsContent" style="overflow-y: auto; flex-grow: 1; padding-right: 5px;"></div>
+        </div>
+    </div>
+
+    <script>
+        const dictionnaireMotsCles = {
+            "poison": "A la fin du combat, chaque dommage poison inflige un 2ème dommage",
+            "faiblesse": "Cette unité donne -1 FOR et -1PV a toutes les autres unités que vous contrôlez dans le combat",
+            "mortel": "A la fin du combat, l'unité ayant subi des dommages mortels meurt.",
+            "pugnace": "L'unité ne peut pas être tuée pendant le combat",
+            "précis": "Vous pouvez répartir les dommages comme vous le souhaitez, avant que l'adversaire place ceux que vous faites",
+            "éthéré": "L'unité ne peut être affectée que par les dommages d'une source Magicien. N'importe quel joueur peut défausser une carte de sa main pour enlever le mot-clé Éthéré jusqu'à la fin du tour",
+            "pas d'attachement": "L'unité ne peut pas être équipée"
+        };
+
+        let allCards = [];
+        let decks = { "Mon Deck": { main: {}, side: {}, notes: "" } };
+        let cardRatings = {};
+        let changelogHistory = [];
+        let selectedChangelogIndex = 0;
+        let currentDeckId = "Mon Deck";
+
+        let activeMainTab = 'deck';
+        let currentInnerTab = 'list';
+        let gfDeck = [];
+        let gfHand = [];
+        let gfPlans = [];
+
+        let libViewMode = 'detailed';
+        let deckViewMode = 'detailed';
+        let isLibExpanded = false;
+
+        let globalSortCol = 'note';
+        let globalSortDir = -1;
+
+        let appHistory = [];
+        let historyIndex = -1;
+        let isUndoing = false;
+
+        const STORAGE_KEY_DATA = 'deckbuilder_csv_data';
+        const STORAGE_KEY_FILENAME = 'deckbuilder_last_filename';
+        const STORAGE_KEY_DECKS = 'deckbuilder_all_decks_v5';
+        const STORAGE_KEY_LAST_DECK = 'deckbuilder_last_deck_v5';
+        const STORAGE_KEY_RATINGS = 'deckbuilder_card_ratings';
+        const STORAGE_KEY_LIB_VIEWMODE = 'deckbuilder_lib_viewmode';
+        const STORAGE_KEY_DECK_VIEWMODE = 'deckbuilder_deck_viewmode';
+        const STORAGE_KEY_LIB_EXPANDED = 'deckbuilder_lib_expanded';
+        const STORAGE_KEY_CENTER_CARDS = 'deckbuilder_center_cards';
+        const STORAGE_KEY_ZOOM = 'deckbuilder_zoom_level';
+        const STORAGE_KEY_SHOW_HEADER = 'deckbuilder_show_header';
+        const STORAGE_KEY_SHOW_LIB = 'deckbuilder_show_lib';
+        const STORAGE_KEY_STACK_PLANS = 'deckbuilder_stack_plans';
+        const STORAGE_KEY_CHANGELOG_HIST = 'deckbuilder_changelog_history';
+        const STORAGE_KEY_DECK_SIZE = 'deckbuilder_deck_size';
+        const STORAGE_KEY_PLAN_SIZE = 'deckbuilder_plan_size';
+
+        const TYPE_ORDER = ["lieu", "plan", "unité", "batiment", "bâtiment", "equipement", "équipement", "sort"];
+
+        let targetDeckSize = parseInt(localStorage.getItem(STORAGE_KEY_DECK_SIZE)) || 40;
+        let targetPlanSize = parseInt(localStorage.getItem(STORAGE_KEY_PLAN_SIZE)) || 6;
+        let imageCacheVersion = localStorage.getItem('deckbuilder_img_version') || '1';
+
+        let libSearchTimeout = null;
+        function debouncedRenderLibrary() {
+            if (libSearchTimeout) clearTimeout(libSearchTimeout);
+            libSearchTimeout = setTimeout(() => renderLibrary(), 150);
+        }
+
+        let deckSearchTimeout = null;
+        function debouncedRenderDeck() {
+            if (deckSearchTimeout) clearTimeout(deckSearchTimeout);
+            deckSearchTimeout = setTimeout(() => renderDeck(), 150);
+        }
+
+        function changeDeckSize(val) {
+            let parsed = parseInt(val);
+            if (isNaN(parsed)) parsed = 40;
+            if (parsed < 40) parsed = 40;
+            if (parsed > 50) parsed = 50;
+            targetDeckSize = parsed;
+
+            const input = document.getElementById('deckSizeInput');
+            if (input) input.value = targetDeckSize;
+
+            localStorage.setItem(STORAGE_KEY_DECK_SIZE, targetDeckSize);
+            if (activeMainTab === 'deck') renderDeck();
+        }
+
+        function changePlanSize(val) {
+            targetPlanSize = parseInt(val) || 6;
+            localStorage.setItem(STORAGE_KEY_PLAN_SIZE, targetPlanSize);
+            if (activeMainTab === 'deck') renderDeck();
+        }
+
+        function forceImageRefresh() {
+            imageCacheVersion = Date.now().toString();
+            localStorage.setItem('deckbuilder_img_version', imageCacheVersion);
+            renderLibrary();
+            if (activeMainTab === 'deck') renderDeck();
+            alert("Les images ont été rafraîchies !");
+        }
+
+        // --- GESTION DES OPTIONS D'AFFICHAGE ET ZOOM ---
+        function setLibrarySize(expand) {
+            isLibExpanded = expand;
+            const lib = document.getElementById('panel-library');
+            const btn = document.getElementById('btnSizeLib');
+            if (!lib) return;
+            if (isLibExpanded) {
+                lib.classList.add('expanded');
+                if (btn) btn.innerHTML = '⤡';
+            } else {
+                lib.classList.remove('expanded');
+                if (btn) btn.innerHTML = '⤢';
+            }
+            localStorage.setItem(STORAGE_KEY_LIB_EXPANDED, isLibExpanded);
+        }
+
+        function toggleLibrarySize() {
+            setLibrarySize(!isLibExpanded);
+        }
+
+        function toggleCenterCards(isCentered) {
+            if (isCentered) {
+                document.body.classList.add('centered-layout');
+            } else {
+                document.body.classList.remove('centered-layout');
+            }
+            localStorage.setItem(STORAGE_KEY_CENTER_CARDS, isCentered);
+        }
+
+        function toggleStackPlans(isStacked) {
+            if (isStacked) {
+                document.body.classList.add('stack-plans');
+            } else {
+                document.body.classList.remove('stack-plans');
+            }
+            localStorage.setItem(STORAGE_KEY_STACK_PLANS, isStacked);
+            if (currentInnerTab === 'test') renderGoldfish();
+        }
+
+        function changeZoom(val) {
+            document.body.classList.remove('zoom-120', 'zoom-110', 'zoom-100', 'zoom-90', 'zoom-80');
+            document.body.classList.add(`zoom-${val}`);
+            localStorage.setItem(STORAGE_KEY_ZOOM, val);
+        }
+
+        function toggleTopHeader(show) {
+            const header = document.getElementById('top-controls');
+            if (header) header.style.display = show ? 'block' : 'none';
+
+            const cb = document.getElementById('showHeaderToggle');
+            if (cb) cb.checked = show;
+
+            localStorage.setItem(STORAGE_KEY_SHOW_HEADER, show);
+        }
+
+        function toggleLibrary(show) {
+            const lib = document.getElementById('panel-library');
+            if (!lib) return;
+
+            let isShowing = show;
+            if (typeof show === 'undefined') {
+                isShowing = lib.style.display === 'none';
+            }
+
+            lib.style.display = isShowing ? 'flex' : 'none';
+
+            const cb = document.getElementById('showLibToggle');
+            if (cb) cb.checked = isShowing;
+
+            localStorage.setItem(STORAGE_KEY_SHOW_LIB, isShowing);
+        }
+
+        // --- GESTION DES IMAGES ---
+        function getCardThumbPath(nom) {
+            if (!nom) return "IllustrationsCartes/WorkInProgress.png";
+            let clean = removeAccents(nom);
+            clean = clean.replace(/[^a-zA-Z0-9]/g, '_');
+            return `IllustrationsCartes/${clean}_illustration.png?v=${imageCacheVersion}`;
+        }
+
+        function getCardFullPath(nom) {
+            if (!nom) return "Cartes/WorkInProgress.png";
+            let clean = removeAccents(nom);
+            clean = clean.replace(/[^a-zA-Z0-9]/g, '_');
+            return `Cartes/${clean}.png?v=${imageCacheVersion}`;
+        }
+
+        function openImageModal(src, isHorizontal) {
+            const img = document.getElementById('fullSizeImage');
+            img.src = src;
+            if (isHorizontal) {
+                img.classList.add('rotated');
+            } else {
+                img.classList.remove('rotated');
+            }
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // --- GESTION DE LA VUE ---
+        function setLibViewMode(mode) {
+            libViewMode = mode;
+            localStorage.setItem(STORAGE_KEY_LIB_VIEWMODE, mode);
+            const select = document.getElementById('libViewSelect');
+            if (select) select.value = mode;
+
+            const libList = document.getElementById('libraryList');
+            if (mode === 'gallery') libList.classList.add('gallery-grid');
+            else libList.classList.remove('gallery-grid');
+
+            renderLibrary();
+        }
+
+        function setDeckViewMode(mode) {
+            deckViewMode = mode;
+            localStorage.setItem(STORAGE_KEY_DECK_VIEWMODE, mode);
+            const select = document.getElementById('mainViewSelect');
+            if (select) select.value = mode;
+
+            const deckList = document.getElementById('deckList');
+            if (mode === 'gallery') deckList.classList.add('gallery-grid');
+            else deckList.classList.remove('gallery-grid');
+
+            renderDeck();
+            if (currentInnerTab === 'test') renderGoldfish();
+        }
+
+        function normalizeDecks(loadedDecks) {
+            if (!loadedDecks || typeof loadedDecks !== 'object') return { "Mon Deck": { main: {}, side: {}, notes: "" } };
+            for (let d in loadedDecks) {
+                if (!loadedDecks[d] || typeof loadedDecks[d] !== 'object') loadedDecks[d] = {};
+                if (!loadedDecks[d].main) loadedDecks[d].main = {};
+                if (!loadedDecks[d].side) loadedDecks[d].side = {};
+                if (typeof loadedDecks[d].notes === 'undefined') loadedDecks[d].notes = "";
+            }
+            if (Object.keys(loadedDecks).length === 0) {
+                return { "Mon Deck": { main: {}, side: {}, notes: "" } };
+            }
+            return loadedDecks;
+        }
+
+        async function saveFileWithDialog(content, defaultFileName, mimeType) {
+            if (window.showSaveFilePicker) {
+                try {
+                    let extension = defaultFileName.split('.').pop();
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: defaultFileName,
+                        types: [{
+                            description: extension === 'json' ? 'Fichier JSON' : 'Fichier Texte',
+                            accept: { [mimeType]: ['.' + extension] },
+                        }],
+                    });
+                    const writable = await handle.createWritable();
+                    await writable.write(content);
+                    await writable.close();
+                    return;
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        fallbackSave(content, defaultFileName, mimeType);
+                    }
+                    return;
+                }
+            }
+            fallbackSave(content, defaultFileName, mimeType);
+        }
+
+        function fallbackSave(content, defaultFileName, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = defaultFileName;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+        }
+
+        function switchMobileView(view) {
+            document.getElementById('panel-library').classList.remove('mobile-active');
+            document.getElementById('panel-deck').classList.remove('mobile-active');
+            document.getElementById('panel-global-stats').classList.remove('mobile-active');
+            document.getElementById('panel-patch-notes').classList.remove('mobile-active');
+            document.getElementById('top-controls').classList.remove('mobile-active');
+
+            document.getElementById('btnMobLib').classList.remove('active');
+            document.getElementById('btnMobDeck').classList.remove('active');
+            document.getElementById('btnMobTools').classList.remove('active');
+
+            if (view === 'library') {
+                document.getElementById('panel-library').classList.add('mobile-active');
+                document.getElementById('btnMobLib').classList.add('active');
+            } else if (view === 'deck') {
+                if (activeMainTab === 'globalStats') {
+                    document.getElementById('panel-global-stats').classList.add('mobile-active');
+                } else if (activeMainTab === 'patchNotes') {
+                    document.getElementById('panel-patch-notes').classList.add('mobile-active');
+                } else {
+                    document.getElementById('panel-deck').classList.add('mobile-active');
+                }
+                document.getElementById('btnMobDeck').classList.add('active');
+            } else if (view === 'tools') {
+                document.getElementById('top-controls').classList.add('mobile-active');
+                document.getElementById('btnMobTools').classList.add('active');
+            }
+        }
+
+        function pushToHistory() {
+            if (isUndoing) return;
+            if (historyIndex < appHistory.length - 1) {
+                appHistory = appHistory.slice(0, historyIndex + 1);
+            }
+            appHistory.push(JSON.stringify({ decks: decks, currentDeckId: currentDeckId }));
+            if (appHistory.length > 50) {
+                appHistory.shift();
+            } else {
+                historyIndex++;
+            }
+            updateUndoRedoButtons();
+        }
+
+        function undo() {
+            if (historyIndex > 0) {
+                isUndoing = true;
+                historyIndex--;
+                let state = JSON.parse(appHistory[historyIndex]);
+                decks = state.decks;
+                currentDeckId = state.currentDeckId;
+                saveDecks(false);
+                closeGlobalPanels();
+                updateNotesView();
+                isUndoing = false;
+                updateUndoRedoButtons();
+            }
+        }
+
+        function redo() {
+            if (historyIndex < appHistory.length - 1) {
+                isUndoing = true;
+                historyIndex++;
+                let state = JSON.parse(appHistory[historyIndex]);
+                decks = state.decks;
+                currentDeckId = state.currentDeckId;
+                saveDecks(false);
+                closeGlobalPanels();
+                updateNotesView();
+                isUndoing = false;
+                updateUndoRedoButtons();
+            }
+        }
+
+        function updateUndoRedoButtons() {
+            const btnUndo = document.getElementById('btnUndo');
+            const btnRedo = document.getElementById('btnRedo');
+            if (btnUndo) btnUndo.disabled = historyIndex <= 0;
+            if (btnRedo) btnRedo.disabled = historyIndex >= appHistory.length - 1;
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+            if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undo(); }
+            if (e.ctrlKey && e.key === 'y') { e.preventDefault(); redo(); }
+        });
+
+        function backupGlobal() {
+            if (allCards.length === 0) {
+                alert("Rien à sauvegarder. Assurez-vous d'avoir des données actives.");
+                return;
+            }
+            const backupData = {
+                decks: decks,
+                currentDeckId: currentDeckId,
+                allCards: allCards,
+                cardRatings: cardRatings,
+                changelogHistory: changelogHistory,
+                fileName: localStorage.getItem(STORAGE_KEY_FILENAME) || 'Sauvegarde_restauree'
+            };
+            const dataStr = JSON.stringify(backupData);
+            const dateStr = new Date().toISOString().split('T')[0];
+            saveFileWithDialog(dataStr, `Deckbuilder_Backup_${dateStr}.json`, 'application/json');
+        }
+
+        function restoreGlobal(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const content = e.target.result;
+                    if (content.startsWith('Deck :')) {
+                        alert("Erreur : Vous essayez de restaurer un fichier d'export de deck (.txt) via le menu de Sauvegarde Globale.\n\nPour importer ce deck, utilisez le bouton '📂 Import Deck' sous l'onglet de création de deck.");
+                        event.target.value = '';
+                        return;
+                    }
+
+                    const data = JSON.parse(content);
+                    if (data.decks) {
+                        decks = normalizeDecks(data.decks);
+                        currentDeckId = data.currentDeckId || Object.keys(decks)[0];
+                        if (!decks[currentDeckId]) currentDeckId = Object.keys(decks)[0];
+
+                        allCards = data.allCards || [];
+                        if (data.cardRatings) cardRatings = data.cardRatings;
+
+                        // Récupération intelligente de l'historique
+                        if (data.changelogHistory) {
+                            changelogHistory = data.changelogHistory;
+                        } else if (data.changelog) {
+                            changelogHistory = [data.changelog];
+                        }
+                        localStorage.setItem(STORAGE_KEY_CHANGELOG_HIST, JSON.stringify(changelogHistory));
+
+                        saveDecks(true);
+                        localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(allCards));
+                        localStorage.setItem(STORAGE_KEY_RATINGS, JSON.stringify(cardRatings));
+                        if (data.fileName) localStorage.setItem(STORAGE_KEY_FILENAME, data.fileName);
+
+                        document.getElementById('statusIndicator').innerHTML = `<span style="color: #4CAF50;">📄 Base chargée</span> <span style="color: #ccc;">(${allCards.length} cartes)</span>`;
+
+                        updateFiltersOptions();
+                        closeGlobalPanels();
+                        alert("Restauration réussie ! Vos decks, notes et données sont à jour.");
+                    } else {
+                        alert("Le fichier JSON ne contient pas de données de decks valides.");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Erreur lors de la lecture du fichier de sauvegarde JSON. Assurez-vous d'avoir sélectionné un fichier Backup valide généré par l'application.\n\nDétail technique : " + err.message);
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        // --- GESTION DES NOTES DE CARTES (MODAL) ---
+        let currentRatingCard = null;
+        let tempRating = 0;
+
+        function openRatingModal(cardName) {
+            currentRatingCard = cardName;
+            const data = cardRatings[cardName] || { rating: 0, comment: "" };
+            tempRating = data.rating;
+            document.getElementById('ratingCardName').textContent = cardName;
+            document.getElementById('ratingComment').value = data.comment;
+
+            const c = allCards.find(card => card.Nom === cardName) || { Type: "" };
+            const typeLower = (c.Type || "").toLowerCase();
+            const isHorizontal = typeLower.includes("plan") || typeLower.includes("plot") || typeLower.includes("lieu");
+
+            const wrapper = document.getElementById('ratingImageWrapper');
+            const imgEl = document.getElementById('ratingModalImage');
+
+            if (isHorizontal) {
+                wrapper.classList.add('horizontal-layout');
+                wrapper.style.width = "400px";
+                wrapper.style.maxWidth = "100%";
+            } else {
+                wrapper.classList.remove('horizontal-layout');
+                wrapper.style.width = "250px";
+            }
+
+            imgEl.src = getCardFullPath(cardName);
+            imgEl.onerror = function () { this.src = 'Cartes/WorkInProgress.png'; };
+
+            updateStarsUI();
+            document.getElementById('ratingModal').style.display = 'flex';
+        }
+
+        function updateStarsUI() {
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById('star-' + i).className = i <= tempRating ? 'active' : '';
+            }
+        }
+
+        function setRating(val) {
+            tempRating = val;
+            updateStarsUI();
+        }
+
+        function saveRating() {
+            if (!cardRatings[currentRatingCard]) cardRatings[currentRatingCard] = {};
+            cardRatings[currentRatingCard].rating = tempRating;
+            cardRatings[currentRatingCard].comment = document.getElementById('ratingComment').value;
+            localStorage.setItem(STORAGE_KEY_RATINGS, JSON.stringify(cardRatings));
+            closeRatingModal();
+            renderLibrary();
+            if (activeMainTab === 'deck') renderDeck();
+            if (activeMainTab === 'globalStats') renderGlobalStats();
+            if (activeMainTab === 'patchNotes') renderChangelog();
+        }
+
+        function clearRating() {
+            tempRating = 0;
+            document.getElementById('ratingComment').value = '';
+            saveRating();
+        }
+
+        function closeRatingModal() {
+            document.getElementById('ratingModal').style.display = 'none';
+        }
+
+        function computeChangelog(oldCards, newCards) {
+            if (!oldCards || oldCards.length === 0) return null;
+
+            let oldMap = {};
+            oldCards.forEach(c => oldMap[c.Nom] = { hash: getCardHash(c), card: c });
+
+            let added = [], modified = [], deleted = [];
+            let newMap = {};
+
+            newCards.forEach(c => {
+                newMap[c.Nom] = true;
+                let h = getCardHash(c);
+                if (!oldMap.hasOwnProperty(c.Nom)) {
+                    added.push(c.Nom);
+                } else if (oldMap[c.Nom].hash !== h) {
+                    modified.push({ oldCard: oldMap[c.Nom].card, newCard: c });
+                }
+            });
+
+            oldCards.forEach(c => {
+                if (!newMap.hasOwnProperty(c.Nom)) {
+                    deleted.push(c);
+                }
+            });
+
+            if (added.length > 0 || modified.length > 0 || deleted.length > 0) {
+                return {
+                    date: new Date().toLocaleDateString('fr-FR') + ' à ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+                    added: added,
+                    modified: modified,
+                    deleted: deleted
+                };
+            }
+            return null;
+        }
+
+        function openPatchNotes() {
+            activeMainTab = 'patchNotes';
+            document.getElementById('panel-deck').style.display = 'none';
+            document.getElementById('panel-global-stats').style.display = 'none';
+            document.getElementById('panel-patch-notes').style.display = 'flex';
+
+            document.getElementById('btnPatchNotes').classList.add('active');
+            document.getElementById('btnGlobalStatsMain').classList.remove('active');
+
+            renderDeckTabs();
+            renderChangelog();
+
+            if (window.innerWidth <= 768) {
+                document.getElementById('panel-deck').classList.remove('mobile-active');
+                document.getElementById('panel-patch-notes').classList.add('mobile-active');
+            }
+        }
+
+        function clearChangelog() {
+            if (confirm("Voulez-vous vraiment effacer tout l'historique des modifications ?")) {
+                changelogHistory = [];
+                localStorage.removeItem(STORAGE_KEY_CHANGELOG_HIST);
+                selectedChangelogIndex = 0;
+                renderChangelog();
+            }
+        }
+
+        function renderChangelog() {
+            const container = document.getElementById('changelogContent');
+            const tabsContainer = document.getElementById('changelogTabs');
+
+            if (changelogHistory.length === 0) {
+                tabsContainer.innerHTML = '';
+                container.innerHTML = '<div style="color:#aaa; text-align:center; padding:20px;">Aucune modification récente détectée dans l\'historique.</div>';
+                return;
+            }
+
+            // Génération des onglets d'historique
+            let tabsHtml = '';
+            changelogHistory.forEach((log, index) => {
+                tabsHtml += `<div class="pn-tab ${index === selectedChangelogIndex ? 'active' : ''}" onclick="selectedChangelogIndex=${index}; renderChangelog();">${log.date}</div>`;
+            });
+            tabsContainer.innerHTML = tabsHtml;
+
+            const log = changelogHistory[selectedChangelogIndex];
+            const savedMode = libViewMode;
+            libViewMode = 'detailed-img';
+
+            let html = ``;
+
+            // On filtre les cartes ajoutées pour s'assurer qu'elles existent bien encore (évite le bug des cartes "fantômes" vides)
+            let realAdded = log.added.filter(nom => allCards.find(card => card.Nom === nom));
+            let realModified = log.modified.filter(m => allCards.find(card => card.Nom === m.newCard.Nom));
+
+            if (realAdded.length > 0) {
+                html += `<h4 style="color:#4CAF50; border-bottom:1px solid #4CAF50; padding-bottom:5px; margin-top:0;">Nouvelles Cartes (${realAdded.length})</h4>`;
+                html += `<div class="deck-items-grid grid-auto">`;
+                realAdded.forEach(nom => {
+                    const c = allCards.find(card => card.Nom === nom);
+                    if (c) html += createLibraryItemHTML(c, true);
+                });
+                html += `</div>`;
+            }
+
+            if (realModified.length > 0) {
+                html += `<h4 style="color:var(--warning-color); border-bottom:1px solid var(--warning-color); padding-bottom:5px; margin-top:20px;">Cartes Modifiées (${realModified.length})</h4>`;
+                realModified.forEach(mod => {
+                    html += `
+                    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; background: #222; padding: 10px; border-radius: 6px; border-left: 4px solid var(--warning-color);">
+                        <div style="flex: 1; min-width: 260px; opacity: 0.7;">
+                            <div style="text-align: center; color: #888; font-size: 0.85em; margin-bottom: 5px; font-style: italic;">Ancienne version</div>
+                            ${createLibraryItemHTML(mod.oldCard, true)}
+                        </div>
+                        <div style="flex: 1; min-width: 260px;">
+                            <div style="text-align: center; color: var(--warning-color); font-size: 0.85em; font-weight: bold; margin-bottom: 5px;">Nouvelle version</div>
+                            ${createLibraryItemHTML(mod.newCard, true)}
+                        </div>
+                    </div>`;
+                });
+            }
+
+            if (log.deleted.length > 0) {
+                html += `<h4 style="color:var(--danger-color); border-bottom:1px solid var(--danger-color); padding-bottom:5px; margin-top:20px;">Cartes Supprimées (${log.deleted.length})</h4>`;
+                html += `<div class="deck-items-grid grid-auto">`;
+                log.deleted.forEach(c => {
+                    let name = typeof c === 'string' ? c : (c.Nom || "Inconnu");
+                    html += `<div style="background: rgba(244,67,54,0.1); border-left: 4px solid var(--danger-color); padding: 8px; margin-bottom: 5px; border-radius: 4px; color:#ddd;">❌ <del>${name}</del></div>`;
+                });
+                html += `</div>`;
+            }
+
+            if (realAdded.length === 0 && realModified.length === 0 && log.deleted.length === 0) {
+                html += `<div style="text-align:center; color:#aaa; padding:20px;">Mise à jour invisible (ex: espaces retirés ou lignes vides supprimées).</div>`;
+            }
+
+            container.innerHTML = html;
+            libViewMode = savedMode;
+        }
+
+        // --- GESTION DES STATS GLOBALES ET PANNEAUX GENERAUX ---
+        function closeGlobalPanels() {
+            activeMainTab = 'deck';
+            document.getElementById('panel-patch-notes').style.display = 'none';
+            document.getElementById('panel-global-stats').style.display = 'none';
+            document.getElementById('panel-deck').style.display = 'flex';
+            document.getElementById('btnGlobalStatsMain').classList.remove('active');
+            document.getElementById('btnPatchNotes').classList.remove('active');
+            renderDeckTabs();
+            renderLibrary();
+            renderDeck();
+        }
+
+        function openGlobalStats() {
+            activeMainTab = 'globalStats';
+            document.getElementById('panel-deck').style.display = 'none';
+            document.getElementById('panel-patch-notes').style.display = 'none';
+            document.getElementById('panel-global-stats').style.display = 'flex';
+
+            document.getElementById('btnGlobalStatsMain').classList.add('active');
+            document.getElementById('btnPatchNotes').classList.remove('active');
+
+            renderDeckTabs();
+            renderGlobalStats();
+
+            if (window.innerWidth <= 768) {
+                document.getElementById('panel-deck').classList.remove('mobile-active');
+                document.getElementById('panel-global-stats').classList.add('mobile-active');
+            }
+        }
+
+        function sortGlobalStats(col) {
+            if (globalSortCol === col) {
+                globalSortDir *= -1;
+            } else {
+                globalSortCol = col;
+                globalSortDir = (col === 'nom') ? 1 : -1;
+            }
+            renderGlobalStats();
+        }
+
+        function renderGlobalStats() {
+            const container = document.getElementById('globalStatsContent');
+            container.innerHTML = '';
+
+            let cardUsage = {};
+            for (let d in decks) {
+                let deckCards = new Set();
+                ['main', 'side'].forEach(zone => {
+                    for (let nom in decks[d][zone]) {
+                        if (decks[d][zone][nom].qty > 0) deckCards.add(nom);
+                    }
+                });
+                deckCards.forEach(nom => {
+                    cardUsage[nom] = (cardUsage[nom] || 0) + 1;
+                });
+            }
+
+            let typesGroups = {};
+            allCards.forEach(card => {
+                const type = card.Type || "Inconnu";
+                if (!typesGroups[type]) typesGroups[type] = [];
+                typesGroups[type].push({
+                    nom: card.Nom,
+                    inclusions: cardUsage[card.Nom] || 0,
+                    note: cardRatings[card.Nom] ? cardRatings[card.Nom].rating : 0,
+                    comment: cardRatings[card.Nom] ? cardRatings[card.Nom].comment : ""
+                });
+            });
+
+            const sortedTypes = Object.keys(typesGroups).sort((a, b) => {
+                let aLower = a.toLowerCase();
+                let bLower = b.toLowerCase();
+                let idxA = TYPE_ORDER.findIndex(t => aLower.includes(t));
+                let idxB = TYPE_ORDER.findIndex(t => bLower.includes(t));
+                if (idxA === -1) idxA = 99;
+                if (idxB === -1) idxB = 99;
+                if (idxA !== idxB) return idxA - idxB;
+                return a.localeCompare(b);
+            });
+
+            const getSortIcon = (col) => {
+                if (globalSortCol !== col) return '';
+                return globalSortDir === 1 ? ' ▴' : ' ▾';
+            };
+
+            let finalHtml = '';
+            sortedTypes.forEach(type => {
+                const list = typesGroups[type];
+
+                list.sort((a, b) => {
+                    let valA, valB;
+                    if (globalSortCol === 'note') { valA = a.note; valB = b.note; }
+                    else if (globalSortCol === 'inclusions') { valA = a.inclusions; valB = b.inclusions; }
+                    else { valA = a.nom.toLowerCase(); valB = b.nom.toLowerCase(); }
+
+                    if (valA < valB) return -1 * globalSortDir;
+                    if (valA > valB) return 1 * globalSortDir;
+
+                    if (globalSortCol !== 'note' && a.note !== b.note) return b.note - a.note;
+                    if (globalSortCol !== 'inclusions' && a.inclusions !== b.inclusions) return b.inclusions - a.inclusions;
+                    return a.nom.localeCompare(b.nom);
+                });
+
+                let html = `<h3 style="color:var(--accent-color); margin-top:20px; border-bottom:1px solid #555;">[ ${type} ]</h3>`;
+                html += `<table class="global-stats-table">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortGlobalStats('nom')" style="width: 50%;">Nom${getSortIcon('nom')}</th>
+                                    <th onclick="sortGlobalStats('inclusions')" style="width: 25%;">Inclusions${getSortIcon('inclusions')}</th>
+                                    <th onclick="sortGlobalStats('note')" style="width: 25%;">Note${getSortIcon('note')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+
+                list.forEach(item => {
+                    const safeId = item.nom.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                    const noteStr = item.note > 0 ? "⭐".repeat(item.note) : "<span style='color:#555;'>-</span>";
+                    const comMarker = item.comment ? " 💬" : "";
+                    html += `<tr>
+                                <td><span class="clickable-name" data-id="${safeId}" onclick="openRatingModal(this.getAttribute('data-id'))" title="Modifier la note/remarque">${item.nom}</span></td>
+                                <td>${item.inclusions > 0 ? `<span class="qty-badge">${item.inclusions} deck(s)</span>` : '<span style="color:#555;">0</span>'}</td>
+                                <td><span style="cursor:pointer;" data-id="${safeId}" onclick="openRatingModal(this.getAttribute('data-id'))" title="${item.comment || 'Ajouter une note'}">${noteStr}${comMarker}</span></td>
+                             </tr>`;
+                });
+                html += `</tbody></table>`;
+                finalHtml += html;
+            });
+            container.innerHTML = finalHtml;
+        }
+
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function changeTextSize(sizeClass) { document.body.className = sizeClass; }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('traitInput').value = '';
+            if (document.getElementById('sortFilter')) document.getElementById('sortFilter').value = 'nom';
+            document.getElementById('keywordFilter').value = '';
+            document.getElementById('typeFilter').value = '';
+            document.getElementById('costFilter').value = '';
+            document.getElementById('uniqueFilter').checked = false;
+            renderLibrary();
+        }
+
+        function removeAccents(str) {
+            if (!str) return "";
+            let res = str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            res = res.replace(/œ/g, "oe").replace(/Œ/g, "OE");
+            res = res.replace(/æ/g, "ae").replace(/Æ/g, "AE");
+            return res;
+        }
+
+        function isCardQG(card) {
+            if (!card || !card.Trait || !card.Type) return false;
+            if (card._typeLower && card._traitsLower) {
+                return card._typeLower.includes("lieu") && (/\bqg\b/i.test(card._traitsLower) || card._traitsLower.includes("qg"));
+            }
+            const typeLower = card.Type.toLowerCase();
+            const traitsLower = removeAccents(card.Trait.toLowerCase());
+            return typeLower.includes("lieu") && (/\bqg\b/i.test(traitsLower) || traitsLower.includes("qg"));
+        }
+
+        function getCardHash(c) {
+            if (!c) return null;
+            return [c.Type, c.Coût, c.Atk, c.PV, c.Pouvoir, c.Mots_clés, c.Trait, c.Unique].join('|');
+        }
+
+        function getMotsCles(card) {
+            return card['Mots_clés'] || card['Mots clés'] || card['Mots-clés'] || "";
+        }
+
+        function formaterTexte(text) {
+            if (!text) return "";
+            let res = String(text);
+
+            res = res.replace(/\n/g, '<br>');
+            res = res.replace(/\\n/g, '<br>');
+            res = res.replace(/\s*(\/\/|\\\\)\s*/g, '<br>');
+            res = res.replace(/\s*[-—–_]{2,}\s*/g, '<br>');
+
+            for (let mc in dictionnaireMotsCles) {
+                let regex = new RegExp(`(^|[^a-zA-ZÀ-ÿ0-9_œŒæÆ])(${mc})(?=[^a-zA-ZÀ-ÿ0-9_œŒæÆ]|$)`, "gi");
+                res = res.replace(regex, (match, p1, p2) => {
+                    return p1 + `<span class="kw-tooltip" title="${dictionnaireMotsCles[mc]}">${p2}</span>`;
+                });
+            }
+            return res;
+        }
+
+        function getStatColor(type, value) {
+            if (!value) return '#555';
+            let val = parseInt(value);
+            if (isNaN(val)) return '#555';
+            let intensity = Math.min(val / 10, 1);
+            if (type === 'cost') return `hsl(210, ${40 + intensity * 60}%, ${40 + intensity * 20}%)`;
+            if (type === 'atk') return `hsl(0, ${50 + intensity * 50}%, ${40 + intensity * 20}%)`;
+            if (type === 'pv') return `hsl(120, ${40 + intensity * 60}%, ${30 + intensity * 25}%)`;
+            return '#555';
+        }
+
+        function upgradeDecks() {
+            decks = normalizeDecks(decks);
+            for (let d in decks) {
+                ['main', 'side'].forEach(zone => {
+                    for (let nom in decks[d][zone]) {
+                        let card = allCards.find(c => c.Nom === nom);
+                        if (typeof decks[d][zone][nom] === 'number') {
+                            decks[d][zone][nom] = {
+                                qty: decks[d][zone][nom],
+                                hash: card ? getCardHash(card) : null,
+                                backup: card ? { ...card } : { Nom: nom, Type: "Inconnu", Pouvoir: "(Ancienne carte introuvable)" }
+                            };
+                        } else {
+                            if (card) {
+                                decks[d][zone][nom].backup = { ...card };
+                                decks[d][zone][nom].hash = getCardHash(card);
+                            } else if (!decks[d][zone][nom].backup) {
+                                decks[d][zone][nom].backup = { Nom: nom, Type: "Inconnu", Pouvoir: "(Ancienne carte introuvable)" };
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        async function reloadCSV() {
+            try {
+                const cb = new Date().getTime();
+                const response = await fetch('ListeCartes.csv?v=' + cb, { cache: 'no-store' });
+                if (response.ok) {
+                    const text = await response.text();
+                    processCSVText(text, 'ListeCartes.csv');
+                    alert("Base de données mise à jour avec succès depuis le serveur !");
+                } else {
+                    alert("Impossible de trouver le fichier ListeCartes.csv sur le serveur.");
+                }
+            } catch (e) {
+                alert("Erreur de connexion lors du rechargement.");
+            }
+        }
+
+        function reorderDecks(draggedName, targetName) {
+            let deckKeys = Object.keys(decks);
+            const fromIdx = deckKeys.indexOf(draggedName);
+            const toIdx = deckKeys.indexOf(targetName);
+
+            if (fromIdx > -1 && toIdx > -1) {
+                deckKeys.splice(fromIdx, 1);
+                deckKeys.splice(toIdx, 0, draggedName);
+
+                let newDecks = {};
+                for (let k of deckKeys) {
+                    newDecks[k] = decks[k];
+                }
+                decks = newDecks;
+                saveDecks(true);
+                renderDeckTabs();
+            }
+        }
+
+        window.onload = async () => {
+            // Configuration de l'affichage initial
+            let sHeader = localStorage.getItem(STORAGE_KEY_SHOW_HEADER);
+            if (sHeader !== null) {
+                let showH = sHeader === 'true';
+                let headEl = document.getElementById('showHeaderToggle');
+                if (headEl) headEl.checked = showH;
+                toggleTopHeader(showH);
+            } else {
+                let headEl = document.getElementById('showHeaderToggle');
+                if (headEl) headEl.checked = true;
+            }
+
+            let sLibToggle = localStorage.getItem(STORAGE_KEY_SHOW_LIB);
+            if (sLibToggle !== null) {
+                let showL = sLibToggle === 'true';
+                let libEl = document.getElementById('showLibToggle');
+                if (libEl) libEl.checked = showL;
+                toggleLibrary(showL);
+            } else {
+                let libEl = document.getElementById('showLibToggle');
+                if (libEl) libEl.checked = true;
+            }
+
+            let sLibExp = localStorage.getItem(STORAGE_KEY_LIB_EXPANDED);
+            if (sLibExp === 'true') setLibrarySize(true);
+
+            let sCenter = localStorage.getItem(STORAGE_KEY_CENTER_CARDS) === 'true';
+            let centerToggle = document.getElementById('centerCardsToggle');
+            if (centerToggle) centerToggle.checked = sCenter;
+            toggleCenterCards(sCenter);
+
+            let sStack = localStorage.getItem(STORAGE_KEY_STACK_PLANS) === 'true';
+            let stackToggle = document.getElementById('stackPlansToggle');
+            if (stackToggle) stackToggle.checked = sStack;
+            toggleStackPlans(sStack);
+
+            let sZoomVal = localStorage.getItem(STORAGE_KEY_ZOOM) || "100";
+            let zoomSelect = document.getElementById('zoomSelect');
+            if (zoomSelect) zoomSelect.value = sZoomVal;
+            changeZoom(sZoomVal);
+
+            let sDeckSize = localStorage.getItem(STORAGE_KEY_DECK_SIZE) || "40";
+            let deckSizeInput = document.getElementById('deckSizeInput');
+            if (deckSizeInput) deckSizeInput.value = sDeckSize;
+
+            let sPlanSize = localStorage.getItem(STORAGE_KEY_PLAN_SIZE) || "6";
+            let planSizeInput = document.getElementById('planSizeInput');
+            if (planSizeInput) planSizeInput.value = sPlanSize;
+
+            let sLib = localStorage.getItem(STORAGE_KEY_LIB_VIEWMODE);
+            if (sLib) setLibViewMode(sLib);
+
+            let sDeck = localStorage.getItem(STORAGE_KEY_DECK_VIEWMODE);
+            if (sDeck) setDeckViewMode(sDeck);
+
+            // Chargement des données
+            let savedDecks = localStorage.getItem(STORAGE_KEY_DECKS);
+            if (!savedDecks) savedDecks = localStorage.getItem('deckbuilder_all_decks_v4');
+            if (!savedDecks) savedDecks = localStorage.getItem('deckbuilder_all_decks_v3');
+
+            if (savedDecks) {
+                decks = normalizeDecks(JSON.parse(savedDecks));
+                const lastDeck = localStorage.getItem(STORAGE_KEY_LAST_DECK);
+                if (lastDeck && decks[lastDeck]) currentDeckId = lastDeck;
+                else currentDeckId = Object.keys(decks)[0];
+            }
+
+            const savedRatings = localStorage.getItem(STORAGE_KEY_RATINGS);
+            if (savedRatings) {
+                cardRatings = JSON.parse(savedRatings);
+            }
+
+            // Chargement de l'historique des patchs
+            const savedHist = localStorage.getItem(STORAGE_KEY_CHANGELOG_HIST);
+            if (savedHist) {
+                changelogHistory = JSON.parse(savedHist);
+            } else {
+                const oldLog = localStorage.getItem('deckbuilder_changelog');
+                if (oldLog) {
+                    changelogHistory = [JSON.parse(oldLog)];
+                    localStorage.removeItem('deckbuilder_changelog');
+                }
+            }
+
+            let autoLoaded = false;
+            try {
+                const cb = new Date().getTime();
+                const response = await fetch('ListeCartes.csv?v=' + cb, { cache: 'no-store' });
+                if (response.ok) {
+                    const text = await response.text();
+                    processCSVText(text, 'ListeCartes.csv');
+                    autoLoaded = true;
+                }
+            } catch (e) { }
+
+            if (!autoLoaded) {
+                const cachedData = localStorage.getItem(STORAGE_KEY_DATA);
+                if (cachedData) {
+                    allCards = JSON.parse(cachedData);
+                    upgradeDecks();
+                    const lastFileName = localStorage.getItem(STORAGE_KEY_FILENAME) || 'Fichier en cache';
+                    document.getElementById('statusIndicator').innerHTML = `<span style="color: #ff9800;">📄 Base en cache</span> <span style="color: #ccc;">(${allCards.length} cartes)</span>`;
+                    updateFiltersOptions();
+                    renderLibrary();
+                }
+            }
+
+            renderDeckTabs();
+            if (activeMainTab === 'deck') renderDeck();
+            pushToHistory();
+        };
+
+        function parseCSV(text) {
+            let result = []; let row = []; let col = ""; let quote = false;
+            for (let c = 0; c < text.length; c++) {
+                let cc = text[c], nc = text[c + 1];
+                if (cc === '"' && quote && nc === '"') { col += cc; ++c; continue; }
+                if (cc === '"') { quote = !quote; continue; }
+                if (cc === ',' && !quote) { row.push(col); col = ""; continue; }
+                if (cc === '\r' && nc === '\n' && !quote) { row.push(col); result.push(row); col = ""; row = []; ++c; continue; }
+                if (cc === '\n' && !quote) { row.push(col); result.push(row); col = ""; row = []; continue; }
+                if (cc === '\r' && !quote) { row.push(col); result.push(row); col = ""; row = []; continue; }
+                col += cc;
+            }
+            row.push(col); result.push(row);
+            if (result.length === 0) return [];
+            let headers = result[0].map(h => h.trim());
+            let finalResult = [];
+            for (let i = 1; i < result.length; i++) {
+                if (result[i].length === 1 && !result[i][0].trim()) continue;
+                let obj = {};
+                for (let j = 0; j < headers.length; j++) obj[headers[j]] = result[i][j] ? result[i][j].trim() : '';
+                finalResult.push(obj);
+            }
+            return finalResult;
+        }
+
+        function processCSVText(text, fileName) {
+            let parsed = parseCSV(text);
+            parsed = parsed.filter(c => {
+                if (!c.Nom) return false;
+                if (c.Nom.trim() === "") return false;
+                let status = removeAccents((c.Status || "").trim().toLowerCase());
+                return status !== "a discuter";
+            });
+
+            parsed.forEach(c => {
+                c.Nom = c.Nom.trim();
+                c._searchTexteLibre = removeAccents(((c.Pouvoir || "") + " " + (c.Nom || "")).toLowerCase());
+                c._searchTrait = removeAccents((c.Trait || "").toLowerCase());
+                c._searchMotsCles = removeAccents(getMotsCles(c).toLowerCase());
+                c._typeLower = (c.Type || "").toLowerCase();
+                c._traitsLower = removeAccents((c.Trait || "").toLowerCase());
+            });
+
+            parsed.sort((a, b) => {
+                const nomA = (a.Nom || "").toLowerCase();
+                const nomB = (b.Nom || "").toLowerCase();
+                return nomA.localeCompare(nomB);
+            });
+
+            if (allCards && allCards.length > 0) {
+                let newLog = computeChangelog(allCards, parsed);
+                if (newLog) {
+                    let isDuplicate = false;
+                    if (changelogHistory.length > 0) {
+                        isDuplicate = JSON.stringify(changelogHistory[0].added) === JSON.stringify(newLog.added) && JSON.stringify(changelogHistory[0].modified) === JSON.stringify(newLog.modified) && JSON.stringify(changelogHistory[0].deleted) === JSON.stringify(newLog.deleted);
+                    }
+                    if (!isDuplicate) {
+                        changelogHistory.unshift(newLog);
+                        if (changelogHistory.length > 10) changelogHistory.pop();
+                        localStorage.setItem(STORAGE_KEY_CHANGELOG_HIST, JSON.stringify(changelogHistory));
+                        selectedChangelogIndex = 0;
+                    }
+                }
+            }
+
+            allCards = parsed;
+            localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(allCards));
+            localStorage.setItem(STORAGE_KEY_FILENAME, fileName);
+
+            upgradeDecks();
+            document.getElementById('statusIndicator').innerHTML = `<span style="color: #4CAF50;">📄 Base connectée</span> <span style="color: #ccc;">(${allCards.length} cartes)</span>`;
+
+            updateFiltersOptions();
+            renderLibrary();
+            if (activeMainTab === 'deck') renderDeck();
+            if (activeMainTab === 'patchNotes') renderChangelog();
+        }
+
+        function saveDeckNotes() {
+            if (!decks[currentDeckId]) return;
+            decks[currentDeckId].notes = document.getElementById('deckNotesArea').value;
+            localStorage.setItem(STORAGE_KEY_DECKS, JSON.stringify(decks));
+        }
+
+        function updateNotesView() {
+            if (currentInnerTab === 'notes') {
+                document.getElementById('deckNotesArea').value = (decks[currentDeckId] && decks[currentDeckId].notes) ? decks[currentDeckId].notes : "";
+            }
+        }
+
+        function switchInnerTab(tab) {
+            currentInnerTab = tab;
+            document.getElementById('tab-list').classList.toggle('active', tab === 'list');
+            document.getElementById('tab-stats').classList.toggle('active', tab === 'stats');
+            document.getElementById('tab-test').classList.toggle('active', tab === 'test');
+            document.getElementById('tab-notes').classList.toggle('active', tab === 'notes');
+
+            document.getElementById('view-list').style.display = tab === 'list' ? 'flex' : 'none';
+            document.getElementById('view-stats').style.display = tab === 'stats' ? 'flex' : 'none';
+            document.getElementById('view-test').style.display = tab === 'test' ? 'flex' : 'none';
+            document.getElementById('view-notes').style.display = tab === 'notes' ? 'flex' : 'none';
+
+            if (tab === 'stats') renderStatsView();
+            if (tab === 'test' && gfDeck.length === 0 && gfHand.length === 0) startGoldfish();
+            if (tab === 'notes') updateNotesView();
+        }
+
+        function renderDeckTabs() {
+            const container = document.getElementById('deckTabs');
+            container.innerHTML = '';
+            for (const deckName in decks) {
+                const div = document.createElement('div');
+                div.className = `deck-tab ${activeMainTab === 'deck' && deckName === currentDeckId ? 'active' : ''}`;
+                div.textContent = deckName;
+
+                div.draggable = true;
+                div.ondragstart = (e) => {
+                    e.dataTransfer.setData('text/plain', deckName);
+                    div.style.opacity = '0.5';
+                };
+                div.ondragend = (e) => {
+                    div.style.opacity = '1';
+                };
+                div.ondragover = (e) => {
+                    e.preventDefault();
+                    div.style.borderLeft = '4px solid var(--accent-color)';
+                };
+                div.ondragleave = (e) => {
+                    div.style.borderLeft = '1px solid var(--border-color)';
+                };
+                div.ondrop = (e) => {
+                    e.preventDefault();
+                    div.style.borderLeft = '1px solid var(--border-color)';
+                    const draggedName = e.dataTransfer.getData('text/plain');
+                    if (draggedName && draggedName !== deckName) {
+                        reorderDecks(draggedName, deckName);
+                    }
+                };
+
+                div.onclick = () => {
+                    closeGlobalPanels();
+                    currentDeckId = deckName;
+                    localStorage.setItem(STORAGE_KEY_LAST_DECK, deckName);
+
+                    renderDeckTabs();
+                    renderDeck();
+                    renderLibrary();
+                    if (currentInnerTab === 'stats') renderStatsView();
+                    if (currentInnerTab === 'notes') updateNotesView();
+                    gfDeck = []; gfHand = [];
+                    if (currentInnerTab === 'test') startGoldfish();
+                };
+                container.appendChild(div);
+            }
+        }
+
+        function createDeck() {
+            const input = document.getElementById('newDeckName');
+            const name = input.value.trim();
+            if (!name) return;
+            if (decks[name]) return;
+            decks[name] = { main: {}, side: {}, notes: "" };
+            currentDeckId = name;
+            input.value = '';
+
+            closeGlobalPanels();
+            saveDecks(true);
+            renderDeckTabs();
+            renderDeck();
+            renderLibrary();
+            updateNotesView();
+        }
+
+        function renameCurrentDeck() {
+            const newName = prompt("Nouveau nom pour le deck :", currentDeckId);
+            if (!newName) return;
+            const trimmedName = newName.trim();
+            if (trimmedName === currentDeckId || trimmedName === "") return;
+            if (decks[trimmedName]) {
+                alert("Un deck avec ce nom existe déjà.");
+                return;
+            }
+            decks[trimmedName] = decks[currentDeckId];
+            delete decks[currentDeckId];
+            currentDeckId = trimmedName;
+
+            saveDecks(true);
+            renderDeckTabs();
+            renderDeck();
+        }
+
+        function deleteCurrentDeck() {
+            if (Object.keys(decks).length <= 1) {
+                if (!confirm(`Voulez-vous vraiment réinitialiser et vider le deck "${currentDeckId}" ?`)) return;
+                decks = { "Mon Deck": { main: {}, side: {}, notes: "" } };
+                currentDeckId = "Mon Deck";
+            } else {
+                if (!confirm(`Voulez-vous vraiment supprimer le deck "${currentDeckId}" ?\nCette action est irréversible.`)) return;
+                delete decks[currentDeckId];
+                currentDeckId = Object.keys(decks)[0];
+            }
+
+            closeGlobalPanels();
+            saveDecks(true);
+            renderDeckTabs();
+            renderDeck();
+            renderLibrary();
+            updateNotesView();
+        }
+
+        function saveDecks(push = true) {
+            localStorage.setItem(STORAGE_KEY_DECKS, JSON.stringify(decks));
+            localStorage.setItem(STORAGE_KEY_LAST_DECK, currentDeckId);
+            if (push) pushToHistory();
+        }
+
+        function updateFiltersOptions() {
+            const typeSelect = document.getElementById('typeFilter');
+            const costSelect = document.getElementById('costFilter');
+            const kwSelect = document.getElementById('keywordFilter');
+
+            let types = new Set(); let maxCost = 0;
+            allCards.forEach(c => {
+                if (c.Type) types.add(c.Type.trim());
+                let val = parseInt(c.Coût);
+                if (!isNaN(val) && val > maxCost) maxCost = val;
+            });
+
+            typeSelect.innerHTML = '<option value="">Tous Types</option>';
+            Array.from(types).sort().forEach(t => typeSelect.innerHTML += `<option value="${t}">${t}</option>`);
+
+            costSelect.innerHTML = '<option value="">Tous Coûts</option>';
+            for (let i = 0; i <= maxCost; i++) costSelect.innerHTML += `<option value="${i}">Coût: ${i}</option>`;
+
+            kwSelect.innerHTML = '<option value="">Tous Mots-clés</option>';
+            Object.keys(dictionnaireMotsCles).sort().forEach(kw => {
+                let kwLabel = kw.charAt(0).toUpperCase() + kw.slice(1);
+                kwSelect.innerHTML += `<option value="${kw}">${kwLabel}</option>`;
+            });
+        }
+
+        function getCardLimit(card) {
+            const type = (card.Type || "").toLowerCase().trim();
+            if (type.includes("lieu") || type.includes("plot") || type.includes("plan")) return 1;
+            return 2;
+        }
+
+        function addCard(nomId, isSide, btnElement) {
+            const card = allCards.find(c => c.Nom === nomId);
+            if (!card) return;
+            const currentDeck = decks[currentDeckId];
+
+            const mainQty = currentDeck.main[nomId] ? currentDeck.main[nomId].qty : 0;
+            const sideQty = currentDeck.side[nomId] ? currentDeck.side[nomId].qty : 0;
+            const total = mainQty + sideQty;
+            const limit = getCardLimit(card);
+
+            if (total >= limit) {
+                if (!isSide && sideQty > 0 && mainQty < limit) {
+                    moveCardZone(nomId, false);
+                    return;
+                } else if (isSide && mainQty > 0 && sideQty < limit) {
+                    moveCardZone(nomId, true);
+                    return;
+                }
+                const cardDiv = btnElement.closest('.card-item') || btnElement.closest('.deck-item');
+                if (cardDiv) { cardDiv.classList.remove('flash-error'); void cardDiv.offsetWidth; cardDiv.classList.add('flash-error'); }
+                return;
+            }
+
+            const targetZone = isSide ? currentDeck.side : currentDeck.main;
+            if (!targetZone[nomId]) targetZone[nomId] = { qty: 0, hash: getCardHash(card), backup: { ...card } };
+            targetZone[nomId].qty++;
+
+            saveDecks(true); renderDeck(); renderLibrary();
+            if (currentInnerTab === 'stats') renderStatsView();
+        }
+
+        function removeCard(nomId, isSide) {
+            const currentDeck = decks[currentDeckId];
+            const targetZone = isSide ? currentDeck.side : currentDeck.main;
+
+            if (targetZone[nomId] && targetZone[nomId].qty > 0) {
+                targetZone[nomId].qty--;
+                if (targetZone[nomId].qty <= 0) delete targetZone[nomId];
+            }
+            saveDecks(true); renderDeck(); renderLibrary();
+            if (currentInnerTab === 'stats') renderStatsView();
+        }
+
+        function moveCardZone(nomId, toSide) {
+            const currentDeck = decks[currentDeckId];
+            const card = allCards.find(c => c.Nom === nomId);
+            if (toSide) {
+                if (currentDeck.main[nomId] && currentDeck.main[nomId].qty > 0) {
+                    currentDeck.main[nomId].qty--;
+                    let savedBackup = currentDeck.main[nomId].backup;
+                    if (currentDeck.main[nomId].qty <= 0) delete currentDeck.main[nomId];
+                    if (!currentDeck.side[nomId]) currentDeck.side[nomId] = { qty: 0, hash: card ? getCardHash(card) : null, backup: card ? { ...card } : savedBackup };
+                    currentDeck.side[nomId].qty++;
+                }
+            } else {
+                if (currentDeck.side[nomId] && currentDeck.side[nomId].qty > 0) {
+                    currentDeck.side[nomId].qty--;
+                    let savedBackup = currentDeck.side[nomId].backup;
+                    if (currentDeck.side[nomId].qty <= 0) delete currentDeck.side[nomId];
+                    if (!currentDeck.main[nomId]) currentDeck.main[nomId] = { qty: 0, hash: card ? getCardHash(card) : null, backup: card ? { ...card } : savedBackup };
+                    currentDeck.main[nomId].qty++;
+                }
+            }
+            saveDecks(true); renderDeck(); renderLibrary();
+            if (currentInnerTab === 'stats') renderStatsView();
+        }
+
+        function removeOneCard(nomId) {
+            const currentDeck = decks[currentDeckId];
+            if (currentDeck.side[nomId] && currentDeck.side[nomId].qty > 0) {
+                currentDeck.side[nomId].qty--;
+                if (currentDeck.side[nomId].qty <= 0) delete currentDeck.side[nomId];
+            }
+            else if (currentDeck.main[nomId] && currentDeck.main[nomId].qty > 0) {
+                currentDeck.main[nomId].qty--;
+                if (currentDeck.main[nomId].qty <= 0) delete currentDeck.main[nomId];
+            }
+            saveDecks(true); renderDeck(); renderLibrary();
+            if (currentInnerTab === 'stats') renderStatsView();
+        }
+
+        function deleteMissingCard(nomId) {
+            const currentDeck = decks[currentDeckId];
+            delete currentDeck.main[nomId];
+            delete currentDeck.side[nomId];
+            saveDecks(true); renderDeck(); renderLibrary();
+            if (currentInnerTab === 'stats') renderStatsView();
+        }
+
+        function validateCardChange(nomId) {
+            const card = allCards.find(c => c.Nom === nomId);
+            if (!card) return;
+            const newHash = getCardHash(card);
+
+            for (let d in decks) {
+                if (decks[d].main[nomId]) {
+                    decks[d].main[nomId].hash = newHash;
+                    decks[d].main[nomId].backup = { ...card };
+                }
+                if (decks[d].side[nomId]) {
+                    decks[d].side[nomId].hash = newHash;
+                    decks[d].side[nomId].backup = { ...card };
+                }
+            }
+
+            saveDecks(true);
+            if (activeMainTab === 'deck') renderDeck();
+        }
+
+        function renderStatsBadge(card) {
+            let html = '';
+            let isPlan = (card.Type || "").toLowerCase().includes("plan") || (card.Type || "").toLowerCase().includes("plot");
+
+            if (card.Coût !== undefined && card.Coût !== null && card.Coût !== '') {
+                if (isPlan) {
+                    html += `<span class="stat-badge" style="background:#607d8b" title="Initiative">⚡ ${card.Coût}</span>`;
+                } else {
+                    html += `<span class="stat-badge" style="background:${getStatColor('cost', card.Coût)}">🪙 ${card.Coût}</span>`;
+                }
+            }
+            if (card.Atk !== undefined && card.Atk !== '') html += `<span class="stat-badge" style="background:${getStatColor('atk', card.Atk)}">⚔️ ${card.Atk}</span>`;
+            if (card.PV !== undefined && card.PV !== '') html += `<span class="stat-badge" style="background:${getStatColor('pv', card.PV)}">❤️ ${card.PV}</span>`;
+            return html;
+        }
+
+        function createLibraryItemHTML(card, isForChangelog = false, hideActions = false) {
+            const typeLower = (card.Type || "").toLowerCase();
+            const isHorizontal = typeLower.includes("plan") || typeLower.includes("plot") || typeLower.includes("lieu");
+
+            const currentDeck = decks[currentDeckId];
+            const mainQty = currentDeck.main[card.Nom] ? currentDeck.main[card.Nom].qty : 0;
+            const sideQty = currentDeck.side[card.Nom] ? currentDeck.side[card.Nom].qty : 0;
+            const totalQty = mainQty + sideQty;
+            const isMaxedOut = totalQty >= getCardLimit(card);
+
+            const safeId = card.Nom.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            const qgBadge = isCardQG(card) ? `<span class="qg-badge" title="Quartier Général">🏰 QG</span>` : '';
+            const uniqueStar = (card.Unique && card.Unique.toLowerCase() === 'oui') ? ' ⭐' : '';
+
+            let qtyClass = totalQty === 0 ? 'zero' : (totalQty === 1 ? 'one' : (totalQty === 2 ? 'two' : 'three'));
+            let qtyBadgeClass = `qty-badge ${qtyClass} ${isMaxedOut && totalQty > 0 ? 'maxed' : ''}`;
+            let displayQty = totalQty === 0 ? '0' : `${totalQty}x`;
+            let qtyBadge = isForChangelog || hideActions ? '' : `<span class="${qtyBadgeClass}">${displayQty}</span>`;
+
+            let pouvoirHTML = card.Pouvoir ? `<div class="card-pouvoir">${formaterTexte(card.Pouvoir)}</div>` : '';
+            let motsClesValue = getMotsCles(card);
+            let motsClesHTML = '';
+            if (motsClesValue) {
+                let mcFormatted = motsClesValue.split(',').filter(k => k.trim().length > 0).map(k => {
+                    let kClean = removeAccents(k.trim().toLowerCase());
+                    let actualKey = Object.keys(dictionnaireMotsCles).find(dictK => removeAccents(dictK.toLowerCase()) === kClean);
+                    return `<span class="kw-tooltip" title="${actualKey ? dictionnaireMotsCles[actualKey] : ''}">${actualKey ? actualKey.charAt(0).toUpperCase() + actualKey.slice(1) : k.trim().charAt(0).toUpperCase() + k.trim().slice(1)}</span>`;
+                }).join(', ');
+                motsClesHTML = `<div class="card-keywords-line">${mcFormatted}</div>`;
+            }
+
+            let actionsHTML = '';
+            if (!isForChangelog && !hideActions) {
+                actionsHTML = `
+                    <div class="card-actions">
+                        <button data-id="${safeId}" onclick="addCard(this.getAttribute('data-id'), false, this)" title="Ajouter au Main Deck" ${isMaxedOut ? 'disabled' : ''}>+ Main</button>
+                        <button data-id="${safeId}" onclick="addCard(this.getAttribute('data-id'), true, this)" style="background:#555" title="Ajouter au Sideboard" ${isMaxedOut ? 'disabled' : ''}>+ Side</button>
+                        <button data-id="${safeId}" onclick="removeOneCard(this.getAttribute('data-id'))" style="background:${totalQty > 0 ? 'var(--danger-color)' : '#444'}; margin-left:auto;" title="Retirer une copie" ${totalQty === 0 ? 'disabled' : ''}>[-]</button>
+                    </div>
+                `;
+            }
+
+            let thumbHTML = '';
+            if (libViewMode === 'detailed-img' || isForChangelog) {
+                thumbHTML = `<div class="thumb-wrapper ${isHorizontal ? 'horizontal-thumb' : ''}" onclick="openImageModal('${getCardFullPath(card.Nom)}', ${isHorizontal})" title="Cliquez pour agrandir"><img src="${getCardThumbPath(card.Nom)}" loading="lazy" class="thumb-image" onerror="this.onerror=null; this.src='IllustrationsCartes/WorkInProgress.png';"></div>`;
+            }
+
+            let fallbackHTML = `
+                <div class="gallery-fallback" onclick="openRatingModal('${safeId}')">
+                    <div style="color: #aaa; font-size: 0.8em; margin-bottom: 5px;">[ Work In Progress ]</div>
+                    <div style="font-weight: bold; margin-bottom: 5px; color: var(--accent-color);">${card.Nom}</div>
+                    <div style="font-size: 0.8em; margin-bottom: 5px;">${renderStatsBadge(card)}</div>
+                    <div style="font-size: 0.75em; color: #ccc; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;">${formaterTexte(card.Pouvoir)}</div>
+                </div>
+            `;
+
+            if (libViewMode === 'gallery' && !isForChangelog && !hideActions) {
+                return `
+                    <div class="card-item gallery-mode ${isMaxedOut ? 'maxed-out' : ''} ${isHorizontal ? 'is-horizontal' : ''}" style="margin:0;">
+                        <div class="card-image-wrapper ${isHorizontal ? 'horizontal-layout' : ''}">
+                            <div class="badge-gallery-overlay ${qtyClass} ${isMaxedOut ? 'maxed' : ''}">${displayQty}</div>
+                            <img src="${getCardFullPath(card.Nom)}" loading="lazy" class="gallery-image" data-full="${getCardFullPath(card.Nom)}" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" onclick="openImageModal(this.getAttribute('data-full'), ${isHorizontal})" title="Cliquez pour agrandir">
+                            ${fallbackHTML}
+                        </div>
+                        <div style="text-align: center; margin-top: 6px; font-weight: bold; font-size: 0.85em; width: 100%;" class="clickable-name" data-id="${safeId}" onclick="openRatingModal(this.getAttribute('data-id'))">
+                            ${card.Nom}${uniqueStar}${qgBadge}
+                        </div>
+                        <div class="gallery-controls">
+                            <button data-id="${safeId}" onclick="addCard(this.getAttribute('data-id'), false, this)" ${isMaxedOut ? 'disabled' : ''}>+ M</button>
+                            <button data-id="${safeId}" onclick="addCard(this.getAttribute('data-id'), true, this)" style="background:#555" ${isMaxedOut ? 'disabled' : ''}>+ S</button>
+                            <button data-id="${safeId}" onclick="removeOneCard(this.getAttribute('data-id'))" style="background:var(--danger-color)" ${totalQty === 0 ? 'disabled' : ''}>-</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="card-item ${libViewMode === 'compact' ? 'compact' : ''} ${isMaxedOut && !isForChangelog ? 'maxed-out' : ''}">
+                    <div class="card-item-content">
+                        ${thumbHTML}
+                        <div class="card-item-details">
+                            <div class="card-header">
+                                <div style="display:flex; align-items:center;">
+                                    ${qtyBadge}
+                                    <span class="${isForChangelog ? '' : 'clickable-name'}" data-id="${safeId}" title="Cliquez pour noter / faire une remarque" ${isForChangelog ? '' : `onclick="openRatingModal(this.getAttribute('data-id'))"`}>${card.Nom}${uniqueStar}${qgBadge}</span>
+                                </div>
+                                <span style="font-size:0.8em; color:#888;">${card.Type || ''}</span>
+                            </div>
+                            ${card.Trait && libViewMode !== 'compact' ? `<div class="card-traits">[ ${card.Trait} ]</div>` : ''}
+                            ${libViewMode !== 'compact' ? motsClesHTML : ''}
+                            <div class="card-stats">${renderStatsBadge(card)}</div>
+                            ${libViewMode !== 'compact' ? pouvoirHTML : ''}
+                            ${actionsHTML}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderLibrary() {
+            const container = document.getElementById('libraryList');
+            const countLabel = document.getElementById('libCardCount');
+            const scrollPos = container.scrollTop;
+
+            const searchInput = removeAccents(document.getElementById('searchInput').value.toLowerCase());
+            const traitInput = removeAccents(document.getElementById('traitInput').value.toLowerCase()).replace(/,/g, ' ').split(/\s+/).filter(t => t.length > 0);
+
+            const sortFilter = document.getElementById('sortFilter') ? document.getElementById('sortFilter').value : 'nom';
+            const filterKeyword = document.getElementById('keywordFilter').value.toLowerCase();
+            const filterType = document.getElementById('typeFilter').value;
+            const filterCost = document.getElementById('costFilter').value;
+            const filterUnique = document.getElementById('uniqueFilter').checked;
+
+            if (allCards.length === 0) {
+                if (countLabel) countLabel.textContent = `(0)`;
+                container.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">Veuillez charger un fichier CSV ou restaurer une sauvegarde.</div>';
+                return;
+            }
+
+            const filtered = allCards.filter(c => {
+                if (!c.Nom) return false;
+                const matchSearch = searchInput === "" || c._searchTexteLibre.includes(searchInput);
+                const matchTraits = traitInput.length === 0 || traitInput.every(t => c._searchTrait.includes(t));
+                const matchKeyword = filterKeyword === "" || c._searchMotsCles.includes(removeAccents(filterKeyword));
+                const matchType = filterType === "" || (c.Type && c.Type.trim() === filterType);
+                const matchCost = filterCost === "" || (c.Coût !== undefined && parseInt(c.Coût) === parseInt(filterCost));
+                const isUnique = c.Unique && c.Unique.toLowerCase().trim() === 'oui';
+
+                const matchUnique = !filterUnique || isUnique;
+
+                return matchSearch && matchTraits && matchKeyword && matchType && matchCost && matchUnique;
+            });
+
+            filtered.sort((a, b) => {
+                if (sortFilter === 'pv') return (parseInt(b.PV) || 0) - (parseInt(a.PV) || 0);
+                if (sortFilter === 'atk') return (parseInt(b.Atk) || 0) - (parseInt(a.Atk) || 0);
+                if (sortFilter === 'cout') return (parseInt(b.Coût) || 0) - (parseInt(a.Coût) || 0);
+                return (a.Nom || "").localeCompare(b.Nom || "");
+            });
+
+            if (countLabel) {
+                countLabel.textContent = `(${filtered.length} / ${allCards.length})`;
+            }
+
+            let htmlFragments = [];
+            filtered.forEach(card => {
+                htmlFragments.push(createLibraryItemHTML(card, false));
+            });
+            container.innerHTML = htmlFragments.join('');
+            container.scrollTop = scrollPos;
+        }
+
+        // --- VALIDATION ET AFFICHAGE DU DECK ---
+        function renderDeck() {
+            if (activeMainTab !== 'deck') return;
+
+            const container = document.getElementById('deckList');
+            const statsBar = document.getElementById('deckStatsBar');
+            const scrollPos = container.scrollTop;
+
+            const currentDeck = decks[currentDeckId];
+            let nbLieux = 0, nbPlans = 0, nbAutres = 0, totalSide = 0, nbLieuxQG = 0;
+            const groupedMain = {};
+            const sideList = [];
+            let alertHtml = '';
+            let typesDeck = {};
+
+            let orphansMain = [];
+            let orphansSide = [];
+
+            const deckSearchEl = document.getElementById('deckSearchInput');
+            const deckSearchStr = deckSearchEl ? removeAccents(deckSearchEl.value.toLowerCase()) : "";
+            const deckSearchTokens = deckSearchStr.replace(/,/g, ' ').split(/\s+/).filter(t => t.length > 0);
+
+            for (const [nomId, data] of Object.entries(currentDeck.main)) {
+                const qty = data.qty;
+                const oldHash = data.hash;
+                const card = allCards.find(c => c.Nom === nomId);
+                const safeId = nomId.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+                if (card) {
+                    data.backup = { ...card };
+                    const typeLower = (card.Type || "Inconnu").toLowerCase();
+                    const traitsLower = removeAccents((card.Trait || "").toLowerCase());
+
+                    if (typeLower.includes("lieu")) {
+                        nbLieux += qty;
+                        if (/\bqg\b/i.test(traitsLower) || traitsLower.includes("qg")) nbLieuxQG += qty;
+                    }
+                    else if (typeLower.includes("plan") || typeLower.includes("plot")) nbPlans += qty;
+                    else {
+                        nbAutres += qty;
+                        const t = card.Type || "Inconnu";
+                        typesDeck[t] = (typesDeck[t] || 0) + qty;
+                    }
+                } else {
+                    nbAutres += qty;
+                    typesDeck["Supprimée"] = (typesDeck["Supprimée"] || 0) + qty;
+                }
+
+                let matchesSearch = true;
+                if (deckSearchTokens.length > 0) {
+                    if (card) {
+                        const textToSearch = card._searchTexteLibre + " " + card._searchTrait + " " + card._searchMotsCles;
+                        for (let token of deckSearchTokens) {
+                            if (!textToSearch.includes(token)) {
+                                matchesSearch = false; break;
+                            }
+                        }
+                    } else {
+                        const nomLower = removeAccents(nomId.toLowerCase());
+                        for (let token of deckSearchTokens) {
+                            if (!nomLower.includes(token)) {
+                                matchesSearch = false; break;
+                            }
+                        }
+                    }
+                }
+
+                if (card) {
+                    const currentHash = getCardHash(card);
+                    if (oldHash !== null && oldHash !== currentHash && matchesSearch) {
+                        alertHtml += `<div class="changed-card">
+                            <span style="color: var(--warning-color);">🔄 <b>${nomId}</b> (${qty}x Main) - <i>Caractéristiques modifiées</i></span>
+                            <button data-id="${safeId}" onclick="validateCardChange(this.getAttribute('data-id'))" style="background:var(--warning-color); padding: 4px 8px; font-size: 0.8em; color:#000;">✓ Validé</button>
+                        </div>`;
+                    }
+
+                    if (matchesSearch) {
+                        const type = card.Type || "Inconnu";
+                        if (!groupedMain[type]) groupedMain[type] = [];
+                        groupedMain[type].push({ card, qty, nomId });
+                    }
+                } else {
+                    let backupCard = data.backup || { Nom: nomId, Type: "Inconnu", Pouvoir: "(Données de la carte perdues)" };
+                    if (matchesSearch) {
+                        orphansMain.push({ card: backupCard, qty: qty, nomId: nomId, isOrphan: true });
+                    }
+                }
+            }
+
+            for (const [nomId, data] of Object.entries(currentDeck.side)) {
+                const qty = data.qty;
+                const oldHash = data.hash;
+                const card = allCards.find(c => c.Nom === nomId);
+                const safeId = nomId.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+                if (card) {
+                    data.backup = { ...card };
+                    totalSide += qty;
+                }
+
+                let matchesSearch = true;
+                if (deckSearchTokens.length > 0) {
+                    if (card) {
+                        const textToSearch = card._searchTexteLibre + " " + card._searchTrait + " " + card._searchMotsCles;
+                        for (let token of deckSearchTokens) {
+                            if (!textToSearch.includes(token)) {
+                                matchesSearch = false; break;
+                            }
+                        }
+                    } else {
+                        const nomLower = removeAccents(nomId.toLowerCase());
+                        for (let token of deckSearchTokens) {
+                            if (!nomLower.includes(token)) {
+                                matchesSearch = false; break;
+                            }
+                        }
+                    }
+                }
+
+                if (card) {
+                    const currentHash = getCardHash(card);
+                    if (oldHash !== null && oldHash !== currentHash && matchesSearch) {
+                        if (!alertHtml.includes(`data-id="${safeId}" onclick="validateCardChange`)) {
+                            alertHtml += `<div class="changed-card">
+                                <span style="color: var(--warning-color);">🔄 <b>${nomId}</b> (${qty}x Side) - <i>Caractéristiques modifiées</i></span>
+                                <button data-id="${safeId}" onclick="validateCardChange(this.getAttribute('data-id'))" style="background:var(--warning-color); padding: 4px 8px; font-size: 0.8em; color:#000;">✓ Validé</button>
+                            </div>`;
+                        }
+                    }
+                    if (matchesSearch) sideList.push({ card, qty, nomId });
+                } else {
+                    let backupCard = data.backup || { Nom: nomId, Type: "Inconnu", Pouvoir: "(Données de la carte perdues)" };
+                    if (matchesSearch) {
+                        orphansSide.push({ card: backupCard, qty: qty, nomId: nomId, isOrphan: true });
+                    }
+                }
+            }
+
+            let htmlContent = '';
+
+            if (alertHtml !== '') {
+                htmlContent += `<div style="margin-bottom: 15px; border: 1px dashed #555; padding: 10px; border-radius: 6px; background: #222;">
+                    <h4 style="margin: 0 0 10px 0; color:#ddd;">Alertes Deck</h4>
+                    ${alertHtml}
+                </div>`;
+            }
+
+            const isValid = (nbLieux === 3 && nbLieuxQG === 1 && nbPlans === targetPlanSize && nbAutres >= 40 && nbAutres <= 50 && nbAutres === targetDeckSize);
+            let validationMsg = "";
+            if (!isValid) {
+                if (nbLieux !== 3) validationMsg += `Lieux : ${nbLieux}/3. `;
+                if (nbLieux === 3 && nbLieuxQG !== 1) validationMsg += `QG : ${nbLieuxQG}/1. `;
+                if (nbPlans !== targetPlanSize) validationMsg += `Plans : ${nbPlans}/${targetPlanSize}. `;
+                if (nbAutres !== targetDeckSize) validationMsg += `Cartes deck : ${nbAutres}/${targetDeckSize}. `;
+            } else { validationMsg = "Deck parfaitement valide pour jouer !"; }
+
+            let breakdownArr = [];
+            const sortedTypesDeck = Object.keys(typesDeck).sort((a, b) => {
+                let aLower = a.toLowerCase();
+                let bLower = b.toLowerCase();
+                let idxA = TYPE_ORDER.findIndex(t => aLower.includes(t));
+                let idxB = TYPE_ORDER.findIndex(t => bLower.includes(t));
+                if (idxA === -1) idxA = 99;
+                if (idxB === -1) idxB = 99;
+                if (idxA !== idxB) return idxA - idxB;
+                return a.localeCompare(b);
+            });
+            sortedTypesDeck.forEach(t => {
+                breakdownArr.push(`${t}: ${typesDeck[t]}`);
+            });
+            let breakdownStr = breakdownArr.length > 0 ? ` <span style="font-weight:normal; font-size:0.85em; color:#aaa;">(${breakdownArr.join(' - ')})</span>` : '';
+
+            const colorQG = nbLieuxQG === 1 ? '#4CAF50' : '#f44336';
+            statsBar.innerHTML = `
+                <div style="display:flex; align-items:center; gap: 10px; margin-right: 5px;">
+                    <div class="validity-badge" title="${validationMsg}">${isValid ? "✅" : "❌"}</div>
+                    <strong style="color: #64b5f6; font-size: 1.1em; border-right: 1px solid #555; padding-right: 10px;">${currentDeckId}</strong>
+                </div>
+                <strong>Lieux : ${nbLieux}/3 <span style="color:${colorQG};">(dont ${nbLieuxQG}/1 QG)</span></strong> | 
+                <strong>Plans : ${nbPlans}/${targetPlanSize}</strong> | 
+                <strong>Deck : ${nbAutres}/${targetDeckSize}</strong>${breakdownStr} | 
+                <strong style="color:#ff9800; margin-left:auto;">Sideboard : ${totalSide}</strong>
+            `;
+
+            const isLibVisible = document.getElementById('panel-library').style.display !== 'none';
+            const gridClass = deckViewMode === 'gallery' ? 'gallery-grid' : 'grid-auto';
+
+            if (orphansMain.length > 0) {
+                htmlContent += `<div class='deck-group'>
+                    <h3 style="color:var(--danger-color); border-bottom-color:var(--danger-color);">Cartes Supprimées (${orphansMain.reduce((s, i) => s + i.qty, 0)})</h3>
+                    <div class='deck-items-grid ${gridClass}'>`;
+                orphansMain.sort((a, b) => a.card.Nom.localeCompare(b.card.Nom)).forEach(item => {
+                    htmlContent += getDeckItemHTML(item, false);
+                });
+                htmlContent += `</div></div>`;
+            }
+
+            const types = Object.keys(groupedMain).sort((a, b) => {
+                let aLower = a.toLowerCase();
+                let bLower = b.toLowerCase();
+                let idxA = TYPE_ORDER.findIndex(t => aLower.includes(t));
+                let idxB = TYPE_ORDER.findIndex(t => bLower.includes(t));
+                if (idxA === -1) idxA = 99;
+                if (idxB === -1) idxB = 99;
+                if (idxA !== idxB) return idxA - idxB;
+                return a.localeCompare(b);
+            });
+
+            types.forEach(type => {
+                const typeTotal = groupedMain[type].reduce((sum, item) => sum + item.qty, 0);
+                htmlContent += `<div class='deck-group'><h3>${type} (${typeTotal})</h3><div class='deck-items-grid ${gridClass}'>`;
+
+                groupedMain[type].sort((a, b) => a.card.Nom.localeCompare(b.card.Nom)).forEach(item => {
+                    htmlContent += getDeckItemHTML(item, false);
+                });
+
+                htmlContent += `</div></div>`;
+            });
+
+            if (sideList.length > 0 || orphansSide.length > 0) {
+                const pureSideTotal = sideList.reduce((s, i) => s + i.qty, 0);
+                const orphanSideTotal = orphansSide.reduce((s, i) => s + i.qty, 0);
+
+                htmlContent += `<div class='deck-group sideboard-group'><h3>Sideboard (${pureSideTotal + orphanSideTotal})</h3>`;
+
+                if (orphansSide.length > 0) {
+                    htmlContent += `<div style="color:var(--danger-color); font-size:0.9em; border-bottom:1px dotted var(--danger-color); margin-bottom:8px; margin-top:10px; padding-bottom:3px;"><i>Cartes Supprimées (${orphanSideTotal})</i></div>`;
+                    htmlContent += `<div class='deck-items-grid ${gridClass}'>`;
+                    orphansSide.sort((a, b) => a.card.Nom.localeCompare(b.card.Nom)).forEach(item => {
+                        htmlContent += getDeckItemHTML(item, true);
+                    });
+                    htmlContent += `</div>`;
+                }
+
+                let groupedSide = {};
+                sideList.forEach(item => {
+                    const type = item.card.Type || "Inconnu";
+                    if (!groupedSide[type]) groupedSide[type] = [];
+                    groupedSide[type].push(item);
+                });
+
+                const sortedSideTypes = Object.keys(groupedSide).sort((a, b) => {
+                    let aLower = a.toLowerCase();
+                    let bLower = b.toLowerCase();
+                    let idxA = TYPE_ORDER.findIndex(t => aLower.includes(t));
+                    let idxB = TYPE_ORDER.findIndex(t => bLower.includes(t));
+                    if (idxA === -1) idxA = 99;
+                    if (idxB === -1) idxB = 99;
+                    if (idxA !== idxB) return idxA - idxB;
+                    return a.localeCompare(b);
+                });
+
+                sortedSideTypes.forEach(type => {
+                    const typeTotal = groupedSide[type].reduce((sum, item) => sum + item.qty, 0);
+
+                    htmlContent += `<div style="color:#aaa; font-size:0.9em; border-bottom:1px dotted #555; margin-bottom:8px; margin-top:10px; padding-bottom:3px;"><i>${type} (${typeTotal})</i></div>`;
+                    htmlContent += `<div class='deck-items-grid ${gridClass}'>`;
+
+                    groupedSide[type].sort((a, b) => a.card.Nom.localeCompare(b.card.Nom)).forEach(item => {
+                        htmlContent += getDeckItemHTML(item, true);
+                    });
+
+                    htmlContent += `</div>`;
+                });
+                htmlContent += `</div>`;
+            }
+
+            container.innerHTML = htmlContent;
+            container.scrollTop = scrollPos;
+        }
+
+        function getDeckItemHTML(item, isSide) {
+            const isOrphan = item.isOrphan;
+            const typeLower = (item.card.Type || "").toLowerCase();
+            const isHorizontal = typeLower.includes("plan") || typeLower.includes("plot") || typeLower.includes("lieu");
+
+            const safeId = item.card.Nom.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            const qgBadge = isCardQG(item.card) ? `<span class="qg-badge" title="Quartier Général">🏰 QG</span>` : '';
+            const uniqueStar = (item.card.Unique && item.card.Unique.toLowerCase() === 'oui') ? ' ⭐' : '';
+            const orphanBadge = isOrphan ? `<span style="background:var(--danger-color); color:white; font-size:0.7em; padding:2px 6px; border-radius:4px; margin-left:8px; font-weight:bold;">❌ SUPPRIMÉE</span>` : '';
+
+            const transferClick = isOrphan ? '' : `moveCardZone(this.getAttribute('data-id'), ${!isSide})`;
+            const addClick = isOrphan ? '' : `addCard(this.getAttribute('data-id'), ${isSide}, this)`;
+            const opacStyle = isOrphan ? 'opacity:0.3; cursor:not-allowed;' : '';
+
+            const btnTransfer = isSide
+                ? `<button data-id="${safeId}" onclick="${transferClick}" style="padding:4px 8px; background:var(--transfer-color); ${opacStyle}" title="Déplacer vers la Main">▲</button>`
+                : `<button data-id="${safeId}" onclick="${transferClick}" style="padding:4px 8px; background:var(--transfer-color); ${opacStyle}" title="Déplacer vers le Side">▼</button>`;
+
+            let qtyClass = item.qty === 0 ? 'zero' : (item.qty === 1 ? 'one' : (item.qty === 2 ? 'two' : 'three'));
+
+            let containerStyle = isOrphan ? 'border-left-color: var(--danger-color) !important; background: rgba(244,67,54,0.05);' : '';
+            let titleStyle = isOrphan ? 'color: var(--danger-color);' : '';
+
+            let fallbackHTML = `
+                <div class="gallery-fallback" style="${isOrphan ? '' : `onclick="openRatingModal('${safeId}')"`}">
+                    <div style="color: #aaa; font-size: 0.8em; margin-bottom: 5px;">[ Work In Progress ]</div>
+                    <div style="font-weight: bold; margin-bottom: 5px; color: var(--accent-color);">${item.card.Nom}</div>
+                    <div style="font-size: 0.8em; margin-bottom: 5px;">${renderStatsBadge(item.card)}</div>
+                    <div style="font-size: 0.75em; color: #ccc; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;">${formaterTexte(item.card.Pouvoir)}</div>
+                </div>
+            `;
+
+            if (deckViewMode === 'gallery') {
+                return `
+                    <div class="deck-item gallery-mode ${isHorizontal ? 'is-horizontal' : ''}" style="margin:0; ${containerStyle}">
+                        <div class="card-image-wrapper ${isHorizontal ? 'horizontal-layout' : ''}">
+                            <div class="badge-gallery-overlay ${qtyClass}">${item.qty}x</div>
+                            <img src="${getCardFullPath(item.card.Nom)}" loading="lazy" class="gallery-image" data-full="${getCardFullPath(item.card.Nom)}" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" ${isOrphan ? '' : `onclick="openImageModal(this.getAttribute('data-full'), ${isHorizontal})"`} title="Cliquez pour agrandir">
+                            ${fallbackHTML}
+                        </div>
+                        <div style="text-align: center; margin-top: 6px; font-weight: bold; font-size: 0.85em; width: 100%; ${titleStyle}" class="${isOrphan ? '' : 'clickable-name'}" ${isOrphan ? '' : `data-id="${safeId}" onclick="openRatingModal(this.getAttribute('data-id'))"`}>
+                            ${item.card.Nom}${uniqueStar}${qgBadge}${orphanBadge}
+                        </div>
+                        <div class="gallery-controls">
+                            ${btnTransfer}
+                            <button data-id="${safeId}" onclick="${addClick}" style="background:#4CAF50; ${opacStyle}">+</button>
+                            <button data-id="${safeId}" onclick="removeCard(this.getAttribute('data-id'), ${isSide})" style="background:var(--danger-color)">-</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            let motsClesValue = getMotsCles(item.card);
+            let motsClesHTML = '';
+            if (motsClesValue && deckViewMode !== 'compact') {
+                let mcFormatted = motsClesValue.split(',').filter(k => k.trim().length > 0).map(k => {
+                    let kClean = removeAccents(k.trim().toLowerCase());
+                    let actualKey = Object.keys(dictionnaireMotsCles).find(dictK => removeAccents(dictK.toLowerCase()) === kClean);
+                    return `<span class="kw-tooltip" title="${actualKey ? dictionnaireMotsCles[actualKey] : ''}">${actualKey ? actualKey.charAt(0).toUpperCase() + actualKey.slice(1) : k.trim().charAt(0).toUpperCase() + k.trim().slice(1)}</span>`;
+                }).join(', ');
+                motsClesHTML = `<div class="card-keywords-line">${mcFormatted}</div>`;
+            }
+
+            let thumbHTML = '';
+            if (deckViewMode === 'detailed-img') {
+                thumbHTML = `<div class="thumb-wrapper ${isHorizontal ? 'horizontal-thumb' : ''}" ${isOrphan ? '' : `onclick="openImageModal('${getCardFullPath(item.card.Nom)}', ${isHorizontal})"`} title="Cliquez pour agrandir"><img src="${getCardThumbPath(item.card.Nom)}" loading="lazy" class="thumb-image" onerror="this.onerror=null; this.src='IllustrationsCartes/WorkInProgress.png';"></div>`;
+            }
+
+            let content = `
+                <div class="card-item-content">
+                    ${thumbHTML}
+                    <div class="card-item-details">
+                        <div class="deck-item-top">
+                            <span class="deck-item-title ${isOrphan ? '' : 'clickable-name'}" data-id="${safeId}" title="Cliquez pour noter / commenter" ${isOrphan ? '' : `onclick="openRatingModal(this.getAttribute('data-id'))"`} style="font-weight:bold; ${titleStyle}">${item.qty}x ${item.card.Nom}${uniqueStar}${qgBadge}${orphanBadge}</span>
+                            <div class="deck-item-controls">
+                                <div class="card-stats" style="${deckViewMode === 'compact' ? 'margin:0;' : ''}">${renderStatsBadge(item.card)}</div>
+                                ${btnTransfer}
+                                <button data-id="${safeId}" onclick="${addClick}" style="padding:4px 8px; background:#4CAF50; ${opacStyle}" title="Ajouter une copie">+</button>
+                                <button data-id="${safeId}" onclick="removeCard(this.getAttribute('data-id'), ${isSide})" style="padding:4px 8px; background:var(--danger-color);" title="Retirer une copie">-</button>
+                            </div>
+                        </div>
+                        ${deckViewMode !== 'compact' && item.card.Trait ? `<div class="card-traits">[ ${item.card.Trait} ]</div>` : ''}
+                        ${motsClesHTML}
+                        ${deckViewMode !== 'compact' && item.card.Pouvoir ? `<div class="card-pouvoir">${formaterTexte(item.card.Pouvoir)}</div>` : ''}
+                    </div>
+                </div>
+            `;
+
+            return `<div class="deck-item ${deckViewMode === 'compact' ? 'compact' : ''}" style="${containerStyle}">${content}</div>`;
+        }
+
+        // --- STATISTIQUES AFFINEES ---
+        function renderStatsView() {
+            const container = document.getElementById('view-stats');
+            const currentDeck = decks[currentDeckId];
+
+            let totalCardsForStats = 0;
+            let costs = {}; let types = {}; let keywordsCounts = {}; let traitsCounts = {};
+            let totalAtk = 0, totalPV = 0, totalCostUnits = 0, countAtk = 0, countPV = 0, maxCostDeck = 0;
+
+            let listLieux = [];
+            let listPlans = [];
+
+            for (const [nomId, data] of Object.entries(currentDeck.main)) {
+                const qty = data.qty;
+                const card = allCards.find(c => c.Nom === nomId) || data.backup;
+                if (card && card.Type !== "Inconnu") {
+                    const typeLower = (card.Type || "").toLowerCase();
+
+                    if (typeLower.includes("lieu")) {
+                        listLieux.push({ nom: card.Nom, pv: card.PV || '?', qty: qty });
+                    }
+                    if (typeLower.includes("plan") || typeLower.includes("plot")) {
+                        listPlans.push({ nom: card.Nom, init: card.Coût || '?', qty: qty });
+                    }
+
+                    if (!typeLower.includes("lieu") && !typeLower.includes("plan") && !typeLower.includes("plot")) {
+                        totalCardsForStats += qty;
+                        let cCost = parseInt(card.Coût);
+                        if (!isNaN(cCost)) { costs[cCost] = (costs[cCost] || 0) + qty; if (cCost > maxCostDeck) maxCostDeck = cCost; }
+                        const type = card.Type || "Inconnu";
+                        types[type] = (types[type] || 0) + qty;
+                    }
+
+                    if (typeLower.includes("unit")) {
+                        if (!isNaN(parseInt(card.Atk))) { totalAtk += (parseInt(card.Atk) * qty); countAtk += qty; }
+                        if (!isNaN(parseInt(card.PV))) { totalPV += (parseInt(card.PV) * qty); countPV += qty; }
+                        if (!isNaN(parseInt(card.Coût))) { totalCostUnits += (parseInt(card.Coût) * qty); }
+                    }
+
+                    if (card.Trait) {
+                        let trArray = card.Trait.split(/[,\s]+/).filter(t => t.trim().length > 0);
+                        trArray.forEach(t => {
+                            let tClean = t.trim().toUpperCase();
+                            traitsCounts[tClean] = (traitsCounts[tClean] || 0) + qty;
+                        });
+                    }
+
+                    let motsClesValue = getMotsCles(card);
+                    if (motsClesValue) {
+                        let kwArray = motsClesValue.split(',').filter(k => k.trim().length > 0);
+                        kwArray.forEach(k => {
+                            const kClean = removeAccents(k.trim().toLowerCase());
+                            let actualKey = Object.keys(dictionnaireMotsCles).find(dictK => removeAccents(dictK.toLowerCase()) === kClean);
+                            if (actualKey) {
+                                let displayKw = actualKey.charAt(0).toUpperCase() + actualKey.slice(1);
+                                keywordsCounts[displayKw] = (keywordsCounts[displayKw] || 0) + qty;
+                            } else {
+                                let displayKw = k.trim().charAt(0).toUpperCase() + k.trim().slice(1).toLowerCase();
+                                keywordsCounts[displayKw] = (keywordsCounts[displayKw] || 0) + qty;
+                            }
+                        });
+                    }
+                }
+            }
+
+            if (totalCardsForStats === 0 && listLieux.length === 0 && listPlans.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:20px; color:#aaa;">Ajoutez des cartes au Main Deck pour générer les graphiques.</div>`;
+                return;
+            }
+
+            let html = '';
+            const maxCostCount = Math.max(...Object.values(costs), 1);
+            let barsHtml = '';
+            for (let i = 0; i <= maxCostDeck; i++) {
+                const count = costs[i] || 0;
+                barsHtml += `
+                    <div class="bar-col">
+                        <span class="bar-value">${count > 0 ? count : ''}</span>
+                        <div class="bar" style="height: ${(count / maxCostCount) * 100}%;"></div>
+                        <span class="bar-label">${i}</span>
+                    </div>`;
+            }
+            html += `<div class="stat-box"><h3>Courbe de Coût</h3><div class="bar-chart">${barsHtml}</div></div>`;
+
+            let typesHtml = '';
+            Object.keys(types).sort((a, b) => types[b] - types[a]).forEach(t => {
+                const pct = Math.round((types[t] / totalCardsForStats) * 100);
+                typesHtml += `<div class="stat-row"><span>${t}</span> <span>${types[t]} <i>(${pct}%)</i></span></div>`;
+            });
+
+            let kwHtml = '';
+            const sortedKw = Object.keys(keywordsCounts).sort((a, b) => keywordsCounts[b] - keywordsCounts[a]).slice(0, 10);
+            if (sortedKw.length > 0) {
+                sortedKw.forEach(k => {
+                    let desc = dictionnaireMotsCles[k.toLowerCase()] || "Définition manquante dans le dictionnaire.";
+                    kwHtml += `<div class="stat-row"><span class="kw-tooltip" title="${desc}">${k}</span> <span>${keywordsCounts[k]}</span></div>`;
+                });
+            } else { kwHtml = `<div class="stat-row" style="color:#777;">Aucun mot-clé détecté</div>`; }
+
+            let traitsHtml = '';
+            const sortedTraits = Object.keys(traitsCounts).sort((a, b) => traitsCounts[b] - traitsCounts[a]).slice(0, 10);
+            if (sortedTraits.length > 0) {
+                sortedTraits.forEach(t => {
+                    traitsHtml += `<div class="stat-row"><span style="font-style:italic;">[ ${t} ]</span> <span>${traitsCounts[t]}</span></div>`;
+                });
+            } else { traitsHtml = `<div class="stat-row" style="color:#777;">Aucun trait détecté</div>`; }
+
+            const avgAtk = countAtk > 0 ? (totalAtk / countAtk).toFixed(1) : '-';
+            const avgPV = countPV > 0 ? (totalPV / countPV).toFixed(1) : '-';
+            const avgCostUnits = countAtk > 0 ? (totalCostUnits / countAtk).toFixed(1) : '-';
+
+            html += `
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:15px;">
+                    <div class="stat-box"><h3>Types (Hors Lieux/Plans)</h3>${typesHtml}</div>
+                    <div class="stat-box"><h3>Top 10 Mots-clés</h3>${kwHtml}</div>
+                    <div class="stat-box"><h3>Top 10 Traits</h3>${traitsHtml}</div>
+                </div>
+                
+                <div class="stat-box" style="margin-top:5px;">
+                    <h3>Moyennes des Unités (${countAtk})</h3>
+                    <div style="display:flex; justify-content:space-around; text-align:center; flex-wrap:wrap; gap:10px;">
+                        <div><div style="font-size:2em; color:#2196F3;">🪙 ${avgCostUnits}</div><span>Coût moyen</span></div>
+                        <div><div style="font-size:2em; color:#f44336;">⚔️ ${avgAtk}</div><span>Attaque moyenne</span></div>
+                        <div><div style="font-size:2em; color:#4CAF50;">❤️ ${avgPV}</div><span>PV moyens</span></div>
+                    </div>
+                </div>
+            `;
+
+            let lieuxHtml = '<div class="stat-box" style="flex:1; min-width:250px;"><h3>Lieux du Deck (PV)</h3>';
+            listLieux.forEach(l => { lieuxHtml += `<div class="stat-row"><span>${l.qty}x ${l.nom}</span> <span class="stat-badge" style="background:#4CAF50;">❤️ ${l.pv}</span></div>`; });
+            if (listLieux.length === 0) lieuxHtml += `<div class="stat-row" style="color:#777;">Aucun lieu</div>`;
+            lieuxHtml += '</div>';
+
+            let plansHtml = '<div class="stat-box" style="flex:1; min-width:250px;"><h3>Plans du Deck (Initiative)</h3>';
+            listPlans.forEach(p => { plansHtml += `<div class="stat-row"><span>${p.qty}x ${p.nom}</span> <span class="stat-badge" style="background:#607d8b;">⚡ ${p.init}</span></div>`; });
+            if (listPlans.length === 0) plansHtml += `<div class="stat-row" style="color:#777;">Aucun plan</div>`;
+            plansHtml += '</div>';
+
+            html += `<div style="display:flex; gap:15px; margin-top:5px; flex-wrap:wrap;">${lieuxHtml}${plansHtml}</div>`;
+
+            container.innerHTML = html;
+        }
+
+        // --- MODE GOLDFISH ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function startGoldfish() {
+            const currentDeck = decks[currentDeckId];
+            gfDeck = []; gfHand = []; gfPlans = [];
+            for (const [nomId, data] of Object.entries(currentDeck.main)) {
+                const qty = data.qty;
+                const card = allCards.find(c => c.Nom === nomId) || data.backup;
+                if (card && card.Type !== "Inconnu") {
+                    const typeLower = (card.Type || "").toLowerCase();
+                    if (typeLower.includes("plan") || typeLower.includes("plot")) {
+                        for (let i = 0; i < qty; i++) gfPlans.push({ card: card, played: false, id: 'plan_' + Date.now() + '_' + i });
+                    }
+                    else if (!typeLower.includes("lieu")) {
+                        for (let i = 0; i < qty; i++) gfDeck.push(card);
+                    }
+                }
+            }
+            shuffleArray(gfDeck);
+            drawGoldfishCards(6);
+        }
+
+        function drawGoldfishCards(num) {
+            for (let i = 0; i < num; i++) {
+                if (gfDeck.length > 0) gfHand.push({ card: gfDeck.pop(), played: false, id: Date.now() + i });
+            }
+            renderGoldfish();
+        }
+
+        function drawUpToSix() {
+            const activeCards = gfHand.filter(h => !h.played).length;
+            const toDraw = 6 - activeCards;
+            if (toDraw > 0) drawGoldfishCards(toDraw);
+        }
+
+        function togglePlayCard(index) {
+            gfHand[index].played = !gfHand[index].played;
+            renderGoldfish();
+        }
+
+        function togglePlayPlan(index) {
+            gfPlans[index].played = !gfPlans[index].played;
+            renderGoldfish();
+        }
+
+        function toggleGoldfishFullscreen() {
+            const gfView = document.getElementById('view-test');
+
+            if (!document.fullscreenElement) {
+                if (gfView.requestFullscreen) {
+                    gfView.requestFullscreen();
+                } else if (gfView.webkitRequestFullscreen) { /* Safari */
+                    gfView.webkitRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { /* Safari */
+                    document.webkitExitFullscreen();
+                }
+            }
+        }
+
+        function createGoldfishCardHTML(c, item, isPlan, index) {
+            const typeLower = (c.Type || "").toLowerCase();
+            const isHorizontal = typeLower.includes("plan") || typeLower.includes("plot") || typeLower.includes("lieu");
+
+            let motsClesValue = getMotsCles(c);
+            let motsClesHTML = '';
+            if (motsClesValue) {
+                let mcFormatted = motsClesValue.split(',').filter(k => k.trim().length > 0).map(k => {
+                    let kClean = removeAccents(k.trim().toLowerCase());
+                    let actualKey = Object.keys(dictionnaireMotsCles).find(dictK => removeAccents(dictK.toLowerCase()) === kClean);
+                    if (actualKey) {
+                        return `<span class="kw-tooltip" title="${dictionnaireMotsCles[actualKey]}">${actualKey.charAt(0).toUpperCase() + actualKey.slice(1)}</span>`;
+                    } else {
+                        return `<span class="kw-tooltip">${k.trim().charAt(0).toUpperCase() + k.trim().slice(1)}</span>`;
+                    }
+                }).join(', ');
+                motsClesHTML = `<div class="card-keywords-line" style="margin-bottom:8px;">${mcFormatted}</div>`;
+            }
+
+            const safeId = c.Nom.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            const qgBadge = isCardQG(c) ? `<span class="qg-badge" title="Quartier Général">🏰 QG</span>` : '';
+            const uniqueStar = (c.Unique && c.Unique.toLowerCase() === 'oui') ? ' ⭐' : '';
+
+            let onClickAction = isPlan ? `togglePlayPlan(${index})` : `togglePlayCard(${index})`;
+            let planClass = isPlan ? ' gf-plan' : '';
+
+            // Astuce z-index : la 1ère carte a 100, la 2ème 99, etc. pour un empilement parfait de haut en bas
+            let zIndexStyle = isPlan ? `z-index: ${100 - index};` : '';
+
+            let fallbackHTML = `
+                <div class="gallery-fallback" style="${`onclick="openRatingModal('${safeId}')"`}">
+                    <div style="color: #aaa; font-size: 0.8em; margin-bottom: 5px;">[ Work In Progress ]</div>
+                    <div style="font-weight: bold; margin-bottom: 5px; color: var(--accent-color);">${c.Nom}</div>
+                    <div style="font-size: 0.8em; margin-bottom: 5px;">${renderStatsBadge(c)}</div>
+                    <div style="font-size: 0.75em; color: #ccc; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;">${formaterTexte(c.Pouvoir)}</div>
+                </div>
+            `;
+
+            if (deckViewMode === 'gallery') {
+                return `
+                <div class="gf-card ${item.played ? 'played' : ''} ${isHorizontal ? 'is-horizontal' : ''}" style="padding:0; border:none; background:transparent; ${zIndexStyle}" onclick="${onClickAction}">
+                    <div class="card-image-wrapper ${isHorizontal ? 'horizontal-layout' : ''}" style="width:100%; border-radius:8px;">
+                        <img src="${getCardFullPath(c.Nom)}" loading="lazy" class="gallery-image" data-full="${getCardFullPath(c.Nom)}" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        ${fallbackHTML}
+                    </div>
+                </div>`;
+            }
+
+            return `
+                <div class="gf-card ${item.played ? 'played' : ''}${planClass}" style="${zIndexStyle}" onclick="${onClickAction}">
+                    <div style="font-weight:bold; margin-bottom:5px;" class="clickable-name" data-id="${safeId}" title="Cliquez pour noter / commenter" onclick="event.stopPropagation(); openRatingModal(this.getAttribute('data-id'))">${c.Nom}${uniqueStar}${qgBadge}</div>
+                    <div style="font-size:0.8em; color:#aaa; margin-bottom:10px;">${c.Type || ''}</div>
+                    <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px;">${renderStatsBadge(c)}</div>
+                    ${c.Trait ? `<div class="card-traits">[ ${c.Trait} ]</div>` : ''}
+                    ${motsClesHTML}
+                    <div style="font-size:0.85em; color:#ccc;">${formaterTexte(c.Pouvoir)}</div>
+                </div>
+            `;
+        }
+
+        function renderGoldfish() {
+            const plansContainer = document.getElementById('gfPlansList');
+            const plansArea = document.getElementById('gfPlansArea');
+
+            if (deckViewMode === 'gallery') {
+                plansContainer.classList.add('gallery-grid');
+                document.getElementById('gfHand').classList.add('gallery-grid');
+            } else {
+                plansContainer.classList.remove('gallery-grid');
+                document.getElementById('gfHand').classList.remove('gallery-grid');
+            }
+
+            if (gfPlans.length > 0) {
+                plansArea.style.display = 'block';
+                let plansHtml = '';
+                gfPlans.forEach((item, index) => {
+                    plansHtml += createGoldfishCardHTML(item.card, item, true, index);
+                });
+                plansContainer.innerHTML = plansHtml;
+            } else {
+                plansArea.style.display = 'none';
+            }
+
+            const handContainer = document.getElementById('gfHand');
+            document.getElementById('gfDeckCount').textContent = gfDeck.length;
+            let handHtml = '';
+            gfHand.forEach((item, index) => {
+                handHtml += createGoldfishCardHTML(item.card, item, false, index);
+            });
+            handContainer.innerHTML = handHtml;
+        }
+
+        function importDeckTXT(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const text = e.target.result;
+                let lines = text.split('\n').map(l => l.trim());
+
+                let deckName = file.name.replace('.txt', '');
+                if (lines[0].startsWith('Deck :')) {
+                    deckName = lines[0].replace('Deck :', '').trim();
+                }
+
+                let finalName = deckName;
+                let counter = 1;
+                while (decks[finalName]) {
+                    finalName = `${deckName} (${counter})`;
+                    counter++;
+                }
+
+                let newDeck = { main: {}, side: {}, notes: "" };
+                let currentZone = 'main';
+
+                for (let line of lines) {
+                    if (line.includes('MAIN DECK')) currentZone = 'main';
+                    else if (line.includes('SIDEBOARD')) currentZone = 'side';
+                    else {
+                        let match = line.match(/^(\d+)[xX\*]\s+(.*?)$/);
+                        if (match) {
+                            let qty = parseInt(match[1]);
+                            let nom = match[2].trim();
+                            let card = allCards.find(c => c.Nom === nom);
+                            newDeck[currentZone][nom] = {
+                                qty: qty,
+                                hash: card ? getCardHash(card) : null,
+                                backup: card ? { ...card } : { Nom: nom, Type: "Inconnu", Pouvoir: "(Carte importée introuvable)" }
+                            };
+                        }
+                    }
+                }
+
+                decks[finalName] = newDeck;
+                currentDeckId = finalName;
+                saveDecks(true);
+
+                activeMainTab = 'deck';
+                document.getElementById('panel-deck').style.display = 'flex';
+                document.getElementById('panel-global-stats').style.display = 'none';
+
+                renderDeckTabs();
+                renderDeck();
+                renderLibrary();
+                updateNotesView();
+                alert(`Deck "${finalName}" importé avec succès !`);
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function exportDeckTXT() {
+            const currentDeck = decks[currentDeckId];
+            let txt = `Deck : ${currentDeckId}\n==========================\n\n`;
+            const groupedMain = {}; let totalMain = 0;
+
+            for (const [nomId, data] of Object.entries(currentDeck.main)) {
+                const qty = data.qty;
+                const card = allCards.find(c => c.Nom === nomId) || data.backup;
+                const type = card ? (card.Type || "Inconnu") : "Inconnu (Orpheline)";
+                if (!groupedMain[type]) groupedMain[type] = [];
+                groupedMain[type].push({ nom: nomId, qty: qty });
+                totalMain += qty;
+            }
+
+            txt += `MAIN DECK (${totalMain} cartes)\n--------------------------\n`;
+
+            const types = Object.keys(groupedMain).sort((a, b) => {
+                let aLower = a.toLowerCase();
+                let bLower = b.toLowerCase();
+                let idxA = TYPE_ORDER.findIndex(t => aLower.includes(t));
+                let idxB = TYPE_ORDER.findIndex(t => bLower.includes(t));
+                if (idxA === -1) idxA = 99;
+                if (idxB === -1) idxB = 99;
+                if (idxA !== idxB) return idxA - idxB;
+                return a.localeCompare(b);
+            });
+
+            types.forEach(type => {
+                const typeTotal = groupedMain[type].reduce((sum, item) => sum + item.qty, 0);
+                txt += `\n[ ${type} ] (${typeTotal})\n`;
+                groupedMain[type].sort((a, b) => a.nom.localeCompare(b.nom)).forEach(item => { txt += `${item.qty}x ${item.nom}\n`; });
+            });
+
+            let totalSide = 0; let sideTxt = `\n\nSIDEBOARD\n--------------------------\n`;
+            const sideList = [];
+            for (const [nomId, data] of Object.entries(currentDeck.side)) {
+                const qty = data.qty;
+                sideList.push({ nom: nomId, qty: qty });
+                totalSide += qty;
+            }
+            if (totalSide > 0) {
+                sideTxt += `\n[ Sideboard ] (${totalSide})\n`;
+                sideList.sort((a, b) => a.nom.localeCompare(b.nom)).forEach(item => { sideTxt += `${item.qty}x ${item.nom}\n`; });
+                txt += sideTxt;
+            }
+
+            // AJOUT DES REMARQUES A LA FIN DE L'EXPORT
+            if (currentDeck.notes && currentDeck.notes.trim() !== "") {
+                txt += `\n\nREMARQUES\n--------------------------\n${currentDeck.notes}\n`;
+            }
+
+            const safeName = currentDeckId.replace(/[^a-z0-9]/gi, '_');
+            saveFileWithDialog(txt, `Deck_${safeName}.txt`, 'text/plain');
+        }
+    </script>
+</body>
+
+</html>
