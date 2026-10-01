@@ -29,6 +29,18 @@
             overflow: hidden;
         }
 
+        /* Empêche la sélection et le glisser-déposer des images */
+        img {
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-select: none;
+            -webkit-user-select: none;
+            pointer-events: auto;
+            /* Garde le clic actif pour tes modals */
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-color);
@@ -1927,7 +1939,8 @@
         const STORAGE_KEY_CHANGELOG_HIST = 'deckbuilder_changelog_history';
         const STORAGE_KEY_DECK_SIZE = 'deckbuilder_deck_size';
         const STORAGE_KEY_PLAN_SIZE = 'deckbuilder_plan_size';
-
+        // Désactive le clic droit sur toute la page
+        document.addEventListener('contextmenu', event => event.preventDefault());
         const TYPE_ORDER = ["lieu", "plan", "unité", "batiment", "bâtiment", "equipement", "équipement", "sort"];
 
         let targetDeckSize = parseInt(localStorage.getItem(STORAGE_KEY_DECK_SIZE)) || 40;
@@ -2048,17 +2061,15 @@
 
         // --- GESTION DES IMAGES ---
         function getCardThumbPath(nom) {
-            if (!nom) return "IllustrationsCartes/WorkInProgress.png";
-            let clean = removeAccents(nom);
-            clean = clean.replace(/[^a-zA-Z0-9]/g, '_');
-            return `IllustrationsCartes/${clean}_illustration.png?v=${imageCacheVersion}`;
+            if (!nom) return "Illustrations/WorkInProgress.png";
+            let clean = removeAccents(nom).replace(/[^a-zA-Z0-9]/g, '_');
+            return `Illustrations/${clean}_illustration.png?v=${imageCacheVersion}`;
         }
 
         function getCardFullPath(nom) {
             if (!nom) return "Cartes/WorkInProgress.png";
-            let clean = removeAccents(nom);
-            clean = clean.replace(/[^a-zA-Z0-9]/g, '_');
-            return `Cartes/${clean}.png?v=${imageCacheVersion}`;
+            let clean = removeAccents(nom).replace(/[^a-zA-Z0-9]/g, '_');
+            return `CartesPretes/${clean}.png?v=${imageCacheVersion}`;
         }
 
         function openImageModal(src, isHorizontal) {
