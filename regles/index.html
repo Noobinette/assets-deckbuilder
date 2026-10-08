@@ -102,11 +102,11 @@
             <figcaption>Événement</figcaption>
           </figure>
           <figure>
-            <img src="img/plan-attaque-surprise.png" alt="Carte plan Attaque surprise">
+            <img src="../Cartes/Attaque_surprise.png" alt="Carte plan Attaque surprise">
             <figcaption>Plan</figcaption>
           </figure>
           <figure>
-            <img src="img/lieu-addyessa.png" alt="Carte lieu QG Addyessa">
+            <img src="../Cartes/Addyessa.png" alt="Carte lieu QG Addyessa">
             <figcaption>Lieu</figcaption>
           </figure>
         </div>
@@ -659,12 +659,15 @@
         <h2>Concepts importants</h2>
         <div class="dl">
           <div class="item">
-            <dt>Jouer ≠ mettre en jeu</dt>
-            <dd>Jouer une carte, c’est la jouer <strong>depuis sa main</strong> en payant son coût. Mettre en jeu (depuis la main, le deck ou la défausse) n’est pas la même chose. Quand vous jouez une carte, vous en êtes propriétaire et contrôleur.</dd>
+            <dt>Jouer une carte</dt>
+            <dd>
+              <p>Jouer une carte signifie jouer une carte depuis sa main. Quand vous jouez une carte, il faut en payer son coût. Cela se fait en poussant le pion OR sur l’échelle de l’OR en direction de l’adversaire du même montant que le coût de la carte jouée. Quand vous jouez une carte, vous en êtes le propriétaire ainsi que le contrôleur. Il est possible que pendant le cours du jeu, le contrôleur d’une carte change, mais jamais son propriétaire ne peut changer.</p>
+              <p><strong>Important :</strong> jouer une carte de sa main est différent que mettre en jeu une carte de sa main, du deck ou depuis la défausse !</p>
+            </dd>
           </div>
           <div class="item">
             <dt>Propriétaire et contrôleur</dt>
-            <dd>Le <strong>propriétaire</strong> est celui qui a commencé avec la carte dans son deck : cela ne change jamais. Le <strong>contrôleur</strong> peut changer. Seul le contrôleur utilise le texte de la carte. Une carte défaussée va toujours chez son propriétaire.</dd>
+            <dd>Le <strong>propriétaire</strong> est celui qui a commencé la partie avec cette carte dans son deck. La propriété d’une carte ne peut <strong>jamais</strong> changer. Contrôler une carte veut dire qu’un des joueurs peut l’utiliser selon les règles en vigueur (attaquer, défendre, etc.). Seul le contrôleur d’une carte peut utiliser le texte inscrit sur la carte ou le texte gagné par cette carte.</dd>
           </div>
           <div class="item">
             <dt>Coût, force, PV : imprimé vs actuel</dt>
@@ -719,84 +722,265 @@
 
       <section class="section" id="glossaire">
         <p class="kicker">Lexique</p>
-        <h2>Glossaire</h2>
+        <h2>Glossaire et termes utilisés dans Pixel of Glory</h2>
         <div class="dl">
-          <div class="item"><dt>Attaquant / en attaque</dt><dd>Unité dans un lieu adverse (assignée ou placée par un effet), quelle que soit la phase. Une unité « qui ne peut pas attaquer » peut tout de même s’y retrouver par un effet.</dd></div>
-          <div class="item"><dt>Défenseur / en défense</dt><dd>Unité dans un lieu de son contrôleur. Même logique : un effet peut y placer une unité qui ne pourrait pas être assignée.</dd></div>
-          <div class="item"><dt>En combat</dt><dd>Les effets ne comptent que pendant le déroulement / la résolution du combat en cours, et seulement pour les cartes présentes dans ce combat-là.</dd></div>
-          <div class="item"><dt>Ravagé</dt><dd>Lieu retourné sur sa face ravagée : plus de PV, plus d’habilités, uniquement ses traits, pas d’équipement.</dd></div>
-          <div class="item"><dt>Bonus de ravage</dt><dd>Obtenu si le lieu est ravagé pendant le combat en cours, ou s’il l’était déjà à l’initiation du combat. Permet de défausser deck / bâtiment / équipement adverse (et la main si QG).</dd></div>
-          <div class="item"><dt>Trait</dt><dd>Mot dans la boîte de texte, pour interagir avec d’autres cartes (Noble, Magicien, Lac, Alchimie…).</dd></div>
-          <div class="item"><dt>Mot-clé</dt><dd>Capacité spéciale codifiée (ETHERE, POISON, MORTEL…).</dd></div>
-          <div class="item"><dt>Défaussé</dt><dd>Carte mise face visible dans la défausse de son <em>propriétaire</em>. Du deck : toujours la carte du dessus, puis la suivante. Différent de « hors de la partie ».</dd></div>
-          <div class="item"><dt>Hors de la partie</dt><dd>Retirée définitivement (dans la boîte). Elle ne revient pas.</dd></div>
-          <div class="item"><dt>Remonter en main</dt><dd>Toujours dans la main du propriétaire.</dd></div>
-          <div class="item"><dt>Envoyé dans / sur / sous le deck</dt><dd>Toujours le deck du propriétaire. Dans le deck → on mélange. Sur ou sous → on ne mélange pas. Plusieurs cartes : le propriétaire choisit l’ordre.</dd></div>
-          <div class="item"><dt>Tuée</dt><dd>Unité avec autant ou plus de dommages que de PV, ou 0 PV sans dommages. On met les dommages nécessaires, puis défausse du propriétaire — sauf effets qui retardent ou empêchent (PUGNACE, « les trois meneurs »). Différent de détruit / défaussé : même destination, autre déclencheur.</dd></div>
-          <div class="item"><dt>Détruit</dt><dd>Élimination d’un bâtiment ou d’un équipement → défausse du propriétaire. Différent de défausser.</dd></div>
-          <div class="item"><dt>Soigner</dt><dd>Retirer des dommages déjà présents. On ne peut pas « juste » soigner une carte sans dommages. Mais si un effet a une partie faisable avant le soin, elle est autorisée.</dd></div>
-          <div class="item"><dt>Retirer / renvoyer</dt><dd>Sortir la carte du lieu vers la citadelle de son contrôleur (sauf si l’effet précise hors-partie, deck, etc.).</dd></div>
-          <div class="item"><dt>Dommage</dt><dd>Jetons sur unités ou lieux. Fin de tour : surplus au-delà des PV retiré pour égaliser.</dd></div>
-          <div class="item"><dt>Dommage de dette</dt><dd>Blessures égales au montant d’OR du pion, en phase 5, subies par celui qui n’a pas le pion.</dd></div>
-          <div class="item"><dt>Gagner un mot-clé / trait / texte</dt><dd>S’ajoute à ce qui est imprimé.</dd></div>
-          <div class="item"><dt>Boîte de texte imprimée</dt><dd>Uniquement ce qui est imprimé, pas le texte gagné. Sur un lieu : texte, traits, mots-clés — pas les PV ni la force. Sur un plan : texte et traits, jamais l’initiative.</dd></div>
-          <div class="item"><dt>Effets passifs</dt><dd>Permanents, ou automatiques quand une condition apparaît.</dd></div>
-          <div class="item"><dt>Quitter le jeu</dt><dd>Défaussée, tuée, détruite, remontée en main, mise dans/sur/sous le deck, ou hors de la partie — elle n’est plus visible en jeu.</dd></div>
+          <div class="item">
+            <dt>Payer un coût en or</dt>
+            <dd>Payer un coût en or, c’est déplacer le pion sur l’échelle de l’OR en direction de l’adversaire.</dd>
+          </div>
+        </div>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Chimiste.png" alt="Payer un coût pour jouer une unité">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple</p>
+            <p>Un joueur paye 5 OR pour mettre son unité en jeu et le pion OR est sur la case 2 en sa faveur. Il doit déplacer le pion OR en direction de son adversaire de 5 cases (le pion OR finit sur la case 3 en faveur de son adversaire).</p>
+          </div>
+        </figure>
+        <div class="dl">
+          <div class="item">
+            <dt>Trait</dt>
+            <dd>« Trait » c’est un mot qui est présent dans la boîte de texte des cartes. Il est là pour interagir avec d’autres cartes (voir anatomie des cartes). Sur les cartes, les traits sont écrits en <span class="trait">rouge</span>.</dd>
+          </div>
+          <div class="item">
+            <dt>Mot-clé</dt>
+            <dd>« Mot-clé » est un mot qui fait référence à une capacité spéciale d’une carte. Sur les cartes, les mots-clés sont écrits en <span class="mk">bleu</span>.</dd>
+          </div>
+          <div class="item">
+            <dt>Jouer une carte</dt>
+            <dd>
+              <p>Jouer une carte signifie jouer une carte depuis sa main. Quand vous jouez une carte, il faut en payer son coût. Cela se fait en poussant le pion OR sur l’échelle de l’OR en direction de l’adversaire du même montant que le coût de la carte jouée. Quand vous jouez une carte, vous en êtes le propriétaire ainsi que le contrôleur. Il est possible que pendant le cours du jeu, le contrôleur d’une carte change, mais jamais son propriétaire ne peut changer.</p>
+              <p><strong>Important :</strong> jouer une carte de sa main est différent que mettre en jeu une carte de sa main, du deck ou depuis la défausse !</p>
+            </dd>
+          </div>
+          <div class="item">
+            <dt>Payer le coût d’une habilité</dt>
+            <dd>Quand vous payez le coût d’une habilité, c’est la même procédure que jouer une carte concernant le paiement en OR.</dd>
+          </div>
+          <div class="item">
+            <dt>Deck</dt>
+            <dd>« Deck » est un terme dans ce jeu qui fait référence au paquet de cartes que vous avez assemblé pour jouer. Le deck de jeu c’est le paquet de 40 cartes de jeu (contenant les unités, les équipements, les bâtiments ainsi que les événements). Pour faire référence au deck de plans (contenant uniquement les plans), on utilise le terme deck de plans. Il est <strong>impossible</strong> que les cartes du deck de plans se retrouvent dans le deck de jeu et vice versa.</dd>
+          </div>
+          <div class="item">
+            <dt>Citadelle / zone citadelle</dt>
+            <dd>Citadelle ou zone citadelle est le terme qui désigne la zone où vous jouez vos cartes unités et bâtiments. La plupart du temps, quand une unité entre en jeu ou un bâtiment entre en jeu, ils sont aussi placés dans la citadelle (voir exemple de mise en place).</dd>
+          </div>
+          <div class="item">
+            <dt>Contrôler une carte</dt>
+            <dd>Contrôler une carte veut dire qu’un des joueurs peut l’utiliser selon les règles en vigueur (attaquer, défendre, etc.). Le joueur en est « le contrôleur ». Seul le contrôleur d’une carte peut utiliser le texte inscrit sur la carte ou le texte gagné par cette carte.</dd>
+          </div>
+        </div>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Soldat.png" alt="Une unité en citadelle">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple</p>
+            <p>Le joueur A place une unité dans sa zone citadelle pendant la phase d’Organisation, il en est le propriétaire et le contrôleur. Il peut arriver que des effets changent le contrôle d’une carte.</p>
+          </div>
+        </figure>
+        <div class="dl">
+          <div class="item">
+            <dt>Propriétaire</dt>
+            <dd>Le propriétaire d’une carte est le joueur qui a commencé la partie avec cette carte dans son deck. La propriété d’une carte ne peut <strong>jamais</strong> changer.</dd>
+          </div>
+          <div class="item">
+            <dt>Défaussé / défaussée</dt>
+            <dd>Terme utilisé quand il faut mettre la carte concernée dans la pile de défausse de son propriétaire face visible (et non pas dans la pile de défausse de son contrôleur, car le contrôle des cartes peut changer). Ceci se produit généralement quand un événement est joué et après sa résolution, lors de la destruction d’un bâtiment, d’un équipement ou d’une unité. Quand un effet demande de défausser une carte ou plusieurs cartes du deck, il faut toujours prendre la carte du dessus du deck et continuer avec la suivante, etc. Défausser du deck, du jeu ou de la main est différent que « mettre hors de la partie ».</dd>
+          </div>
+          <div class="item">
+            <dt>Mis / mettre hors de la partie</dt>
+            <dd>Mettre la carte hors du jeu définitivement (dans la boîte de jeu).</dd>
+          </div>
+          <div class="item">
+            <dt>Remonter / remontez en main</dt>
+            <dd>La carte retourne dans la main de son propriétaire. Une carte qui quitte le jeu de cette manière va toujours dans la main de son propriétaire.</dd>
+          </div>
+          <div class="item">
+            <dt>Envoyé dans / sur / sous le deck</dt>
+            <dd>La carte est envoyée toujours vers le deck du propriétaire. Quand c’est dans le deck, le deck est mélangé après y avoir intégré la carte en question. Si c’est sur ou sous le deck, le deck n’est jamais mélangé. Quand plusieurs cartes sont placées au-dessus ou au-dessous du deck de son propriétaire, le propriétaire de ces cartes choisit dans quel ordre elles sont placées.</dd>
+          </div>
+          <div class="item">
+            <dt>Tuée / tué</dt>
+            <dd>Utilisé quand une unité a subi autant ou plus de dommages que ses points de vie. Cette unité est placée dans la pile de défausse de son propriétaire face visible (exception PUGNACE en phase de Combat, voir les mots-clés). Si une unité n’a pas de dommages et se retrouve à zéro point de vie par un effet quelconque, elle est tuée. Quand un effet indique de tuer une unité, on met sur cette unité autant de points de dommages que nécessaire pour la tuer, puis si l’unité est effectivement tuée, elle est mise dans la pile de défausse de son propriétaire (des effets peuvent retarder ou empêcher qu’une unité soit tuée, par exemple la carte « Les trois meneurs »). « Tuée » est différent de détruit ou défaussé. La finalité est la même, la carte va dans la pile de défausse, mais le déclencheur est différent.</dd>
+          </div>
+          <div class="item">
+            <dt>Détruit</dt>
+            <dd>Utilisé pour l’élimination d’une carte bâtiment ou d’un équipement. Cette carte est placée dans la pile de défausse de son propriétaire face visible. Détruit est différent de défausser. La finalité est la même, la carte va dans la pile de défausse, mais le déclencheur est différent.</dd>
+          </div>
+          <div class="item">
+            <dt>Cherchez dans votre deck / défausse</dt>
+            <dd>« Cherchez dans votre deck… » ou « Cherchez dans votre défausse… » veut dire que vous pouvez prendre une carte correspondante dans votre deck ou votre défausse et vous devez la révéler à votre adversaire. Si vous pouvez chercher la carte de votre choix, vous n’avez pas à la montrer à votre adversaire. Vous devez toujours mélanger votre deck après avoir « cherchez » dedans.</dd>
+          </div>
+        </div>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Griffon.png" alt="Griffon, une Créature">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple</p>
+            <p>Chercher dans votre deck une carte Créature vous oblige à la montrer à votre adversaire puis à mélanger votre deck. Chercher une carte équipement dans votre défausse vous oblige à montrer la carte à votre adversaire, etc.</p>
+          </div>
+        </figure>
+        <div class="dl">
+          <div class="item">
+            <dt>Soigner / soignez</dt>
+            <dd>Soigner une unité ou un lieu veut dire retirer des dommages déjà présents sur cette carte. Si un effet vous demande de payer un or pour faire quelque chose et ensuite vous pouvez soigner une unité qui n’a pas de dommages, c’est autorisé (si vous avez pu faire partiellement l’effet avant de soigner). Par contre, vous ne pouvez pas juste soigner une unité qui n’a pas de dommages.</dd>
+          </div>
+        </div>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Seigneur_Vampire.png" alt="Seigneur vampire">
+            <img src="../Cartes/Infirmier_du_Bataillon.png" alt="Infirmier du Bataillon">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple</p>
+            <p>La carte « Seigneur vampire » (sans avoir de dommage sur lui) peut, en utilisant son action, infliger 1 dommage à une unité adverse, puis se soigner de 1 dommage.</p>
+            <p>La carte « Infirmier du Bataillon » ne peut pas utiliser son action de soigner une unité qui n’a pas au moins 1 dommage sur elle.</p>
+          </div>
+        </figure>
+        <div class="dl">
+          <div class="item">
+            <dt>Retirer / renvoyer</dt>
+            <dd>« Retirer / renvoyez » veulent dire sortir la carte du lieu où elle se trouve, que ce soit en combat ou non, et la mettre dans la zone citadelle de son contrôleur. Il peut arriver que la carte retirée ou renvoyée finisse hors de la partie, au-dessus du deck, sous le deck ou dans le deck (selon le texte de l’effet qui retire ou renvoie).</dd>
+          </div>
+          <div class="item">
+            <dt>Dommage</dt>
+            <dd>Désigne des blessures subies par les unités ou les lieux. Des jetons points de dommages y sont déposés. Si à la fin d’un tour, une unité devait être toujours en jeu avec plus de dommages que ses points de vie, il faut retirer le surplus de points de dommages pour que les dommages se retrouvent à égalité des points de vie de l’unité.</dd>
+          </div>
+          <div class="item">
+            <dt>Dommage de dette</dt>
+            <dd>Désigne des blessures subies par des unités ou des lieux, provoquées par le montant en OR indiqué par le pion OR sur l’échelle de l’OR en phase de dette. Le joueur qui subit ces dommages est celui qui n’a PAS le pion OR en sa faveur.</dd>
+          </div>
+          <div class="item">
+            <dt>Attaquant</dt>
+            <dd>Désigne une unité qui attaque un lieu adverse de son contrôleur ou qui a été assignée en attaque pendant la phase d’assignation. Elle est considérée « en attaque » (une unité peut se retrouver en attaque sans y avoir été assignée si un effet la place dans un lieu de l’adversaire). Une unité qui ne peut pas être assignée en attaque ou qui ne peut pas attaquer peut, avec des effets, se retrouver en attaque.</dd>
+          </div>
+          <div class="item">
+            <dt>En attaque</dt>
+            <dd>Désigne une unité contrôlée par un joueur qui se trouve dans le lieu d’un adversaire (elle essaie de faire des dommages au lieu de l’adversaire). Une unité est en attaque si elle est dans un lieu de l’adversaire, quelle que soit la phase de jeu.</dd>
+          </div>
+          <div class="item">
+            <dt>Défenseur</dt>
+            <dd>Désigne une unité qui défend un lieu de son contrôleur ou qui a été assignée en défense pendant la phase d’assignation. Elle est considérée « en défense » (une unité peut se retrouver en défense sans y avoir été assignée si un effet la place dans un de vos lieux). Une unité qui ne peut pas être assignée en défense ou qui ne peut pas défendre peut, avec des effets, se retrouver en défense.</dd>
+          </div>
+          <div class="item">
+            <dt>En défense</dt>
+            <dd>Désigne une unité contrôlée par un joueur qui se trouve dans le lieu de ce même joueur (elle essaie d’absorber les dommages infligés par les unités adverses pour protéger le lieu où elle se trouve). Une unité est en défense si elle est dans un lieu de son contrôleur, quelle que soit la phase de jeu.</dd>
+          </div>
+          <div class="item">
+            <dt>En combat</dt>
+            <dd>Utilisé pour indiquer que les effets sont pris en compte ou déclenchés seulement pendant le déroulement / la résolution du combat en cours (ce terme sur des unités, des équipements ou des lieux implique que ces cartes sont actuellement présentes dans le déroulement / la résolution d’un combat).</dd>
+          </div>
         </div>
         <figure class="ex">
           <div class="ex-art">
             <img src="../Cartes/Infirmier_du_Bataillon.png" alt="Infirmier du Bataillon">
           </div>
           <div class="ex-body">
-            <p class="ex-lbl">Exemple — En combat</p>
-            <p>Si une unité possède le texte : « Action : En combat, payez 1 OR pour infliger 1 dommage à une unité adverse dans le combat », cela signifie que pendant le déroulement du combat du lieu en cours, le contrôleur de l’unité peut payer 1 OR et infliger à une unité adverse 1 point de dommage. Il n’est pas possible d’infliger ce point de dommage à une unité adverse qui se trouve dans un autre lieu que celui du combat en cours. Il n’est pas non plus possible d’utiliser la capacité de cette unité si elle se trouve dans un lieu qui n’est pas le combat en cours.</p>
-            <p>La carte « Infirmier du Bataillon » ne peut pas utiliser son action de soigner une unité qui n’a pas au moins 1 dommage sur elle.</p>
+            <p class="ex-lbl">Exemple</p>
+            <p>Si une unité possède le texte suivant : « Action : En combat, payez 1 OR pour infliger 1 dommage à une unité adverse dans le combat », cela signifie que pendant le déroulement du combat du lieu en cours, le contrôleur de l’unité peut payer 1 OR et infliger à une unité adverse 1 point de dommage. Il n’est pas possible d’infliger ce point de dommage à une unité adverse qui se trouve dans un autre lieu que celui du combat en cours. Il n’est pas non plus possible d’utiliser la capacité de cette unité si elle se trouve dans un lieu qui n’est pas le combat en cours.</p>
           </div>
         </figure>
-        <figure class="ex">
-          <div class="ex-art">
-            <img src="../Cartes/Seigneur_Vampire.png" alt="Seigneur vampire">
+        <div class="dl">
+          <div class="item">
+            <dt>Ravagé</dt>
+            <dd>Utilisé pour indiquer qu’un lieu est retourné sur sa face ravagée. Il perd ses points de vie et ses habilités. Il ne garde que ses traits. Il ne peut pas avoir d’équipement. S’il y avait un équipement sur un lieu qui vient d’être ravagé, l’équipement est repris en main par son propriétaire ou, si l’équipement est FRAGILE, il est défaussé.</dd>
           </div>
-          <div class="ex-body">
-            <p class="ex-lbl">Exemple — Soigner</p>
-            <p>La carte « Seigneur vampire » (sans avoir de dommage sur lui) peut, en utilisant son action, infliger 1 dommage à une unité adverse, puis se soigner de 1 dommage. C’est autorisé : une partie de l’effet est faisable avant le soin.</p>
+          <div class="item">
+            <dt>Bonus de ravage</dt>
+            <dd>Désigne l’effet qu’un joueur peut utiliser quand il obtient ce bonus. Ce bonus est obtenu quand un lieu est retourné sur sa face « ravagé » pendant le déroulement / la résolution du combat en cours, ou quand le lieu du combat en cours était déjà sur sa face « ravagé » quand le combat a été initié. L’utilisation de ce bonus permet de défausser des cartes du deck de son adversaire, défausser un bâtiment ou un équipement contrôlé par son adversaire, ou si le lieu attaqué est un QG, défausser des cartes de la main de son adversaire. (voir détail du bonus de ravage dans la phase de Combat)</dd>
           </div>
-        </figure>
+          <div class="item">
+            <dt>Gagner / gagnez… (un mot-clé, un trait ou du texte)</dt>
+            <dd>Utilisé pour indiquer que la carte obtient, en plus de ses indications imprimées, les informations du texte qui suit les termes gagner / gagnez.</dd>
+          </div>
+        </div>
         <figure class="ex">
           <div class="ex-art">
             <img src="../Cartes/Epee_Magique.png" alt="Épée magique">
           </div>
           <div class="ex-body">
-            <p class="ex-lbl">Exemple — Gagner un trait</p>
+            <p class="ex-lbl">Exemple</p>
             <p>La carte « Épée magique » fait gagner à l’unité équipée le trait Magicien et l’unité bénéficie d’une augmentation de +1 de force.</p>
           </div>
         </figure>
+        <div class="dl">
+          <div class="item">
+            <dt>Boîte de texte imprimée</dt>
+            <dd>Utilisé pour indiquer qu’il est fait référence uniquement à ce qui est imprimé sur une carte et non à ce qui pourrait être gagné via d’autres effets. Sur un lieu, cela concerne uniquement le texte, ses traits et ses mots-clés, ça ne concerne pas ses points de vie, ni sa force. Sur un plan, cela concerne son texte et ses traits, mais jamais sa valeur d’initiative.</dd>
+          </div>
+          <div class="item">
+            <dt>Perdre / perdez de l’or</dt>
+            <dd>Utilisé pour indiquer que le joueur concerné déplace le pion OR vers le zéro sur l’échelle de l’OR si le pion OR est de son côté de l’échelle. Le pion OR ne peut pas passer en faveur de l’autre joueur.</dd>
+          </div>
+        </div>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Images_Alt_16bit/Usurier.png" alt="L’échelle de l’OR">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple</p>
+            <p>Le joueur B a le pion OR sur la case 2 de son côté de l’échelle de l’OR ; s’il perd 3 OR, le pion OR est mis sur le zéro, il ne passe pas du côté du joueur A sur 1.</p>
+          </div>
+        </figure>
+        <div class="dl">
+          <div class="item">
+            <dt>Gagner / gagnez de l’or</dt>
+            <dd>Utilisé pour indiquer que le joueur concerné déplace le pion OR vers lui sur l’échelle de l’OR. Le pion OR peut passer en positif en sa faveur. Quand un joueur gagne de l’or, le pion OR ne peut jamais aller au-delà de la case 6.</dd>
+          </div>
+          <div class="item">
+            <dt>Effets passifs</dt>
+            <dd>Fait référence à un texte qui est effectif en permanence ou qui prend effet automatiquement quand certaines conditions apparaissent.</dd>
+          </div>
+        </div>
         <figure class="ex">
           <div class="ex-art">
             <img src="../Cartes/Phare.png" alt="Phare">
             <img src="../Cartes/Comission_des_Taxes.png" alt="Commission des Taxes">
           </div>
           <div class="ex-body">
-            <p class="ex-lbl">Exemple — Effets passifs</p>
+            <p class="ex-lbl">Exemple</p>
             <p>Exemple d’un effet permanent : la carte « ★Phare » donne à vos lieux non ravagés sans boîte de texte imprimée un bonus permanent de +2 points de vie.</p>
-            <p>Exemple d’un effet déclenché automatiquement : la carte « ★Commission des Taxes » se déclenche automatiquement à la fin de la phase d’Organisation : vous gagnez 1 OR par Noble que vous contrôlez.</p>
+            <p>Exemple d’un effet qui est déclenché automatiquement : la carte « ★Commission des Taxes » se déclenche automatiquement à la fin de la phase d’Organisation, vous gagnez 1 OR par Noble que vous contrôlez.</p>
           </div>
         </figure>
+        <div class="dl">
+          <div class="item">
+            <dt>REPYR</dt>
+            <dd>Acronyme : Résoudre les effets passifs y relatifs (ordre choisi par le joueur avec l’initiative). C’est utilisé pour ne pas charger le texte des règles inutilement.</dd>
+          </div>
+          <div class="item">
+            <dt>Quitter le jeu</dt>
+            <dd>Utilisé quand la carte est soit défaussée, tuée, détruite, remontée en main, mise dans / sur / sous le deck, ou mise hors de la partie (en résumé, elle n’est plus visible et plus en jeu).</dd>
+          </div>
+        </div>
         <figure class="ex">
           <div class="ex-art">
             <img src="../Cartes/Pixie.png" alt="Pixie">
           </div>
           <div class="ex-body">
-            <p class="ex-lbl">Exemple — Quitter le jeu</p>
-            <p>La carte Pixie dit que quand elle quitte le jeu, le contrôleur peut mélanger une carte de sa défausse dans son deck et mettre la Pixie hors de la partie. Si la Pixie est tuée, elle ne va pas à la défausse : elle est mise hors de la partie après que le contrôleur a mélangé une carte de sa défausse dans son deck.</p>
+            <p class="ex-lbl">Exemple</p>
+            <p>La carte Pixie dit que quand elle quitte le jeu, le contrôleur peut mélanger une carte de sa défausse dans son deck et mettre la Pixie hors de la partie. Si la Pixie est tuée, elle ne va pas à la défausse, elle est mise hors de la partie après que le contrôleur a mélangé une carte de sa défausse dans son deck.</p>
           </div>
         </figure>
+        <div class="dl">
+          <div class="item">
+            <dt>Vous pouvez</dt>
+            <dd>Utilisé pour indiquer que c’est à choix : ce n’est jamais obligatoire de résoudre l’effet.</dd>
+          </div>
+          <div class="item">
+            <dt>(Max1), (Max2), (Max3)…</dt>
+            <dd>Signifie que l’effet peut être fait un maximum de fois par tour correspondant au nombre suivant le mot « Max ».</dd>
+          </div>
+        </div>
         <figure class="ex">
           <div class="ex-art">
             <img src="../Cartes/Tour_des_Mysteres.png" alt="Tour des Mystères">
           </div>
           <div class="ex-body">
-            <p class="ex-lbl">Exemple — (Max N)</p>
+            <p class="ex-lbl">Exemple</p>
             <p>Le bâtiment « La tour des Mystères » peut donner un trait (Max2), donc peut être déclenché au maximum 2 fois dans un même tour.</p>
           </div>
         </figure>
@@ -931,6 +1115,63 @@
       }, { rootMargin: '-20% 0px -70% 0px' });
       sections.forEach(function (s) { io.observe(s); });
     }
+
+    (function colorCardTerms() {
+      var root = document.querySelector('main.page');
+      if (!root) return;
+      var keywords = [
+        "PAS D'EQUIPEMENT", "PAS D’EQUIPEMENT", "Pas d'équipement", "Pas d’équipement",
+        "ETHERE", "Ethéré", "ETHÉRÉ", "Ethéré",
+        "POISON", "Poison", "MORTEL", "Mortel",
+        "PUGNACE", "Pugnace", "PRECIS", "Précis", "PRÉCIS",
+        "FAIBLESSE", "Faiblesse", "FRAGILE", "Fragile",
+        "RAPIDE", "Rapide"
+      ];
+      var traits = [
+        "Magicien", "Temple", "Construction", "Créature", "Infanterie", "Elite", "Royaume",
+        "Manoeuvre", "Orc", "Gobelin", "QG", "Commerce", "Dolmen", "Esprit", "Résistant",
+        "Cavalier", "Noble", "Arme", "Compagnon", "Fortification", "Rituel", "Stratégie",
+        "Tactique", "Alchimie", "Bijou", "Jet", "Officier", "Seigneur", "Colline", "Montagne",
+        "Amélioration", "Bannière", "Forêt", "Machine", "Mort-Vivant", "Armure", "Erudit",
+        "Lac", "Mineur", "Désert", "Inflammable", "Marais", "Spectral", "Enchantement",
+        "Traîtrise", "Aube", "Crépuscule", "Forestier", "Pirate", "Plaine", "Rebelle",
+        "Troll", "Vampire", "Ancien", "Apprenti", "Cimetière", "Horde", "Impôt", "Minotaure",
+        "Piège", "Saison", "Caserne", "Forteresse", "Souterrain", "Babiole", "Déchu",
+        "Malédiction", "Sort"
+      ];
+      keywords.sort(function (a, b) { return b.length - a.length; });
+      traits.sort(function (a, b) { return b.length - a.length; });
+      function esc(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+      var kwRe = new RegExp("(" + keywords.map(esc).join("|") + ")", "gi");
+      var trRe = new RegExp("\\b(" + traits.map(esc).join("|") + ")\\b", "g");
+      var brRe = /\[([^\]]+)\]/g;
+      var skip = /^(SCRIPT|STYLE|TEXTAREA|NOSCRIPT)$/;
+      var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode: function (n) {
+          var p = n.parentElement;
+          if (!p || skip.test(p.tagName)) return NodeFilter.FILTER_REJECT;
+          if (p.closest(".mk, .trait, .cible, a, figcaption, .kicker, .ex-lbl, .nav, .phase-head, h2, h3")) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          if (!n.nodeValue || !n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      var nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(function (node) {
+        var text = node.nodeValue;
+        if (!brRe.test(text) && !kwRe.test(text) && !trRe.test(text)) return;
+        brRe.lastIndex = 0; kwRe.lastIndex = 0; trRe.lastIndex = 0;
+        var html = text
+          .replace(brRe, '<span class="cible">[$1]</span>')
+          .replace(kwRe, '<span class="mk">$1</span>')
+          .replace(trRe, '<span class="trait">$1</span>');
+        var wrap = document.createElement("span");
+        wrap.innerHTML = html;
+        node.parentNode.replaceChild(wrap, node);
+      });
+    })();
   </script>
 </body>
 </html>
