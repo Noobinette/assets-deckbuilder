@@ -11,7 +11,7 @@
 </head>
 <body>
   <a class="skip" href="#contenu">Aller au contenu</a>
-  <button class="menu-toggle" type="button" onclick="document.body.classList.toggle('nav-open')">Sommaire</button>
+  <button class="scrim" type="button" aria-label="Fermer le sommaire" onclick="document.body.classList.remove('nav-open')"></button>
 
   <nav class="nav" aria-label="Sommaire">
     <p class="brand-mini">PIXEL OF GLORY</p>
@@ -39,6 +39,10 @@
   </nav>
 
   <div class="wrap">
+    <div class="mobile-bar">
+      <span class="brand">PIXEL OF GLORY</span>
+      <button type="button" onclick="document.body.classList.toggle('nav-open')">Sommaire</button>
+    </div>
     <header class="cover" id="couverture">
       <img class="hero" src="../Images_Alt_32bit/Griffon.png" alt="Un griffon survole deux armées dans une vallée en feu.">
       <div class="veil"></div>
@@ -353,28 +357,44 @@
 
         <h3>Bonus de ravage — 3 niveaux</h3>
         <p>Les cartes défaussées sont toujours contrôlées par l’adversaire. Si le lieu attaqué est un QG, on peut prendre des cartes de la <strong>main</strong> à la place du deck (puis le deck s’il n’en reste pas assez en main).</p>
-        <table>
-          <thead>
-            <tr>
-              <th>Lieux ravagés chez l’adversaire</th>
-              <th>Vous pouvez défausser…</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>1 lieu</strong></td>
-              <td>1 bâtiment <em>ou</em> 1 équipement <em>ou</em> 2 cartes du deck (main si QG)</td>
-            </tr>
-            <tr>
-              <td><strong>2 lieux</strong></td>
-              <td>2 bâtiments · 2 équipements · 1 bâtiment + 1 équipement · 1 bâtiment + 2 cartes · 1 équipement + 2 cartes · 3 cartes</td>
-            </tr>
-            <tr>
-              <td><strong>3 lieux</strong></td>
-              <td>3 bâtiments · 3 équipements · 2 bât. + 1 éq. · 1 bât. + 2 éq. · 2 bât. + 2 cartes · 2 éq. + 2 cartes · 1 bât. + 3 cartes · 1 éq. + 3 cartes · 4 cartes</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="ravage-levels">
+          <article class="card">
+            <h4>1 lieu ravagé</h4>
+            <p>Choisissez <strong>l’une</strong> des options :</p>
+            <ul>
+              <li>1 bâtiment</li>
+              <li>1 équipement</li>
+              <li>2 cartes du deck <em>(main si QG)</em></li>
+            </ul>
+          </article>
+          <article class="card lv2">
+            <h4>2 lieux ravagés</h4>
+            <p>Choisissez <strong>l’une</strong> des options :</p>
+            <ul>
+              <li>2 bâtiments</li>
+              <li>2 équipements</li>
+              <li>1 bâtiment + 1 équipement</li>
+              <li>1 bâtiment + 2 cartes</li>
+              <li>1 équipement + 2 cartes</li>
+              <li>3 cartes</li>
+            </ul>
+          </article>
+          <article class="card lv3">
+            <h4>3 lieux ravagés</h4>
+            <p>Choisissez <strong>l’une</strong> des options :</p>
+            <ul>
+              <li>3 bâtiments</li>
+              <li>3 équipements</li>
+              <li>2 bâtiments + 1 équipement</li>
+              <li>1 bâtiment + 2 équipements</li>
+              <li>2 bâtiments + 2 cartes</li>
+              <li>2 équipements + 2 cartes</li>
+              <li>1 bâtiment + 3 cartes</li>
+              <li>1 équipement + 3 cartes</li>
+              <li>4 cartes</li>
+            </ul>
+          </article>
+        </div>
         <div class="callout note">
           <div class="lbl">Formule</div>
           <p>Le bonus vaut <strong>2 cartes, ou 1 bâtiment, ou 1 équipement</strong>, <em>plus</em> 1 carte ou 1 bâtiment ou 1 équipement <strong>par autre lieu déjà ravagé</strong>.</p>
@@ -705,6 +725,17 @@
         document.body.classList.remove('nav-open');
       });
     });
+    const links = Array.from(document.querySelectorAll('.nav a[href^="#"]'));
+    const sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id); });
+        });
+      }, { rootMargin: '-20% 0px -70% 0px' });
+      sections.forEach(function (s) { io.observe(s); });
+    }
   </script>
 </body>
 </html>
