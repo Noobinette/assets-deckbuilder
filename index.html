@@ -1896,7 +1896,8 @@
             "pugnace": "L'unité ne peut pas être tuée pendant le combat",
             "précis": "Vous pouvez répartir les dommages comme vous le souhaitez, avant que l'adversaire place ceux que vous faites",
             "éthéré": "L'unité ne peut être affectée que par les dommages d'une source Magicien. N'importe quel joueur peut défausser une carte de sa main pour enlever le mot-clé Éthéré jusqu'à la fin du tour",
-            "pas d'attachement": "L'unité ne peut pas être équipée"
+            "pas d'attachement": "L'unité ne peut pas être équipée",
+            "rapide": "L'unité ne coûte pas d'action pour être jouée."
         };
 
         let allCards = [];
@@ -2069,7 +2070,7 @@
         function getCardFullPath(nom) {
             if (!nom) return "Cartes/WorkInProgress.png";
             let clean = removeAccents(nom).replace(/[^a-zA-Z0-9]/g, '_');
-            return `CartesPretes/${clean}.png?v=${imageCacheVersion}`;
+            return `Cartes/${clean}.png?v=${imageCacheVersion}`;
         }
 
         function openImageModal(src, isHorizontal) {
