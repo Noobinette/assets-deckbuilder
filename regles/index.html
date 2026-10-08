@@ -44,7 +44,7 @@
       <button type="button" onclick="document.body.classList.toggle('nav-open')">Sommaire</button>
     </div>
     <header class="cover" id="couverture">
-      <img class="hero" src="../Images_Alt_32bit/Griffon.png" alt="Un griffon survole deux armées dans une vallée en feu.">
+      <img class="hero" src="../Images_Alt_32bit/Griffon.png" alt="Un griffon survole deux armées dans une vallée en feu." loading="eager">
       <div class="veil"></div>
       <div class="inner">
         <p class="eyebrow">Jeu de confrontation · 2 joueurs</p>
@@ -82,6 +82,33 @@
             <h3>Ce que vous jouez</h3>
             <p>Depuis votre main, vous jouez des <strong>unités</strong>, des <strong>bâtiments</strong>, des <strong>équipements</strong> et des <strong>événements</strong>. Vous attaquez les lieux adverses tout en défendant les vôtres.</p>
           </article>
+        </div>
+        <h3>Les six types de cartes</h3>
+        <div class="type-row">
+          <figure>
+            <img src="../Cartes/Chimiste.png" alt="Carte unité Chimiste">
+            <figcaption>Unité</figcaption>
+          </figure>
+          <figure>
+            <img src="../Cartes/Phare.png" alt="Carte bâtiment Phare">
+            <figcaption>Bâtiment</figcaption>
+          </figure>
+          <figure>
+            <img src="../Cartes/Epee_Magique.png" alt="Carte équipement Épée magique">
+            <figcaption>Équipement</figcaption>
+          </figure>
+          <figure>
+            <img src="../Cartes/Eclair.png" alt="Carte événement Éclair">
+            <figcaption>Événement</figcaption>
+          </figure>
+          <figure>
+            <img src="img/plan-attaque-surprise.png" alt="Carte plan Attaque surprise">
+            <figcaption>Plan</figcaption>
+          </figure>
+          <figure>
+            <img src="img/lieu-addyessa.png" alt="Carte lieu QG Addyessa">
+            <figcaption>Lieu</figcaption>
+          </figure>
         </div>
       </section>
 
@@ -300,7 +327,16 @@
         </div>
 
         <h3>Calcul de la force</h3>
-        <p>On compte la force de chaque camp : valeur de force des unités (plus ou moins modificateurs), équipements, lieux, et événements qui ajoutent de la force (ex. « Volée de flèches +2 FOR »).</p>
+        <p>On compte la force de chaque camp : valeur de force des unités (plus ou moins modificateurs), équipements, lieux, et événements qui ajoutent de la force au total final.</p>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Volee_de_fleches.png" alt="Volée de flèches">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple</p>
+            <p>La carte « Volée de flèches » ajoute <strong>+2 FOR</strong> au calcul final de la résolution du combat (dommages normaux, non-PRECIS), si une carte Jet est présente dans le combat.</p>
+          </div>
+        </figure>
         <p>On <strong>sépare</strong> la force des cartes <strong>Magicien</strong>, <span class="tag">POISON</span> et <span class="tag">MORTEL</span> des autres cartes.</p>
         <div class="grid-3">
           <article class="card">
@@ -480,21 +516,28 @@
         <div class="grid-2">
           <article class="card">
             <h4>Payer un coût</h4>
-            <p>Déplacer le pion vers l’adversaire d’autant de cases que le coût. Ex. : pion sur 2 en votre faveur, vous payez 5 → il finit sur 3 <em>chez l’adversaire</em>.</p>
+            <p>Déplacer le pion vers l’adversaire d’autant de cases que le coût.</p>
           </article>
           <article class="card">
             <h4>Plafond 6</h4>
             <p>Le pion ne peut pas dépasser la case 6. L’excédent devient des <strong>dommages</strong> infligés à celui qui fait dépasser. La carte qui provoque le dépassement est <strong>entièrement résolue</strong> avant ces dommages.</p>
           </article>
         </div>
-        <div class="callout example">
-          <div class="lbl">Exemple</div>
-          <p>Pion sur 5 en faveur de A. B joue une carte à 3 OR. 5+3 = 8, soit 2 au-delà de 6. A inflige <strong>2 dommages</strong> à B.</p>
-        </div>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Chimiste.png" alt="Une carte à 2 OR, ici le Chimiste">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple — payer</p>
+            <p>Un joueur paye 5 OR pour mettre son unité en jeu et le pion OR est sur la case 2 en sa faveur. Il doit déplacer le pion OR en direction de son adversaire de 5 cases (le pion OR finit sur la case 3 en faveur de son adversaire).</p>
+            <p class="ex-lbl" style="margin-top:10px">Exemple — plafond 6</p>
+            <p>Si le pion est sur la case 5 en faveur du joueur A et que le joueur B joue une carte coûtant 3 OR, comme il n’est pas possible de dépasser 6 sur l’échelle de l’OR, le joueur A inflige 2 dommages au joueur B (5+3 = 8, 2 OR de plus que la case 6, donc 2 dommages sont infligés).</p>
+          </div>
+        </figure>
         <div class="grid-2">
           <article class="card">
             <h4>Perdre de l’OR</h4>
-            <p>Le pion recule vers zéro de votre côté. Il <strong>ne passe pas</strong> chez l’adversaire. Ex. : vous avez 2, vous perdez 3 → le pion va à 0.</p>
+            <p>Le pion recule vers zéro de votre côté. Il <strong>ne passe pas</strong> chez l’adversaire. Exemple : le joueur B a le pion OR sur la case 2 de son côté ; s’il perd 3 OR, le pion OR est mis sur le zéro, il ne passe pas du côté du joueur A sur 1.</p>
           </article>
           <article class="card">
             <h4>Gagner de l’OR</h4>
@@ -514,10 +557,16 @@
         <h3>Unités</h3>
         <p>Coût en OR, force, points de vie, boîte de texte (traits, mots-clés, capacités). Jouées dans votre citadelle, déplaçables vers des lieux. Certains effets les font arriver directement dans un lieu.</p>
         <p>On place des jetons de dommages sur la carte. Autant de dommages que de PV actuels → l’unité est tuée. En principe on ne dépasse pas les PV. Si à la fin d’un tour une unité encore en jeu a plus de dommages que de PV, on retire le surplus pour égaliser.</p>
-        <div class="callout example">
-          <div class="lbl">Exemple — Les trois meneurs + Directive 227</div>
-          <p>« Les trois meneurs » (ne peut pas être tuée) voient leurs PV temporairement doublés par « Directive 227 ». Elles prennent des dommages au-delà de leurs PV imprimés. À la fin du tour, le surplus au-delà des PV actuels est retiré.</p>
-        </div>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Les_trois_meneurs.png" alt="Les trois meneurs">
+            <img src="../Cartes/Directive_227.png" alt="Directive 227">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple</p>
+            <p>Par exemple dans le cas où l’unité « Les trois meneurs » (qui ne peut pas être tuée) aurait eu ses points de vie temporairement augmentés grâce à la carte « Directive 227 » (qui double les points de vie d’une unité jusqu’à la fin du combat), et que cette unité avait subi des dommages durant un combat qui dépassent ses points de vie imprimés, elle se retrouverait effectivement avec plus de points de dommages que ses points de vie à la fin du tour. Il faut alors retirer le surplus.</p>
+          </div>
+        </figure>
 
         <h3>Bâtiments</h3>
         <p>Coût en OR, traits et capacités. Joués ou entrent en jeu dans la citadelle du propriétaire.</p>
@@ -530,15 +579,45 @@
         </ul>
         <p>Par défaut : <strong>un seul équipement</strong> par carte. Si la carte équipée quitte le jeu, l’équipement revient en main — ou à la défausse s’il est <span class="tag">FRAGILE</span>.</p>
         <p>Si l’état du jeu rend un équipement illégal, on revient immédiatement à une situation légale. Le contrôleur de la carte dont l’état a changé décide comment.</p>
-        <div class="callout example">
-          <div class="lbl">Trois cas fréquents</div>
-          <ol>
-            <li><strong>Bête de somme</strong> peut porter deux équipements. « Chantage » vide sa boîte de texte imprimée : plus le droit d’en avoir deux. Son contrôleur défausse immédiatement l’un des deux.</li>
-            <li>Équipement réservé aux <em>Noble</em> : si l’unité perd le trait Noble, l’équipement quitte le jeu (défausse si FRAGILE, sinon main).</li>
-            <li>Un bâtiment gagne <span class="tag">PAS D'EQUIPEMENT</span> : l’équipement est repris en main (ou défaussé s’il est FRAGILE).</li>
-          </ol>
-          <p>Autre exemple : « Boîte mystérieuse » sur une unité, son action copie un texte d’équipement de lieu (ex. « Automne pluvieux ») → la paire n’est plus légale, la boîte remonte en main.</p>
-        </div>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Boite_mysterieuse.png" alt="Boîte mystérieuse">
+            <img src="../Cartes/Automne_pluvieux.png" alt="Automne pluvieux">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple</p>
+            <p>La carte « Boîte mystérieuse » est sur une unité et l’action sur la Boîte mystérieuse est utilisée pour gagner le texte d’un équipement qui doit être mis sur un lieu, alors les conditions ne sont plus légales entre l’unité et l’équipement (par exemple : prendre le texte de « Automne pluvieux »). À cet instant, la Boîte mystérieuse doit être reprise en main par son propriétaire.</p>
+          </div>
+        </figure>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Bete_de_somme.png" alt="Bête de somme">
+            <img src="../Cartes/Chantage.png" alt="Chantage">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple 1</p>
+            <p>L’unité « Bête de somme » selon son texte peut avoir deux équipements sur elle, alors que normalement il est possible d’en avoir qu’un seul par carte. Si la Bête de somme devient la cible de l’événement « Chantage » (la boîte de texte imprimée de l’unité ciblée est vidée), comme la boîte de texte de l’unité « Bête de somme » est vidée, il n’est plus autorisé d’avoir plus d’un équipement sur l’unité. Vu la perte de son texte imprimé permettant deux équipements, le contrôleur de l’unité décide quel équipement reste sur son unité. Le contrôleur de la « Bête de somme » doit immédiatement défausser un des deux équipements qu’elle a sur elle pour revenir à une situation normale.</p>
+          </div>
+        </figure>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Chevalier.png" alt="Chevalier">
+            <img src="../Cartes/Elixir_des_Dieux.png" alt="Élixir des Dieux">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple 2</p>
+            <p>Si un équipement est équipable uniquement sur une unité Noble et qu’à un moment du jeu, cette unité perde le trait Noble, à ce moment-là, l’équipement doit quitter le jeu. S’il est FRAGILE, il va dans la pile de défausse, sinon il remonte en main de son propriétaire.</p>
+          </div>
+        </figure>
+        <figure class="ex solo">
+          <div class="ex-art">
+            <img src="../Cartes/Les_trois_meneurs.png" alt="Les trois meneurs, PAS D'EQUIPEMENT">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple 3</p>
+            <p>Si un bâtiment a un équipement sur lui et que ce bâtiment gagne le mot-clé <span class="tag">PAS D'EQUIPEMENT</span>, alors il faut récupérer la carte équipement en main. Si l’équipement est FRAGILE, il va dans la pile de défausse de son propriétaire.</p>
+          </div>
+        </figure>
 
         <h3>Événements</h3>
         <p>Coût en OR, traits et capacités. Joués, résolus immédiatement, puis défausse du propriétaire.</p>
@@ -548,16 +627,31 @@
 
         <h3>Lieux</h3>
         <p>Mis en place en début de partie. Autant de dommages que de PV → on résout les effets passifs déclenchés, puis on retourne le lieu sur sa face <strong>ravagé</strong>. S’il n’a pas de dommages mais que ses PV tombent à 0, il est aussi ravagé. Face ravagée : plus de PV, plus d’habilités, il ne garde que ses <strong>traits</strong>, pas d’équipement.</p>
+        <div class="faces">
+          <figure>
+            <img src="img/lieu-grotte.png" alt="Lieu Grotte, face intacte">
+            <figcaption>Face intacte</figcaption>
+          </figure>
+          <figure>
+            <img src="img/lieu-grotte-ravage.png" alt="Lieu Grotte, face ravagée">
+            <figcaption>Face ravagée — plus de PV, plus d’habilités, uniquement les traits</figcaption>
+          </figure>
+        </div>
 
         <h3>Cartes uniques ★</h3>
         <p>Un joueur ne peut contrôler qu’<strong>un exemplaire</strong> du même nom. Si un effet devait lui en donner un second, cette dernière carte va immédiatement à la défausse de son propriétaire. En cas de boucle infinie, elle est mise <strong>hors de la partie</strong> à la place.</p>
 
         <h3>Habilités « Action :… »</h3>
         <p>Vous payez le coût indiqué (même procédure OR que pour jouer une carte) et vous faites ce que le texte dit. <strong>(Max2)</strong> = au plus 2 fois par tour, etc.</p>
-        <div class="callout example">
-          <div class="lbl">Exemple — Chimiste</div>
-          <p>« Action : payez 1 OR pour cherchez une carte Alchimie dans votre deck. Révélez-la et prenez-la en main (Max2). » → payez 1, cherchez un trait Alchimie, montrez-la, prenez-la, mélangez. Faisable 2 fois par tour.</p>
-        </div>
+        <figure class="ex quote">
+          <div class="ex-art">
+            <img src="../Cartes/Chimiste.png" alt="Chimiste">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple</p>
+            <p>La carte « Chimiste » a le texte : « Action : payez 1 OR pour cherchez une carte Alchimie dans votre deck. Révélez-la et prenez-la en main (Max2) ». Cela veut dire que vous pouvez payer 1 OR et vous cherchez dans votre deck de jeu une carte avec le trait Alchimie, la montrer à votre adversaire et la prendre en main. Vous devez mélanger votre deck et votre action est terminée. La mention (Max2) indique que cet effet est faisable 2 fois par tour.</p>
+          </div>
+        </figure>
       </section>
 
       <section class="section" id="concepts">
@@ -580,18 +674,34 @@
             <dt>X, Y, Z</dt>
             <dd>Un coût en X se lit dans le texte de la carte. Si une autre carte se réfère à une valeur imprimée X, Y ou Z, cette lettre vaut <strong>toujours 0</strong>.</dd>
           </div>
-          <div class="item">
-            <dt>Exemple — Dopplegänger</dt>
-            <dd>Coût X+1, force Y, PV Z+1. Vous avez peut-être payé 5, avec 3 de force et 4 PV. Imprimé : coût 1 (0+1), force 0, PV 1 (0+1).</dd>
+        </div>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Doppelganger.png" alt="Doppelgänger">
           </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple</p>
+            <p>La carte « Dopplegänger » a un coût de X+1, une valeur de force de Y et des points de vie Z+1. Quand cette carte a été jouée, le coût pour jouer cette carte a peut-être été de 5 OR, sa force actuelle est peut-être de 3 et ses points de vie de 4. Cependant, son coût imprimé est de 1 (0+1), sa valeur imprimée de force est de zéro et ses points de vie imprimés sont de 1 (0+1).</p>
+          </div>
+        </figure>
+        <div class="dl">
           <div class="item">
             <dt>Choix et effets partiels</dt>
             <dd>Si plusieurs options, il faut en prendre une <strong>faisable</strong> s’il y en a une. Un effet partiellement réalisable se fait au maximum possible.</dd>
           </div>
-          <div class="item">
-            <dt>Exemple — Bannière de peur vs Armure enchantée</dt>
-            <dd>Quitter le combat ou subir 2 dommages. L’Armure ne peut pas quitter le combat → elle subit les dommages. S’il ne lui reste qu’1 PV, 1 dommage suffit : c’est le maximum possible.</dd>
+        </div>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Banniere_de_Peur.png" alt="Bannière de peur">
+            <img src="../Cartes/Armure_Enchantee.png" alt="Armure enchantée">
           </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple</p>
+            <p>L’effet de la « Bannière de peur » qui ciblerait l’unité « Armure enchantée » demanderait au contrôleur de l’« Armure enchantée » de soit quitter le combat, soit subir 2 points de dommages. Comme l’« Armure enchantée » ne peut pas quitter le combat, elle est dans l’obligation de subir 2 points de dommages.</p>
+            <p>Il en est de même quand un effet n’est réalisable que partiellement : il faut le faire à son maximum. Dans la continuité de l’exemple, si l’« Armure enchantée » n’a plus que 1 point de vie restant, elle subit 1 dommage et est tuée. Même si elle aurait dû subir 2 points de dommages, en subir que 1 est valide et ceci remplit la condition partiellement, mais au mieux possible.</p>
+          </div>
+        </figure>
+        <div class="dl">
           <div class="item">
             <dt>Chercher dans le deck</dt>
             <dd>Toujours mélanger après, sauf si le texte dit le contraire. Une carte spécifique cherchée dans le deck ou la défausse doit être <strong>montrée</strong> à l’adversaire. Si vous cherchez « une carte de votre choix », pas besoin de la montrer.</dd>
@@ -624,15 +734,72 @@
           <div class="item"><dt>Envoyé dans / sur / sous le deck</dt><dd>Toujours le deck du propriétaire. Dans le deck → on mélange. Sur ou sous → on ne mélange pas. Plusieurs cartes : le propriétaire choisit l’ordre.</dd></div>
           <div class="item"><dt>Tuée</dt><dd>Unité avec autant ou plus de dommages que de PV, ou 0 PV sans dommages. On met les dommages nécessaires, puis défausse du propriétaire — sauf effets qui retardent ou empêchent (PUGNACE, « les trois meneurs »). Différent de détruit / défaussé : même destination, autre déclencheur.</dd></div>
           <div class="item"><dt>Détruit</dt><dd>Élimination d’un bâtiment ou d’un équipement → défausse du propriétaire. Différent de défausser.</dd></div>
-          <div class="item"><dt>Soigner</dt><dd>Retirer des dommages déjà présents. On ne peut pas « juste » soigner une carte sans dommages. Mais si un effet a une partie faisable avant le soin, elle est autorisée (ex. Seigneur vampire inflige 1 puis se soigne de 1, même à 0 dégât). Infirmier du Bataillon ne peut pas soigner une unité sans au moins 1 dommage.</dd></div>
+          <div class="item"><dt>Soigner</dt><dd>Retirer des dommages déjà présents. On ne peut pas « juste » soigner une carte sans dommages. Mais si un effet a une partie faisable avant le soin, elle est autorisée.</dd></div>
           <div class="item"><dt>Retirer / renvoyer</dt><dd>Sortir la carte du lieu vers la citadelle de son contrôleur (sauf si l’effet précise hors-partie, deck, etc.).</dd></div>
           <div class="item"><dt>Dommage</dt><dd>Jetons sur unités ou lieux. Fin de tour : surplus au-delà des PV retiré pour égaliser.</dd></div>
           <div class="item"><dt>Dommage de dette</dt><dd>Blessures égales au montant d’OR du pion, en phase 5, subies par celui qui n’a pas le pion.</dd></div>
-          <div class="item"><dt>Gagner un mot-clé / trait / texte</dt><dd>S’ajoute à ce qui est imprimé (ex. Épée magique : trait Magicien et +1 force).</dd></div>
+          <div class="item"><dt>Gagner un mot-clé / trait / texte</dt><dd>S’ajoute à ce qui est imprimé.</dd></div>
           <div class="item"><dt>Boîte de texte imprimée</dt><dd>Uniquement ce qui est imprimé, pas le texte gagné. Sur un lieu : texte, traits, mots-clés — pas les PV ni la force. Sur un plan : texte et traits, jamais l’initiative.</dd></div>
-          <div class="item"><dt>Effets passifs</dt><dd>Permanents, ou automatiques quand une condition apparaît. Ex. ★Phare : +2 PV à vos lieux non ravagés sans boîte de texte imprimée. ★Commission des Taxes : en fin d’organisation, gagnez 1 OR par Noble que vous contrôlez.</dd></div>
-          <div class="item"><dt>Quitter le jeu</dt><dd>Défaussée, tuée, détruite, remontée en main, mise dans/sur/sous le deck, ou hors de la partie — elle n’est plus visible en jeu. Ex. Pixie : en quittant le jeu, mélanger une carte de la défausse dans le deck, puis Pixie hors de la partie (même si elle « devrait » aller à la défausse).</dd></div>
+          <div class="item"><dt>Effets passifs</dt><dd>Permanents, ou automatiques quand une condition apparaît.</dd></div>
+          <div class="item"><dt>Quitter le jeu</dt><dd>Défaussée, tuée, détruite, remontée en main, mise dans/sur/sous le deck, ou hors de la partie — elle n’est plus visible en jeu.</dd></div>
         </div>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Infirmier_du_Bataillon.png" alt="Infirmier du Bataillon">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple — En combat</p>
+            <p>Si une unité possède le texte : « Action : En combat, payez 1 OR pour infliger 1 dommage à une unité adverse dans le combat », cela signifie que pendant le déroulement du combat du lieu en cours, le contrôleur de l’unité peut payer 1 OR et infliger à une unité adverse 1 point de dommage. Il n’est pas possible d’infliger ce point de dommage à une unité adverse qui se trouve dans un autre lieu que celui du combat en cours. Il n’est pas non plus possible d’utiliser la capacité de cette unité si elle se trouve dans un lieu qui n’est pas le combat en cours.</p>
+            <p>La carte « Infirmier du Bataillon » ne peut pas utiliser son action de soigner une unité qui n’a pas au moins 1 dommage sur elle.</p>
+          </div>
+        </figure>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Seigneur_Vampire.png" alt="Seigneur vampire">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple — Soigner</p>
+            <p>La carte « Seigneur vampire » (sans avoir de dommage sur lui) peut, en utilisant son action, infliger 1 dommage à une unité adverse, puis se soigner de 1 dommage. C’est autorisé : une partie de l’effet est faisable avant le soin.</p>
+          </div>
+        </figure>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Epee_Magique.png" alt="Épée magique">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple — Gagner un trait</p>
+            <p>La carte « Épée magique » fait gagner à l’unité équipée le trait Magicien et l’unité bénéficie d’une augmentation de +1 de force.</p>
+          </div>
+        </figure>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Phare.png" alt="Phare">
+            <img src="../Cartes/Comission_des_Taxes.png" alt="Commission des Taxes">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple — Effets passifs</p>
+            <p>Exemple d’un effet permanent : la carte « ★Phare » donne à vos lieux non ravagés sans boîte de texte imprimée un bonus permanent de +2 points de vie.</p>
+            <p>Exemple d’un effet déclenché automatiquement : la carte « ★Commission des Taxes » se déclenche automatiquement à la fin de la phase d’Organisation : vous gagnez 1 OR par Noble que vous contrôlez.</p>
+          </div>
+        </figure>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Pixie.png" alt="Pixie">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple — Quitter le jeu</p>
+            <p>La carte Pixie dit que quand elle quitte le jeu, le contrôleur peut mélanger une carte de sa défausse dans son deck et mettre la Pixie hors de la partie. Si la Pixie est tuée, elle ne va pas à la défausse : elle est mise hors de la partie après que le contrôleur a mélangé une carte de sa défausse dans son deck.</p>
+          </div>
+        </figure>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Tour_des_Mysteres.png" alt="Tour des Mystères">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple — (Max N)</p>
+            <p>Le bâtiment « La tour des Mystères » peut donner un trait (Max2), donc peut être déclenché au maximum 2 fois dans un même tour.</p>
+          </div>
+        </figure>
       </section>
 
       <section class="section" id="mots-cles">
@@ -645,11 +812,11 @@
           </article>
           <article class="kw ethere">
             <h3>ETHERE</h3>
-            <p>Ne subit que les dommages des cartes <strong>Magicien</strong> et les dommages de dette. Immunisée à POISON et MORTEL. Un MORTEL issu d’une carte Magicien est traité comme normal. Si le mot-clé est perdu, POISON et MORTEL s’appliquent normalement. Action : défausser une carte de sa main pour retirer ETHERE jusqu’à la fin de la phase. Ex. : « Éclair » touche une ETHERE car il a le trait Magicien.</p>
+            <p>Ne subit que les dommages des cartes <strong>Magicien</strong> et les dommages de dette. Immunisée à POISON et MORTEL. Un MORTEL issu d’une carte Magicien est traité comme normal. Si le mot-clé est perdu, POISON et MORTEL s’appliquent normalement. Action : défausser une carte de sa main pour retirer ETHERE jusqu’à la fin de la phase.</p>
           </article>
           <article class="kw poison">
             <h3>POISON</h3>
-            <p>Après la résolution, avant le retour à la citadelle : autant de dommages supplémentaires que de POISON subis. Pendant un combat (ex. « Duel »), l’effet s’applique <strong>immédiatement</strong>. POISON + MORTEL sur la même unité : le contrôleur choisit la nature des dommages infligés.</p>
+            <p>Après la résolution, avant le retour à la citadelle : autant de dommages supplémentaires que de POISON subis. Pendant un combat, si une unité subit des dommages POISON (par exemple via « Duel »), l’effet s’applique <strong>immédiatement</strong>. POISON + MORTEL sur la même unité : le contrôleur choisit la nature des dommages infligés.</p>
           </article>
           <article class="kw mortel">
             <h3>MORTEL</h3>
@@ -676,6 +843,25 @@
             <p>Ne compte pas dans la limite de quatre cartes jouées en phase d’organisation.</p>
           </article>
         </div>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Eclair.png" alt="Éclair">
+            <img src="../Cartes/Fantome.png" alt="Fantôme, ETHERE">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple — ETHERE</p>
+            <p>La carte « Éclair » affecte une unité ETHERE parce que la carte « Éclair » possède le trait Magicien. Une unité ETHERE qui subit des dommages MORTEL d’une carte Magicien les considère comme normaux.</p>
+          </div>
+        </figure>
+        <figure class="ex">
+          <div class="ex-art">
+            <img src="../Cartes/Duel.png" alt="Duel">
+          </div>
+          <div class="ex-body">
+            <p class="ex-lbl">Exemple — POISON et MORTEL</p>
+            <p>Si une unité subit des dommages POISON pendant un combat (par exemple la carte « Duel »), on applique les effets du POISON immédiatement. Si une unité subit des dommages MORTEL pendant un combat (par exemple « Duel »), l’effet MORTEL est résolu immédiatement et non pas à la fin du combat. Si une unité a POISON et MORTEL en même temps, quand des dommages sont infligés par cette unité, le contrôleur décide de la nature de ces dommages.</p>
+          </div>
+        </figure>
       </section>
 
       <section class="section" id="construction">
@@ -713,13 +899,22 @@
       </section>
 
       <footer class="footer">
-        <p><strong>Pixel of Glory</strong> — document de règles version 0.10. Toutes les informations du livret d’origine sont ici, réorganisées pour la lecture. Ouvrez ce fichier dans un navigateur ; le bouton Imprimer produit un PDF.</p>
+        <p><strong>Pixel of Glory</strong> — document de règles version 0.10. Ouvrez ce fichier dans un navigateur. Le bouton <strong>Imprimer / PDF</strong> exporte le livret : la couverture (griffon) est la page 1, les illustrations et les cartes d’exemples sont incluses.</p>
       </footer>
     </main>
   </div>
 
-  <button class="print-btn" type="button" onclick="window.print()">Imprimer / PDF</button>
+  <button class="print-btn" type="button" id="print-btn">Imprimer / PDF</button>
   <script>
+    document.getElementById('print-btn').addEventListener('click', function () {
+      var imgs = Array.prototype.slice.call(document.images);
+      Promise.all(imgs.map(function (img) {
+        if (img.complete) return Promise.resolve();
+        return new Promise(function (res) { img.onload = res; img.onerror = res; });
+      })).then(function () {
+        setTimeout(function () { window.print(); }, 200);
+      });
+    });
     document.querySelectorAll('.nav a').forEach(function (a) {
       a.addEventListener('click', function () {
         document.body.classList.remove('nav-open');

@@ -307,6 +307,96 @@ a { color: var(--crimson-dark); }
 .callout.repyr .lbl { color: var(--purple); }
 .callout.win { border-color: #c9a227; background: linear-gradient(180deg, #fff8e0, #f3e4b0); border-left: 5px solid var(--gold); }
 
+/* ---------- EXEMPLES (cartes du jeu) ---------- */
+.ex {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px 20px;
+  align-items: start;
+  background:
+    linear-gradient(180deg, #f4f8fb, #eaf1f6);
+  border: 1px solid #b9c9d6;
+  border-left: 6px solid var(--steel);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 16px 0;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset;
+}
+.ex .ex-lbl {
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--steel);
+  margin: 0 0 6px;
+}
+.ex .ex-body p { margin: 0 0 8px; }
+.ex .ex-body p:last-child { margin-bottom: 0; }
+.ex-art {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.ex-art img {
+  width: 148px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 8px 18px rgba(28, 20, 16, 0.28);
+  background: #1c1410;
+}
+.ex.solo .ex-art img { width: 160px; }
+.ex.quote .ex-body p:first-of-type {
+  font-style: italic;
+}
+
+.type-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin: 16px 0 8px;
+}
+.type-row figure {
+  margin: 0;
+  text-align: center;
+}
+.type-row img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  background: #1c1410;
+}
+.type-row figcaption {
+  font-family: Cinzel, serif;
+  font-size: 12px;
+  margin-top: 6px;
+  color: var(--wine);
+}
+
+.faces {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 14px 0;
+}
+.faces figure { margin: 0; text-align: center; }
+.faces img {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  background: #1c1410;
+}
+.faces figcaption {
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 13px;
+  margin-top: 6px;
+  color: var(--ink-soft);
+}
+
 .steps {
   counter-reset: step;
   list-style: none;
@@ -611,7 +701,7 @@ tr:last-child td { border-bottom: 0; }
   cursor: pointer;
 }
 
-@media (max-width: 980px) {
+@media screen and (max-width: 980px) {
   .nav { transform: translateX(-100%); transition: 0.2s; }
   body.nav-open .nav { transform: none; }
   .mobile-bar {
@@ -646,19 +736,89 @@ tr:last-child td { border-bottom: 0; }
   .cover .inner { padding: 36px 18px 56px; }
   .page { padding: 28px 16px 96px; }
   .section { scroll-margin-top: 72px; }
-  .grid-2, .grid-3, .grid-5, .phase-overview, .kw-grid, .ravage-levels { grid-template-columns: 1fr; }
+  .grid-2, .grid-3, .grid-5, .phase-overview, .kw-grid, .ravage-levels, .faces { grid-template-columns: 1fr; }
+  .type-row { grid-template-columns: repeat(3, 1fr); }
+  .ex { grid-template-columns: 1fr; }
+  .ex-art { justify-content: center; }
+  .ex-art img { width: 120px; }
   .board .r-opp, .board .r-mid, .board .r-you { grid-template-columns: 1fr; }
   .track { grid-template-columns: repeat(7, 1fr); }
   .print-btn { right: 12px; bottom: 12px; font-size: 12px; padding: 8px 12px; }
   body.nav-open .scrim { display: block; }
 }
 
+@page {
+  size: A4;
+  margin: 12mm 11mm 14mm;
+}
+@page :first {
+  margin: 0;
+}
+
 @media print {
-  .nav, .mobile-bar, .print-btn, .scrim { display: none !important; }
-  .wrap { margin: 0; }
-  body { background: #fff; }
-  .cover { min-height: 100vh; page-break-after: always; }
-  .page { background: #fff; padding: 16px 0; }
-  .section { break-inside: avoid; }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  html, body {
+    background: #fff !important;
+    margin: 0;
+  }
+  .nav, .mobile-bar, .print-btn, .scrim, .skip { display: none !important; }
+  .wrap { margin: 0 !important; }
   a { color: inherit; text-decoration: none; }
+
+  .cover {
+    width: 210mm;
+    height: 297mm;
+    min-height: 297mm;
+    max-height: 297mm;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    break-after: page;
+    page-break-after: always;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .cover img.hero {
+    position: absolute;
+    inset: 0;
+    width: 210mm;
+    height: 297mm;
+    max-width: none;
+    object-fit: cover;
+    object-position: 50% 35%;
+    display: block;
+  }
+  .cover .inner { padding: 36mm 16mm 18mm; }
+
+  .page {
+    background: var(--parchment);
+    padding: 0;
+  }
+  .section {
+    break-inside: auto;
+    page-break-inside: auto;
+    max-width: none;
+    margin-bottom: 18px;
+  }
+  .banner, .card, .callout, .ex, .kw, .phase-head, .board, .type-row, .faces, .ravage-levels {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .banner {
+    height: 42mm;
+    box-shadow: none;
+  }
+  img {
+    max-width: 100%;
+    break-inside: avoid;
+  }
+  .ex-art img { width: 38mm; }
+  .ex.solo .ex-art img { width: 42mm; }
+  .type-row img, .faces img { box-shadow: none; }
+  .type-row { grid-template-columns: repeat(6, 1fr); }
+  .print-btn { display: none !important; }
 }
