@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pixel of Glory — Règles v0.10</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;700;800&family=Pixelify+Sans:wght@500;700&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#contenu">Aller au contenu</a>
+  <button class="scrim" type="button" aria-label="Fermer le sommaire" onclick="document.body.classList.remove('nav-open')"></button>
+
+  <nav class="nav" aria-label="Sommaire">
+    <p class="brand-mini">PIXEL OF GLORY</p>
+    <p class="ver">Règles du jeu · version 0.10</p>
+    <p class="sec">Découvrir</p>
+    <a href="#couverture">Couverture</a>
+    <a href="#essentiel">L’essentiel</a>
+    <a href="#termes">Termes de base</a>
+    <a href="#mise-en-place">Mise en place</a>
+    <a href="#tour">Un tour en 5 phases</a>
+    <p class="sec">Les phases</p>
+    <a class="p1" href="#planification">1. Planification</a>
+    <a class="p2" href="#organisation">2. Organisation</a>
+    <a class="p3" href="#assignation">3. Assignation</a>
+    <a class="p4" href="#combat">4. Combat</a>
+    <a class="p5" href="#dette">5. Dette</a>
+    <p class="sec">Référence</p>
+    <a href="#or">Échelle de l’OR</a>
+    <a href="#cartes">Les cartes</a>
+    <a href="#concepts">Concepts</a>
+    <a href="#glossaire">Glossaire</a>
+    <a href="#mots-cles">Mots-clés</a>
+    <a href="#construction">Construction des decks</a>
+    <a href="#victoire">Victoire</a>
+  </nav>
+
+  <div class="wrap">
+    <div class="mobile-bar">
+      <span class="brand">PIXEL OF GLORY</span>
+      <button type="button" onclick="document.body.classList.toggle('nav-open')">Sommaire</button>
+    </div>
+    <header class="cover" id="couverture">
+      <img class="hero" src="../Images_Alt_32bit/Griffon.png" alt="Un griffon survole deux armées dans une vallée en feu.">
+      <div class="veil"></div>
+      <div class="inner">
+        <p class="eyebrow">Jeu de confrontation · 2 joueurs</p>
+        <h1><span class="pixel">PIXEL</span> of Glory</h1>
+        <p class="lead">Conquérez la citadelle adverse. Épuisez son deck. Que la gloire soit pixelisée.</p>
+        <div class="pills">
+          <span class="pill">Règles v0.10</span>
+          <span class="pill">Deck de 40 cartes</span>
+          <span class="pill">7 plans</span>
+          <span class="pill">3 lieux, dont 1 QG</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="page" id="contenu">
+
+      <section class="section" id="essentiel">
+        <p class="kicker">Chapitre I</p>
+        <h2>L’essentiel</h2>
+        <div class="banner">
+          <img src="../Images_Alt_32bit/Forteresse.png" alt="Citadelle de pierre sous un ciel d’orage.">
+          <div class="cap">Deux citadelles. Un champ de bataille. Une seule gloire.</div>
+        </div>
+        <p><strong>Pixel of Glory</strong> est un jeu de confrontation à deux. Chaque joueur mène des unités, des bâtiments et des équipements pour frapper les lieux de l’adversaire — jusqu’à épuiser son deck.</p>
+        <div class="callout win">
+          <div class="lbl">Condition de victoire</div>
+          <p>Vous gagnez dès que le <strong>deck de jeu</strong> de l’adversaire n’a plus aucune carte. Si les deux decks s’épuisent en même temps, des départages s’appliquent (voir <a href="#victoire">Victoire</a>).</p>
+        </div>
+        <div class="grid-2">
+          <article class="card">
+            <h3>Le champ de bataille</h3>
+            <p>Les adversaires s’affrontent sur des <strong>cartes lieux</strong>. Chaque joueur possède toujours <strong>un lieu QG</strong> et <strong>deux lieux non-QG</strong>.</p>
+          </article>
+          <article class="card">
+            <h3>Ce que vous jouez</h3>
+            <p>Depuis votre main, vous jouez des <strong>unités</strong>, des <strong>bâtiments</strong>, des <strong>équipements</strong> et des <strong>événements</strong>. Vous attaquez les lieux adverses tout en défendant les vôtres.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="termes">
+        <p class="kicker">Vocabulaire</p>
+        <h2>Quelques termes pour commencer</h2>
+        <div class="grid-2">
+          <article class="card term">
+            <strong>Deck de jeu</strong>
+            <p>Votre pioche : un paquet de <strong>40 cartes</strong> que vous avez assemblé (unités, bâtiments, équipements, événements).</p>
+          </article>
+          <article class="card term">
+            <strong>Deck de plans</strong>
+            <p>Paquet séparé, de <strong>7 plans différents</strong>. Un plan est révélé chaque tour. Les plans révélés restent visibles et consultables. Les plans déjà utilisés forment une pile face visible.</p>
+          </article>
+          <article class="card term">
+            <strong>Défausse</strong>
+            <p>Événements joués, unités tuées ou défaussées, bâtiments et équipements détruits ou défaussés. La pile est <strong>consultable à tout moment</strong> par les deux joueurs.</p>
+          </article>
+          <article class="card term">
+            <strong>Jeton initiative</strong>
+            <p>Indique qui a l’initiative ce tour. Ce joueur choisit l’ordre des effets simultanés et a la priorité d’action.</p>
+          </article>
+          <article class="card term">
+            <strong>Zone citadelle</strong>
+            <p>Là où les unités et les bâtiments sont joués. Sauf indication contraire, un effet qui fait entrer une unité ou un bâtiment en jeu le place dans la citadelle.</p>
+          </article>
+          <article class="card term">
+            <strong>REPYR</strong>
+            <p><em>Résoudre les effets passifs y relatifs</em> (ordre choisi par le joueur avec l’initiative). L’acronyme évite de répéter cette phrase partout dans les règles.</p>
+          </article>
+        </div>
+        <div class="callout repyr">
+          <div class="lbl">À retenir — REPYR</div>
+          <p>Après presque chaque action, on résout les effets passifs concernés. C’est toujours le joueur qui a le jeton initiative qui décide de l’ordre si plusieurs effets se déclenchent en même temps.</p>
+        </div>
+      </section>
+
+      <section class="section" id="mise-en-place">
+        <p class="kicker">Chapitre II</p>
+        <h2>Mise en place</h2>
+        <ol class="steps">
+          <li>Chaque joueur place devant lui les <strong>3 lieux</strong> qu’il a choisis : <strong>1 QG</strong> et <strong>2 non-QG</strong>.</li>
+          <li>L’<strong>échelle de l’OR</strong> est posée sur le côté. Le pion OR démarre sur la <strong>case zéro</strong>.</li>
+          <li>Chaque joueur mélange son <strong>deck de jeu</strong> et le place dans l’aire de jeu, ainsi que son <strong>deck de plans</strong>.</li>
+          <li>Chaque joueur pioche <strong>7 cartes</strong>.</li>
+          <li>Mulligan possible (ci-dessous), puis la partie commence par la phase de planification.</li>
+        </ol>
+
+        <div class="callout note">
+          <div class="lbl">Mulligan</div>
+          <p>Au début de partie, un joueur peut mettre de côté <strong>au maximum 4 cartes</strong> de sa main de départ, piocher autant de cartes, puis mélanger les cartes mises de côté dans son deck.</p>
+        </div>
+
+        <h3>Aire de jeu (schéma)</h3>
+        <div class="board" aria-label="Schéma de l’aire de jeu">
+          <div class="row r-opp">
+            <div class="slot"><b>Lieu non-QG</b>adversaire</div>
+            <div class="slot qg"><b>QG</b>adversaire</div>
+            <div class="slot"><b>Lieu non-QG</b>adversaire</div>
+          </div>
+          <div class="row r-mid">
+            <div class="slot"><b>Plans</b>révélé · utilisés · deck (secret)</div>
+            <div class="slot gold"><b>Échelle de l’OR</b>pion sur 0 au départ</div>
+            <div class="slot"><b>Jeton initiative</b>attribué en planification</div>
+          </div>
+          <div class="row">
+            <div class="slot cit"><b>Citadelle</b>unités et bâtiments (les vôtres)</div>
+          </div>
+          <div class="row r-you">
+            <div class="slot"><b>Lieu non-QG</b>à vous</div>
+            <div class="slot qg"><b>QG</b>à vous</div>
+            <div class="slot"><b>Lieu non-QG</b>à vous</div>
+          </div>
+          <div class="row r-you">
+            <div class="slot"><b>Deck de jeu</b>40 cartes</div>
+            <div class="slot"><b>Main</b>7 cartes (limite de base)</div>
+            <div class="slot"><b>Défausse</b>face visible, consultable</div>
+          </div>
+        </div>
+        <p style="margin-top:10px;font-size:14px;color:var(--ink-soft)">Le plan révélé et la pile des plans utilisés restent consultables. Le deck de plans non utilisés est <strong>secret</strong> : seul son propriétaire peut le consulter.</p>
+      </section>
+
+      <section class="section" id="tour">
+        <p class="kicker">Chapitre III</p>
+        <h2>Un tour en cinq phases</h2>
+        <p>Chaque tour suit toujours le même rythme. Cliquez une phase pour aller au détail.</p>
+        <div class="phase-overview">
+          <a class="po p1" href="#planification"><span class="n">1</span><span class="t">Planification</span><span class="d">Révéler un plan et attribuer l’initiative.</span></a>
+          <a class="po p2" href="#organisation"><span class="n">2</span><span class="t">Organisation</span><span class="d">Jouer unités, bâtiments, équipements, événements.</span></a>
+          <a class="po p3" href="#assignation"><span class="n">3</span><span class="t">Assignation</span><span class="d">Envoyer les unités en attaque ou en défense.</span></a>
+          <a class="po p4" href="#combat"><span class="n">4</span><span class="t">Combat</span><span class="d">Résoudre chaque lieu, infliger les dommages.</span></a>
+          <a class="po p5" href="#dette"><span class="n">5</span><span class="t">Dette</span><span class="d">Payer l’OR, défausser, compléter la main.</span></a>
+        </div>
+        <div class="callout note">
+          <div class="lbl">Début et fin de chaque phase</div>
+          <p>Le joueur avec le jeton initiative choisit l’ordre des <strong>effets passifs de début de phase</strong>, puis ceux de <strong>fin de phase</strong>. C’est vrai pour les cinq phases.</p>
+        </div>
+      </section>
+
+      <section class="section" id="planification">
+        <div class="phase-head p1">
+          <div class="num">1</div>
+          <div>
+            <h2>Planification</h2>
+            <p>On révèle un plan, on donne l’initiative, on résout les effets « À l’instant :… ».</p>
+          </div>
+        </div>
+        <div class="banner">
+          <img src="../Images_Alt_16bit/Roi_Tamakvak.png" alt="Un roi sur son trône reçoit un tribut d’or.">
+          <div class="cap">Qui prendra le jeton ? La plus haute initiative décide.</div>
+        </div>
+        <ol class="steps">
+          <li>Le plan du tour précédent de chaque joueur va dans la pile des <strong>plans déjà utilisés</strong>.</li>
+          <li>Chaque joueur choisit un plan encore disponible dans son deck de plans et le pose <strong>face cachée</strong>.</li>
+          <li>S’il n’y a plus de plans disponibles, le joueur récupère <strong>tous</strong> ses plans déjà utilisés : son deck de plans est à nouveau complet.</li>
+          <li><strong>Révélation simultanée</strong> des plans.</li>
+          <li>Le joueur avec la <strong>valeur d’initiative la plus haute</strong> décide qui prend le jeton Initiative. En cas d’égalité, c’est celui qui <em>n’a pas</em> le jeton (obtenu le tour précédent ou par un effet) qui décide. Au premier tour, en cas d’égalité : <strong>tirage au sort</strong>.</li>
+          <li>Les effets passifs des plans sont en vigueur.</li>
+          <li>Le joueur avec le jeton choisit quel effet <strong>« À l’instant :… »</strong> est résolu en premier, puis en second.</li>
+          <li>Le plan révélé est posé de façon consultable. La pile des plans utilisés aussi. Le paquet non utilisé reste secret.</li>
+        </ol>
+        <div class="callout important">
+          <div class="lbl">Initiative</div>
+          <p>Le joueur au jeton décide aussi de l’ordre si plusieurs effets passifs doivent se résoudre en même temps.</p>
+        </div>
+      </section>
+
+      <section class="section" id="organisation">
+        <div class="phase-head p2">
+          <div class="num">2</div>
+          <div>
+            <h2>Organisation</h2>
+            <p>On construit. On équipe. On prépare la citadelle.</p>
+          </div>
+        </div>
+        <div class="banner">
+          <img src="../Images_Alt_32bit/Forgeron.png" alt="Un forgeron frappe un lingot incandescent.">
+          <div class="cap">Quatre cartes non-RAPIDE, puis la priorité alterne.</div>
+        </div>
+        <p>Le joueur avec le jeton a la <strong>priorité</strong> pour la première action. Les joueurs jouent chacun leur tour. Pendant cette phase, un joueur peut jouer un <strong>maximum de quatre cartes non-RAPIDE</strong> depuis sa main. Les cartes <span class="tag">RAPIDE</span> ne comptent pas dans cette limite.</p>
+        <h3>Actions possibles</h3>
+        <div class="actions">
+          <div class="action"><div class="ico">♟</div><div><strong>Jouer une unité</strong> depuis sa main, dans sa citadelle. (REPYR)</div></div>
+          <div class="action"><div class="ico">⚔</div><div><strong>Jouer un équipement</strong> sur une unité, un lieu ou un bâtiment. (REPYR)</div></div>
+          <div class="action"><div class="ico">🏛</div><div><strong>Jouer un bâtiment</strong> depuis sa main, dans sa citadelle. (REPYR)</div></div>
+          <div class="action"><div class="ico">📜</div><div><strong>Jouer un événement</strong> depuis sa main. (REPYR)</div></div>
+          <div class="action"><div class="ico">⚡</div><div><strong>Déclencher une habilité</strong> « Action :… » sur une carte. (REPYR)</div></div>
+          <div class="action"><div class="ico">👻</div><div><strong>Défausser une carte de sa main</strong> pour retirer le mot-clé <span class="tag">ETHERE</span> d’une carte jusqu’à la fin de la phase. (REPYR)</div></div>
+          <div class="action"><div class="ico">♻</div><div><strong>Jouer une carte depuis la défausse</strong> si la carte ou un effet l’autorise. (REPYR)</div></div>
+          <div class="action"><div class="ico">⏭</div><div><strong>Passer.</strong> Si les deux joueurs passent consécutivement, la phase se termine.</div></div>
+        </div>
+      </section>
+
+      <section class="section" id="assignation">
+        <div class="phase-head p3">
+          <div class="num">3</div>
+          <div>
+            <h2>Assignation</h2>
+            <p>On envoie les troupes : attaque sur les lieux adverses, défense sur les siens.</p>
+          </div>
+        </div>
+        <div class="banner">
+          <img src="../Images_Alt_32bit/Soldat.png" alt="Un soldat sous la pluie devant un camp retranché.">
+          <div class="cap">Depuis la citadelle vers un lieu — une unité à la fois.</div>
+        </div>
+        <p>Les joueurs jouent chacun leur tour (priorité au joueur avec l’initiative).</p>
+        <div class="actions">
+          <div class="action"><div class="ico">⚡</div><div><strong>Déclencher une habilité</strong> « Action :… ». (REPYR)</div></div>
+          <div class="action"><div class="ico">📜</div><div><strong>Jouer un événement.</strong> (REPYR)</div></div>
+          <div class="action"><div class="ico">♻</div><div><strong>Jouer depuis la défausse</strong> si autorisé. (REPYR)</div></div>
+          <div class="action"><div class="ico">➤</div><div><strong>Assigner une unité en attaque</strong> : la déplacer de sa citadelle vers un lieu de l’adversaire. (REPYR)</div></div>
+          <div class="action"><div class="ico">🛡</div><div><strong>Assigner une unité en défense</strong> : la déplacer de sa citadelle vers un de ses propres lieux. (REPYR)</div></div>
+          <div class="action"><div class="ico">👻</div><div><strong>Défausser une carte</strong> pour retirer <span class="tag">ETHERE</span> jusqu’à la fin de la phase. (REPYR)</div></div>
+          <div class="action"><div class="ico">⏭</div><div><strong>Passer.</strong> Deux passes consécutives terminent la phase.</div></div>
+        </div>
+        <div class="callout important">
+          <div class="lbl">Restrictions</div>
+          <p>Une unité qui <strong>ne peut pas attaquer</strong> ou <strong>ne peut pas être en attaque</strong> ne peut pas être assignée en attaque. Une unité qui <strong>ne peut pas défendre</strong> ou <strong>ne peut pas être en défense</strong> ne peut pas être assignée en défense.</p>
+        </div>
+      </section>
+
+      <section class="section" id="combat">
+        <div class="phase-head p4">
+          <div class="num">4</div>
+          <div>
+            <h2>Combat</h2>
+            <p>On choisit un lieu, on joue des actions, puis on calcule les dommages.</p>
+          </div>
+        </div>
+        <div class="banner">
+          <img src="../Images_Alt_32bit/Vampire_en_chasse.png" alt="Un vampire émerge d’une tombe au clair de lune.">
+          <div class="cap">Un lieu, un combat. Une fois résolu, on n’y revient pas.</div>
+        </div>
+
+        <h3>Quand y a-t-il combat ?</h3>
+        <div class="callout important">
+          <div class="lbl">Règle d’or</div>
+          <p>Il y a combat si <strong>une unité est présente au début de la phase</strong> dans un lieu — qu’elle soit en défense ou en attaque. On ne peut pas <em>créer</em> un combat en faisant apparaître une unité dans un lieu vide au début de la phase.</p>
+        </div>
+        <ul>
+          <li>Quand un combat a été résolu dans un lieu, il est <strong>impossible</strong> d’y retourner ou d’y envoyer des unités pour y refaire un combat.</li>
+          <li>Si des unités se retrouvent ensuite (par un effet) dans un lieu déjà résolu, elles rentrent dans la citadelle de leur contrôleur <strong>à la fin de la phase de combat</strong>.</li>
+          <li>Si un effet indique qu’il n’y a <strong>pas de résolution de combat</strong> dans un lieu où des unités se trouvent, il faut quand même <strong>choisir ce lieu</strong> pendant la phase (pour y jouer des actions). Quand les deux joueurs ont passé : pas de calcul de dommages, les unités rentrent à leur citadelle.</li>
+        </ul>
+        <p>Le joueur au jeton choisit l’<strong>ordre des combats</strong>. Tous les combats doivent être traités, y compris les lieux « sans résolution ».</p>
+
+        <h3>Pendant un combat (avant le calcul)</h3>
+        <p>Le joueur au jeton choisit un combat. Avant la résolution, les joueurs peuvent (priorité à l’initiative) :</p>
+        <div class="actions">
+          <div class="action"><div class="ico">⚡</div><div>Déclencher une habilité « Action :… ». (REPYR)</div></div>
+          <div class="action"><div class="ico">📜</div><div>Jouer un événement. (REPYR)</div></div>
+          <div class="action"><div class="ico">♻</div><div>Jouer depuis la défausse si autorisé. (REPYR)</div></div>
+          <div class="action"><div class="ico">👻</div><div>Défausser une carte pour retirer <span class="tag">ETHERE</span> jusqu’à la fin de la phase. (REPYR)</div></div>
+          <div class="action"><div class="ico">⏭</div><div>Passer. Deux passes consécutives → <strong>résolution du combat</strong>.</div></div>
+        </div>
+
+        <h3>Calcul de la force</h3>
+        <p>On compte la force de chaque camp : valeur de force des unités (plus ou moins modificateurs), équipements, lieux, et événements qui ajoutent de la force (ex. « Volée de flèches +2 FOR »).</p>
+        <p>On <strong>sépare</strong> la force des cartes <strong>Magicien</strong>, <span class="tag">POISON</span> et <span class="tag">MORTEL</span> des autres cartes.</p>
+        <div class="grid-3">
+          <article class="card">
+            <h4>Magicien</h4>
+            <p>Seuls ces dommages affectent les cartes <span class="tag">ETHERE</span>.</p>
+          </article>
+          <article class="card">
+            <h4>POISON</h4>
+            <p>Chaque dommage POISON inflige 1 dommage supplémentaire à l’unité survivante, juste avant son retour à la citadelle.</p>
+          </article>
+          <article class="card">
+            <h4>MORTEL</h4>
+            <p>Tue l’unité survivante après le combat, juste avant son retour à la citadelle.</p>
+          </article>
+        </div>
+        <p>Les unités <span class="tag">PUGNACE</span> ne sont tuées qu’à la <strong>fin de la phase de combat</strong>.</p>
+
+        <h3>Protocole d’attribution des dommages</h3>
+        <div class="flow">
+          <div class="node"><strong>1. PRECIS d’abord.</strong> Les joueurs qui ont des unités <span class="tag">PRECIS</span> distribuent ces dommages aux unités adverses de leur choix (toute nature : Magicien, POISON, etc.). L’ordre entre ces joueurs est décidé par l’initiative. S’il n’y a plus d’unités qui peuvent prendre de dommages, on peut les mettre sur le lieu attaqué. Le surplus encore non distribuable suit la procédure normale (deck, ou main si QG).</div>
+          <div class="arrow">↓</div>
+          <div class="node"><strong>2. Dommages non-PRECIS.</strong> C’est l’<em>adversaire</em> qui les répartit, dans l’ordre de priorité. L’ordre des joueurs qui infligent est décidé par l’initiative. Les dommages Magicien vont <strong>d’abord au maximum sur les ETHERE</strong>, puis sur les autres unités. Il est interdit d’en mettre sur une non-ETHERE pour épargner une ETHERE.</div>
+          <div class="arrow">↓</div>
+          <div class="node"><strong>Priorité générale :</strong> unités → lieu → deck (ou main puis deck si QG ravagé).</div>
+        </div>
+
+        <div class="callout note">
+          <div class="lbl">Lieux, surplus, équipement</div>
+          <ul>
+            <li>Les lieux peuvent subir tous types de dommages (POISON, MORTEL, etc.) mais ceux-ci y sont considérés comme <strong>normaux</strong>.</li>
+            <li>Une unité est tuée, un lieu est ravagé, quand il a subi autant de dommages (ou plus) que ses points de vie. Le surplus sur une unité est <strong>ignoré</strong>.</li>
+            <li>Quand un lieu n’a plus de PV, il est <strong>ravagé</strong> : on le retourne sur sa face ravagée. Il n’a plus de points de vie pour le reste de la partie. Le surplus de dommages qui vient de le ravager est <strong>ignoré</strong>.</li>
+            <li>Quand une unité quitte le jeu ou qu’un lieu est ravagé, l’équipement qui était dessus retourne dans la <strong>main</strong> de son propriétaire — sauf s’il est <span class="tag">FRAGILE</span> : alors il va à la défausse.</li>
+          </ul>
+        </div>
+
+        <h3>Lieu déjà ravagé</h3>
+        <div class="grid-2">
+          <article class="card">
+            <h4>Non-QG déjà ravagé</h4>
+            <p>Après distribution aux unités en défense en priorité, le surplus va au <strong>deck</strong> adverse (1 carte du dessus par point). Le joueur qui inflige bénéficie d’un <strong>bonus de ravage</strong>.</p>
+          </article>
+          <article class="card">
+            <h4>QG déjà ravagé</h4>
+            <p>Après les unités, le surplus va à la <strong>main</strong> (défausse au hasard), puis au deck s’il n’y a plus assez de cartes en main. Bonus de ravage également (peut aussi cibler la main).</p>
+          </article>
+        </div>
+        <p>Le bonus de ravage s’utilise <strong>après</strong> la distribution des dommages aux unités / lieu / deck-main, et <strong>avant</strong> POISON, MORTEL et le retour à la citadelle.</p>
+
+        <h3>Premier ravage pendant le combat</h3>
+        <p>Lorsqu’un lieu est ravagé <strong>pour la première fois</strong> pendant le déroulement ou la résolution du combat, l’attaquant gagne un bonus de ravage. L’intensité dépend du <strong>nombre de lieux déjà ravagés chez l’adversaire</strong> (voir tableau). Si le lieu vient d’être ravagé par la résolution, les dommages restants non distribués sont ignorés.</p>
+        <p>Si un lieu est détruit <strong>hors combat</strong> (ni pendant le déroulement ni pendant le calcul), il n’y a <strong>pas</strong> de bonus de ravage.</p>
+        <p>Il n’y a <strong>jamais</strong> de bonus de ravage pendant la phase de dette.</p>
+
+        <h3>Bonus de ravage — 3 niveaux</h3>
+        <p>Les cartes défaussées sont toujours contrôlées par l’adversaire. Si le lieu attaqué est un QG, on peut prendre des cartes de la <strong>main</strong> à la place du deck (puis le deck s’il n’en reste pas assez en main).</p>
+        <div class="ravage-levels">
+          <article class="card">
+            <h4>1 lieu ravagé</h4>
+            <p>Choisissez <strong>l’une</strong> des options :</p>
+            <ul>
+              <li>1 bâtiment</li>
+              <li>1 équipement</li>
+              <li>2 cartes du deck <em>(main si QG)</em></li>
+            </ul>
+          </article>
+          <article class="card lv2">
+            <h4>2 lieux ravagés</h4>
+            <p>Choisissez <strong>l’une</strong> des options :</p>
+            <ul>
+              <li>2 bâtiments</li>
+              <li>2 équipements</li>
+              <li>1 bâtiment + 1 équipement</li>
+              <li>1 bâtiment + 2 cartes</li>
+              <li>1 équipement + 2 cartes</li>
+              <li>3 cartes</li>
+            </ul>
+          </article>
+          <article class="card lv3">
+            <h4>3 lieux ravagés</h4>
+            <p>Choisissez <strong>l’une</strong> des options :</p>
+            <ul>
+              <li>3 bâtiments</li>
+              <li>3 équipements</li>
+              <li>2 bâtiments + 1 équipement</li>
+              <li>1 bâtiment + 2 équipements</li>
+              <li>2 bâtiments + 2 cartes</li>
+              <li>2 équipements + 2 cartes</li>
+              <li>1 bâtiment + 3 cartes</li>
+              <li>1 équipement + 3 cartes</li>
+              <li>4 cartes</li>
+            </ul>
+          </article>
+        </div>
+        <div class="callout note">
+          <div class="lbl">Formule</div>
+          <p>Le bonus vaut <strong>2 cartes, ou 1 bâtiment, ou 1 équipement</strong>, <em>plus</em> 1 carte ou 1 bâtiment ou 1 équipement <strong>par autre lieu déjà ravagé</strong>.</p>
+        </div>
+
+        <h3>Après les dommages</h3>
+        <ol>
+          <li>Résoudre <span class="tag">POISON</span> puis <span class="tag">MORTEL</span>. Les unités tuées vont à la défausse de leur propriétaire.</li>
+          <li>Les survivantes retournent à la citadelle de leur contrôleur.</li>
+          <li>Équipements sur une carte tuée / défaussée / ravagée : défausse si <span class="tag">FRAGILE</span>, sinon retour en main du propriétaire.</li>
+          <li>Événements ou effets de fin de combat : le joueur au jeton joue / déclenche les siens en premier.</li>
+          <li>On passe à un autre combat non encore résolu.</li>
+        </ol>
+        <p>Quand tous les combats sont résolus, fin de phase : les <span class="tag">PUGNACE</span> qui ont autant de dommages que de PV (ou plus, ou 0 PV) sont tuées et vont à la défausse.</p>
+
+        <h3>Résumé d’une résolution</h3>
+        <div class="flow">
+          <div class="node">Dommages aux unités → lieu → deck / main</div>
+          <div class="arrow">↓</div>
+          <div class="node">Bonus de ravage (si applicable)</div>
+          <div class="arrow">↓</div>
+          <div class="node">Unités à ≥ PV de dommages : tuées, défausse</div>
+          <div class="arrow">↓</div>
+          <div class="node">POISON : +1 dommage par POISON (sauf immunité). Mort → défausse</div>
+          <div class="arrow">↓</div>
+          <div class="node">MORTEL : tuées (sauf immunité) → défausse</div>
+          <div class="arrow">↓</div>
+          <div class="node">Survivantes (y compris PUGNACE à 0 PV) → citadelle</div>
+          <div class="arrow">↓</div>
+          <div class="node">Effets / événements de fin de combat</div>
+        </div>
+      </section>
+
+      <section class="section" id="dette">
+        <div class="phase-head p5">
+          <div class="num">5</div>
+          <div>
+            <h2>Dette</h2>
+            <p>Qui n’a pas l’OR paie. Puis on défausse et on pioche jusqu’à 7.</p>
+          </div>
+        </div>
+        <div class="banner">
+          <img src="../Images_Alt_16bit/Usurier.png" alt="Un usurier compte ses pièces d’or à la chandelle.">
+          <div class="cap">Le pion OR désigne le créancier. L’autre est endetté.</div>
+        </div>
+        <p>Actions possibles, chacun son tour (priorité à l’initiative) : habilité « Action :… », événement, carte depuis la défausse si autorisé, défausser une carte pour retirer <span class="tag">ETHERE</span>, ou passer. Deux passes consécutives → résolution de la dette.</p>
+
+        <h3>Résolution des dommages de dette</h3>
+        <p>Le joueur qui <strong>n’a pas</strong> le pion OR de son côté est <strong>endetté</strong>. Les dommages de dette égalent le montant de l’échelle en faveur de l’adversaire. Distribution : <strong>unités → lieux → deck</strong>. Il est obligatoire de toucher tous les lieux avant le deck. 1 dommage au deck = 1 carte du dessus à la défausse. <strong>Pas de bonus de ravage</strong> ici.</p>
+        <div class="grid-2">
+          <article class="card">
+            <h4>Dette supérieure à 3</h4>
+            <p>Le joueur qui a l’OR déduit <strong>3</strong> au total. S’il reste un positif, <em>c’est lui</em> qui inflige ce reste à l’adversaire. Ensuite, l’endetté distribue lui-même les <strong>3 dommages restants</strong> (unités → lieux → deck).</p>
+          </article>
+          <article class="card">
+            <h4>Dette de 3 ou moins</h4>
+            <p>L’endetté inflige lui-même tous ces dommages à ses unités, puis ses lieux, puis son deck.</p>
+          </article>
+        </div>
+        <p>Après la résolution, l’échelle de l’OR est <strong>remise à zéro</strong>.</p>
+        <h3>Fin de tour — main</h3>
+        <ol class="steps">
+          <li>Les joueurs peuvent défausser autant de cartes qu’ils veulent, face visible.</li>
+          <li>Ils complètent leur main jusqu’à <strong>7 cartes</strong>.</li>
+          <li>Si un joueur a plus de cartes que sa limite autorisée (effets de cartes), il défausse l’excédent.</li>
+        </ol>
+      </section>
+
+      <section class="section" id="or">
+        <p class="kicker">Économie</p>
+        <h2>L’échelle de l’OR</h2>
+        <div class="banner">
+          <img src="../Images_Alt_16bit/Roi_Tamakvak.png" alt="Trésor et tribut aux pieds du roi.">
+          <div class="cap">Payer, c’est pousser le pion vers l’adversaire.</div>
+        </div>
+        <p>Le pion peut être sur zéro (neutre) ou d’un côté ou de l’autre. S’il est de votre côté, <strong>vous avez de l’OR</strong> ; l’autre joueur est <strong>endetté</strong>.</p>
+        <div class="track" aria-label="Échelle de l’OR">
+          <div class="tick a">6</div><div class="tick a">5</div><div class="tick a">4</div><div class="tick a">3</div><div class="tick a">2</div><div class="tick a">1</div>
+          <div class="tick zero">0</div>
+          <div class="tick b">1</div><div class="tick b">2</div><div class="tick b">3</div><div class="tick b">4</div><div class="tick b">5</div><div class="tick b">6</div>
+        </div>
+        <p style="font-size:13px;color:var(--ink-soft);text-align:center">Joueur A ←&nbsp;&nbsp;&nbsp;neutre&nbsp;&nbsp;&nbsp;→ Joueur B &nbsp;·&nbsp; le pion ne dépasse jamais 6</p>
+        <div class="grid-2">
+          <article class="card">
+            <h4>Payer un coût</h4>
+            <p>Déplacer le pion vers l’adversaire d’autant de cases que le coût. Ex. : pion sur 2 en votre faveur, vous payez 5 → il finit sur 3 <em>chez l’adversaire</em>.</p>
+          </article>
+          <article class="card">
+            <h4>Plafond 6</h4>
+            <p>Le pion ne peut pas dépasser la case 6. L’excédent devient des <strong>dommages</strong> infligés à celui qui fait dépasser. La carte qui provoque le dépassement est <strong>entièrement résolue</strong> avant ces dommages.</p>
+          </article>
+        </div>
+        <div class="callout example">
+          <div class="lbl">Exemple</div>
+          <p>Pion sur 5 en faveur de A. B joue une carte à 3 OR. 5+3 = 8, soit 2 au-delà de 6. A inflige <strong>2 dommages</strong> à B.</p>
+        </div>
+        <div class="grid-2">
+          <article class="card">
+            <h4>Perdre de l’OR</h4>
+            <p>Le pion recule vers zéro de votre côté. Il <strong>ne passe pas</strong> chez l’adversaire. Ex. : vous avez 2, vous perdez 3 → le pion va à 0.</p>
+          </article>
+          <article class="card">
+            <h4>Gagner de l’OR</h4>
+            <p>Le pion avance vers vous (il peut passer en votre faveur). Il ne va jamais au-delà de 6.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="cartes">
+        <p class="kicker">Anatomie</p>
+        <h2>Les cartes</h2>
+        <div class="banner">
+          <img src="../Images_Alt_16bit/Phare.png" alt="Un phare éclaire une côte au crépuscule.">
+          <div class="cap">Unités, bâtiments, équipements, événements, plans, lieux.</div>
+        </div>
+
+        <h3>Unités</h3>
+        <p>Coût en OR, force, points de vie, boîte de texte (traits, mots-clés, capacités). Jouées dans votre citadelle, déplaçables vers des lieux. Certains effets les font arriver directement dans un lieu.</p>
+        <p>On place des jetons de dommages sur la carte. Autant de dommages que de PV actuels → l’unité est tuée. En principe on ne dépasse pas les PV. Si à la fin d’un tour une unité encore en jeu a plus de dommages que de PV, on retire le surplus pour égaliser.</p>
+        <div class="callout example">
+          <div class="lbl">Exemple — Les trois meneurs + Directive 227</div>
+          <p>« Les trois meneurs » (ne peut pas être tuée) voient leurs PV temporairement doublés par « Directive 227 ». Elles prennent des dommages au-delà de leurs PV imprimés. À la fin du tour, le surplus au-delà des PV actuels est retiré.</p>
+        </div>
+
+        <h3>Bâtiments</h3>
+        <p>Coût en OR, traits et capacités. Joués ou entrent en jeu dans la citadelle du propriétaire.</p>
+
+        <h3>Équipements</h3>
+        <p>Coût en OR, traits et capacités. Se jouent sur une unité, un bâtiment ou un <strong>lieu non ravagé</strong>. La boîte de texte dit où c’est légal :</p>
+        <ul>
+          <li><strong>[UNITE A VOUS]</strong> — uniquement sur vos unités.</li>
+          <li><strong>[LIEU NON-LAC]</strong> — n’importe quel lieu (à vous ou adverse), sans le trait Lac.</li>
+        </ul>
+        <p>Par défaut : <strong>un seul équipement</strong> par carte. Si la carte équipée quitte le jeu, l’équipement revient en main — ou à la défausse s’il est <span class="tag">FRAGILE</span>.</p>
+        <p>Si l’état du jeu rend un équipement illégal, on revient immédiatement à une situation légale. Le contrôleur de la carte dont l’état a changé décide comment.</p>
+        <div class="callout example">
+          <div class="lbl">Trois cas fréquents</div>
+          <ol>
+            <li><strong>Bête de somme</strong> peut porter deux équipements. « Chantage » vide sa boîte de texte imprimée : plus le droit d’en avoir deux. Son contrôleur défausse immédiatement l’un des deux.</li>
+            <li>Équipement réservé aux <em>Noble</em> : si l’unité perd le trait Noble, l’équipement quitte le jeu (défausse si FRAGILE, sinon main).</li>
+            <li>Un bâtiment gagne <span class="tag">PAS D'EQUIPEMENT</span> : l’équipement est repris en main (ou défaussé s’il est FRAGILE).</li>
+          </ol>
+          <p>Autre exemple : « Boîte mystérieuse » sur une unité, son action copie un texte d’équipement de lieu (ex. « Automne pluvieux ») → la paire n’est plus légale, la boîte remonte en main.</p>
+        </div>
+
+        <h3>Événements</h3>
+        <p>Coût en OR, traits et capacités. Joués, résolus immédiatement, puis défausse du propriétaire.</p>
+
+        <h3>Plans</h3>
+        <p>Révélés en début de tour. Effet unique ou permanent pour le tour, plus une <strong>valeur d’initiative</strong>.</p>
+
+        <h3>Lieux</h3>
+        <p>Mis en place en début de partie. Autant de dommages que de PV → on résout les effets passifs déclenchés, puis on retourne le lieu sur sa face <strong>ravagé</strong>. S’il n’a pas de dommages mais que ses PV tombent à 0, il est aussi ravagé. Face ravagée : plus de PV, plus d’habilités, il ne garde que ses <strong>traits</strong>, pas d’équipement.</p>
+
+        <h3>Cartes uniques ★</h3>
+        <p>Un joueur ne peut contrôler qu’<strong>un exemplaire</strong> du même nom. Si un effet devait lui en donner un second, cette dernière carte va immédiatement à la défausse de son propriétaire. En cas de boucle infinie, elle est mise <strong>hors de la partie</strong> à la place.</p>
+
+        <h3>Habilités « Action :… »</h3>
+        <p>Vous payez le coût indiqué (même procédure OR que pour jouer une carte) et vous faites ce que le texte dit. <strong>(Max2)</strong> = au plus 2 fois par tour, etc.</p>
+        <div class="callout example">
+          <div class="lbl">Exemple — Chimiste</div>
+          <p>« Action : payez 1 OR pour cherchez une carte Alchimie dans votre deck. Révélez-la et prenez-la en main (Max2). » → payez 1, cherchez un trait Alchimie, montrez-la, prenez-la, mélangez. Faisable 2 fois par tour.</p>
+        </div>
+      </section>
+
+      <section class="section" id="concepts">
+        <p class="kicker">Précisions</p>
+        <h2>Concepts importants</h2>
+        <div class="dl">
+          <div class="item">
+            <dt>Jouer ≠ mettre en jeu</dt>
+            <dd>Jouer une carte, c’est la jouer <strong>depuis sa main</strong> en payant son coût. Mettre en jeu (depuis la main, le deck ou la défausse) n’est pas la même chose. Quand vous jouez une carte, vous en êtes propriétaire et contrôleur.</dd>
+          </div>
+          <div class="item">
+            <dt>Propriétaire et contrôleur</dt>
+            <dd>Le <strong>propriétaire</strong> est celui qui a commencé avec la carte dans son deck : cela ne change jamais. Le <strong>contrôleur</strong> peut changer. Seul le contrôleur utilise le texte de la carte. Une carte défaussée va toujours chez son propriétaire.</dd>
+          </div>
+          <div class="item">
+            <dt>Coût, force, PV : imprimé vs actuel</dt>
+            <dd>Le « coût » d’une carte est toujours le <strong>coût imprimé</strong>, pas ce qui a été payé. Sans le mot « imprimés », force et PV sont les valeurs <strong>actuelles</strong> (modificateurs inclus). « Imprimés » = aucun modificateur.</dd>
+          </div>
+          <div class="item">
+            <dt>X, Y, Z</dt>
+            <dd>Un coût en X se lit dans le texte de la carte. Si une autre carte se réfère à une valeur imprimée X, Y ou Z, cette lettre vaut <strong>toujours 0</strong>.</dd>
+          </div>
+          <div class="item">
+            <dt>Exemple — Dopplegänger</dt>
+            <dd>Coût X+1, force Y, PV Z+1. Vous avez peut-être payé 5, avec 3 de force et 4 PV. Imprimé : coût 1 (0+1), force 0, PV 1 (0+1).</dd>
+          </div>
+          <div class="item">
+            <dt>Choix et effets partiels</dt>
+            <dd>Si plusieurs options, il faut en prendre une <strong>faisable</strong> s’il y en a une. Un effet partiellement réalisable se fait au maximum possible.</dd>
+          </div>
+          <div class="item">
+            <dt>Exemple — Bannière de peur vs Armure enchantée</dt>
+            <dd>Quitter le combat ou subir 2 dommages. L’Armure ne peut pas quitter le combat → elle subit les dommages. S’il ne lui reste qu’1 PV, 1 dommage suffit : c’est le maximum possible.</dd>
+          </div>
+          <div class="item">
+            <dt>Chercher dans le deck</dt>
+            <dd>Toujours mélanger après, sauf si le texte dit le contraire. Une carte spécifique cherchée dans le deck ou la défausse doit être <strong>montrée</strong> à l’adversaire. Si vous cherchez « une carte de votre choix », pas besoin de la montrer.</dd>
+          </div>
+          <div class="item">
+            <dt>Decks étanches</dt>
+            <dd>Impossible que des cartes du deck de plans se retrouvent dans le deck de jeu, et inversement.</dd>
+          </div>
+          <div class="item">
+            <dt>« Vous pouvez » et (Max N)</dt>
+            <dd>« Vous pouvez » = jamais obligatoire. (Max1), (Max2)… = nombre maximum de fois par tour.</dd>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="glossaire">
+        <p class="kicker">Lexique</p>
+        <h2>Glossaire</h2>
+        <div class="dl">
+          <div class="item"><dt>Attaquant / en attaque</dt><dd>Unité dans un lieu adverse (assignée ou placée par un effet), quelle que soit la phase. Une unité « qui ne peut pas attaquer » peut tout de même s’y retrouver par un effet.</dd></div>
+          <div class="item"><dt>Défenseur / en défense</dt><dd>Unité dans un lieu de son contrôleur. Même logique : un effet peut y placer une unité qui ne pourrait pas être assignée.</dd></div>
+          <div class="item"><dt>En combat</dt><dd>Les effets ne comptent que pendant le déroulement / la résolution du combat en cours, et seulement pour les cartes présentes dans ce combat-là.</dd></div>
+          <div class="item"><dt>Ravagé</dt><dd>Lieu retourné sur sa face ravagée : plus de PV, plus d’habilités, uniquement ses traits, pas d’équipement.</dd></div>
+          <div class="item"><dt>Bonus de ravage</dt><dd>Obtenu si le lieu est ravagé pendant le combat en cours, ou s’il l’était déjà à l’initiation du combat. Permet de défausser deck / bâtiment / équipement adverse (et la main si QG).</dd></div>
+          <div class="item"><dt>Trait</dt><dd>Mot dans la boîte de texte, pour interagir avec d’autres cartes (Noble, Magicien, Lac, Alchimie…).</dd></div>
+          <div class="item"><dt>Mot-clé</dt><dd>Capacité spéciale codifiée (ETHERE, POISON, MORTEL…).</dd></div>
+          <div class="item"><dt>Défaussé</dt><dd>Carte mise face visible dans la défausse de son <em>propriétaire</em>. Du deck : toujours la carte du dessus, puis la suivante. Différent de « hors de la partie ».</dd></div>
+          <div class="item"><dt>Hors de la partie</dt><dd>Retirée définitivement (dans la boîte). Elle ne revient pas.</dd></div>
+          <div class="item"><dt>Remonter en main</dt><dd>Toujours dans la main du propriétaire.</dd></div>
+          <div class="item"><dt>Envoyé dans / sur / sous le deck</dt><dd>Toujours le deck du propriétaire. Dans le deck → on mélange. Sur ou sous → on ne mélange pas. Plusieurs cartes : le propriétaire choisit l’ordre.</dd></div>
+          <div class="item"><dt>Tuée</dt><dd>Unité avec autant ou plus de dommages que de PV, ou 0 PV sans dommages. On met les dommages nécessaires, puis défausse du propriétaire — sauf effets qui retardent ou empêchent (PUGNACE, « les trois meneurs »). Différent de détruit / défaussé : même destination, autre déclencheur.</dd></div>
+          <div class="item"><dt>Détruit</dt><dd>Élimination d’un bâtiment ou d’un équipement → défausse du propriétaire. Différent de défausser.</dd></div>
+          <div class="item"><dt>Soigner</dt><dd>Retirer des dommages déjà présents. On ne peut pas « juste » soigner une carte sans dommages. Mais si un effet a une partie faisable avant le soin, elle est autorisée (ex. Seigneur vampire inflige 1 puis se soigne de 1, même à 0 dégât). Infirmier du Bataillon ne peut pas soigner une unité sans au moins 1 dommage.</dd></div>
+          <div class="item"><dt>Retirer / renvoyer</dt><dd>Sortir la carte du lieu vers la citadelle de son contrôleur (sauf si l’effet précise hors-partie, deck, etc.).</dd></div>
+          <div class="item"><dt>Dommage</dt><dd>Jetons sur unités ou lieux. Fin de tour : surplus au-delà des PV retiré pour égaliser.</dd></div>
+          <div class="item"><dt>Dommage de dette</dt><dd>Blessures égales au montant d’OR du pion, en phase 5, subies par celui qui n’a pas le pion.</dd></div>
+          <div class="item"><dt>Gagner un mot-clé / trait / texte</dt><dd>S’ajoute à ce qui est imprimé (ex. Épée magique : trait Magicien et +1 force).</dd></div>
+          <div class="item"><dt>Boîte de texte imprimée</dt><dd>Uniquement ce qui est imprimé, pas le texte gagné. Sur un lieu : texte, traits, mots-clés — pas les PV ni la force. Sur un plan : texte et traits, jamais l’initiative.</dd></div>
+          <div class="item"><dt>Effets passifs</dt><dd>Permanents, ou automatiques quand une condition apparaît. Ex. ★Phare : +2 PV à vos lieux non ravagés sans boîte de texte imprimée. ★Commission des Taxes : en fin d’organisation, gagnez 1 OR par Noble que vous contrôlez.</dd></div>
+          <div class="item"><dt>Quitter le jeu</dt><dd>Défaussée, tuée, détruite, remontée en main, mise dans/sur/sous le deck, ou hors de la partie — elle n’est plus visible en jeu. Ex. Pixie : en quittant le jeu, mélanger une carte de la défausse dans le deck, puis Pixie hors de la partie (même si elle « devrait » aller à la défausse).</dd></div>
+        </div>
+      </section>
+
+      <section class="section" id="mots-cles">
+        <p class="kicker">Aide de jeu</p>
+        <h2>Mots-clés</h2>
+        <div class="kw-grid">
+          <article class="kw pas">
+            <h3>PAS D'EQUIPEMENT</h3>
+            <p>L’unité ne peut pas porter d’équipement. Si elle en a un et gagne ce mot-clé, l’équipement remonte en main ou est défaussé s’il est FRAGILE.</p>
+          </article>
+          <article class="kw ethere">
+            <h3>ETHERE</h3>
+            <p>Ne subit que les dommages des cartes <strong>Magicien</strong> et les dommages de dette. Immunisée à POISON et MORTEL. Un MORTEL issu d’une carte Magicien est traité comme normal. Si le mot-clé est perdu, POISON et MORTEL s’appliquent normalement. Action : défausser une carte de sa main pour retirer ETHERE jusqu’à la fin de la phase. Ex. : « Éclair » touche une ETHERE car il a le trait Magicien.</p>
+          </article>
+          <article class="kw poison">
+            <h3>POISON</h3>
+            <p>Après la résolution, avant le retour à la citadelle : autant de dommages supplémentaires que de POISON subis. Pendant un combat (ex. « Duel »), l’effet s’applique <strong>immédiatement</strong>. POISON + MORTEL sur la même unité : le contrôleur choisit la nature des dommages infligés.</p>
+          </article>
+          <article class="kw mortel">
+            <h3>MORTEL</h3>
+            <p>Après la résolution, avant le retour : l’unité est tuée (on met assez de dommages, puis elle quitte le jeu — sauf si elle ne peut pas être tuée : elle prend les dommages mais reste). Pendant le combat (ex. « Duel ») : immédiat. Une PUGNACE prend les dommages mais n’est tuée qu’en fin de phase (un soin entre-temps peut la sauver). MORTEL + POISON : le contrôleur choisit la nature.</p>
+          </article>
+          <article class="kw pugnace">
+            <h3>PUGNACE</h3>
+            <p>Pendant la phase de combat, même tuée par un effet, par MORTEL, par trop de dommages ou par 0 PV, elle ne quitte le jeu qu’à la <strong>fin de la phase</strong>.</p>
+          </article>
+          <article class="kw precis">
+            <h3>PRECIS</h3>
+            <p>Ces dommages sont attribués <strong>avant</strong> les autres, par le joueur qui contrôle les cartes PRECIS.</p>
+          </article>
+          <article class="kw faiblesse">
+            <h3>FAIBLESSE</h3>
+            <p>Dans un combat avec d’autres unités, donne −1 force et −1 PV aux <strong>autres</strong> unités présentes.</p>
+          </article>
+          <article class="kw fragile">
+            <h3>FRAGILE</h3>
+            <p>Si la carte équipée quitte le jeu, ou si l’équipement n’est plus dans un emplacement valide (ou en est retiré par choix), il va à la défausse du propriétaire au lieu de remonter en main.</p>
+          </article>
+          <article class="kw rapide">
+            <h3>RAPIDE</h3>
+            <p>Ne compte pas dans la limite de quatre cartes jouées en phase d’organisation.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="construction">
+        <p class="kicker">Avant de jouer</p>
+        <h2>Construction des decks et choix des lieux</h2>
+        <div class="grid-3">
+          <article class="card">
+            <h3>Deck de jeu</h3>
+            <p><strong>Exactement 40 cartes.</strong> Au plus 2 exemplaires d’une même carte (donc au minimum 20 cartes différentes).</p>
+          </article>
+          <article class="card">
+            <h3>Deck de plans</h3>
+            <p><strong>Exactement 7 cartes différentes.</strong></p>
+          </article>
+          <article class="card">
+            <h3>Lieux</h3>
+            <p><strong>1 QG</strong> exactement, et <strong>2 non-QG différents</strong> (titres distincts).</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="victoire">
+        <p class="kicker">Fin de partie</p>
+        <h2>La victoire</h2>
+        <div class="callout win">
+          <div class="lbl">Qui gagne ?</div>
+          <p>Dès qu’un joueur n’a plus de cartes dans son deck de jeu, la partie s’arrête : l’autre gagne.</p>
+        </div>
+        <p>Si les deux decks sont vides en même temps (par exemple en complétant la main en fin de tour) :</p>
+        <ol class="steps">
+          <li>Le joueur avec le <strong>plus de cartes en main</strong> gagne.</li>
+          <li>À égalité : celui qui a le <strong>moins de lieux ravagés</strong>.</li>
+          <li>Encore égalité : celui qui a le <strong>jeton initiative</strong>.</li>
+        </ol>
+      </section>
+
+      <footer class="footer">
+        <p><strong>Pixel of Glory</strong> — document de règles version 0.10. Toutes les informations du livret d’origine sont ici, réorganisées pour la lecture. Ouvrez ce fichier dans un navigateur ; le bouton Imprimer produit un PDF.</p>
+      </footer>
+    </main>
+  </div>
+
+  <button class="print-btn" type="button" onclick="window.print()">Imprimer / PDF</button>
+  <script>
+    document.querySelectorAll('.nav a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        document.body.classList.remove('nav-open');
+      });
+    });
+    const links = Array.from(document.querySelectorAll('.nav a[href^="#"]'));
+    const sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          links.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id); });
+        });
+      }, { rootMargin: '-20% 0px -70% 0px' });
+      sections.forEach(function (s) { io.observe(s); });
+    }
+  </script>
+</body>
+</html>
