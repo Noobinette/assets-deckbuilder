@@ -16,6 +16,15 @@
   <nav class="nav" aria-label="Sommaire">
     <p class="brand-mini">PIXEL OF GLORY</p>
     <p class="ver">Règles du jeu · version 0.10</p>
+    <div class="search">
+      <label class="sec" for="q">Recherche</label>
+      <input type="search" id="q" placeholder="ex. ETHERE, ravage, mulligan…" autocomplete="off">
+      <div class="search-tools" hidden id="q-tools">
+        <span id="q-count">0</span>
+        <button type="button" id="q-prev" aria-label="Résultat précédent">↑</button>
+        <button type="button" id="q-next" aria-label="Résultat suivant">↓</button>
+      </div>
+    </div>
     <p class="sec">Découvrir</p>
     <a href="#couverture">Couverture</a>
     <a href="#essentiel">L’essentiel</a>
@@ -41,10 +50,13 @@
   <div class="wrap">
     <div class="mobile-bar">
       <span class="brand">PIXEL OF GLORY</span>
-      <button type="button" onclick="document.body.classList.toggle('nav-open')">Sommaire</button>
+      <span class="mobile-actions">
+        <button type="button" id="q-open">Rechercher</button>
+        <button type="button" onclick="document.body.classList.toggle('nav-open')">Sommaire</button>
+      </span>
     </div>
     <header class="cover" id="couverture">
-      <img class="hero" src="../Images_Alt_32bit/Griffon.png" alt="Un griffon survole deux armées dans une vallée en feu." loading="eager">
+      <img class="hero" src="img/illu-Griffon.png" alt="Un griffon survole deux armées dans une vallée en feu." loading="eager">
       <div class="veil"></div>
       <div class="inner">
         <p class="eyebrow">Jeu de confrontation · 2 joueurs</p>
@@ -65,7 +77,7 @@
         <p class="kicker">Chapitre I</p>
         <h2>L’essentiel</h2>
         <div class="banner">
-          <img src="../Images_Alt_32bit/Forteresse.png" alt="Citadelle de pierre sous un ciel d’orage.">
+          <img src="img/illu-Forteresse.png" alt="Citadelle de pierre sous un ciel d’orage.">
           <div class="cap">Deux citadelles. Un champ de bataille. Une seule gloire.</div>
         </div>
         <p><strong>Pixel of Glory</strong> est un jeu de confrontation à deux. Chaque joueur mène des unités, des bâtiments et des équipements pour frapper les lieux de l’adversaire — jusqu’à épuiser son deck.</p>
@@ -86,27 +98,27 @@
         <h3>Les six types de cartes</h3>
         <div class="type-row">
           <figure>
-            <img src="../Cartes/Chimiste.png" alt="Carte unité Chimiste">
+            <img src="img/carte-Chimiste.png" alt="Carte unité Chimiste">
             <figcaption>Unité</figcaption>
           </figure>
           <figure>
-            <img src="../Cartes/Phare.png" alt="Carte bâtiment Phare">
+            <img src="img/carte-Phare.png" alt="Carte bâtiment Phare">
             <figcaption>Bâtiment</figcaption>
           </figure>
           <figure>
-            <img src="../Cartes/Epee_Magique.png" alt="Carte équipement Épée magique">
+            <img src="img/carte-Epee_Magique.png" alt="Carte équipement Épée magique">
             <figcaption>Équipement</figcaption>
           </figure>
           <figure>
-            <img src="../Cartes/Eclair.png" alt="Carte événement Éclair">
+            <img src="img/carte-Eclair.png" alt="Carte événement Éclair">
             <figcaption>Événement</figcaption>
           </figure>
           <figure>
-            <img src="../Cartes/Attaque_surprise.png" alt="Carte plan Attaque surprise">
+            <img src="img/carte-Attaque_surprise.png" alt="Carte plan Attaque surprise">
             <figcaption>Plan</figcaption>
           </figure>
           <figure>
-            <img src="../Cartes/Addyessa.png" alt="Carte lieu QG Addyessa">
+            <img src="img/carte-Addyessa.png" alt="Carte lieu QG Addyessa">
             <figcaption>Lieu</figcaption>
           </figure>
         </div>
@@ -218,7 +230,7 @@
           </div>
         </div>
         <div class="banner">
-          <img src="../Images_Alt_16bit/Roi_Tamakvak.png" alt="Un roi sur son trône reçoit un tribut d’or.">
+          <img src="img/illu-Roi_Tamakvak.png" alt="Un roi sur son trône reçoit un tribut d’or.">
           <div class="cap">Qui prendra le jeton ? La plus haute initiative décide.</div>
         </div>
         <ol class="steps">
@@ -246,7 +258,7 @@
           </div>
         </div>
         <div class="banner">
-          <img src="../Images_Alt_32bit/Forgeron.png" alt="Un forgeron frappe un lingot incandescent.">
+          <img src="img/illu-Forgeron.png" alt="Un forgeron frappe un lingot incandescent.">
           <div class="cap">Quatre cartes non-RAPIDE, puis la priorité alterne.</div>
         </div>
         <p>Le joueur avec le jeton a la <strong>priorité</strong> pour la première action. Les joueurs jouent chacun leur tour. Pendant cette phase, un joueur peut jouer un <strong>maximum de quatre cartes non-RAPIDE</strong> depuis sa main. Les cartes <span class="tag">RAPIDE</span> ne comptent pas dans cette limite.</p>
@@ -272,7 +284,7 @@
           </div>
         </div>
         <div class="banner">
-          <img src="../Images_Alt_32bit/Soldat.png" alt="Un soldat sous la pluie devant un camp retranché.">
+          <img src="img/illu-Soldat.png" alt="Un soldat sous la pluie devant un camp retranché.">
           <div class="cap">Depuis la citadelle vers un lieu — une unité à la fois.</div>
         </div>
         <p>Les joueurs jouent chacun leur tour (priorité au joueur avec l’initiative).</p>
@@ -300,7 +312,7 @@
           </div>
         </div>
         <div class="banner">
-          <img src="../Images_Alt_32bit/Vampire_en_chasse.png" alt="Un vampire émerge d’une tombe au clair de lune.">
+          <img src="img/illu-Vampire_en_chasse.png" alt="Un vampire émerge d’une tombe au clair de lune.">
           <div class="cap">Un lieu, un combat. Une fois résolu, on n’y revient pas.</div>
         </div>
 
@@ -330,7 +342,7 @@
         <p>On compte la force de chaque camp : valeur de force des unités (plus ou moins modificateurs), équipements, lieux, et événements qui ajoutent de la force au total final.</p>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Volee_de_fleches.png" alt="Volée de flèches">
+            <img src="img/carte-Volee_de_fleches.png" alt="Volée de flèches">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -473,7 +485,7 @@
           </div>
         </div>
         <div class="banner">
-          <img src="../Images_Alt_16bit/Usurier.png" alt="Un usurier compte ses pièces d’or à la chandelle.">
+          <img src="img/illu-Usurier.png" alt="Un usurier compte ses pièces d’or à la chandelle.">
           <div class="cap">Le pion OR désigne le créancier. L’autre est endetté.</div>
         </div>
         <p>Actions possibles, chacun son tour (priorité à l’initiative) : habilité « Action :… », événement, carte depuis la défausse si autorisé, défausser une carte pour retirer <span class="tag">ETHERE</span>, ou passer. Deux passes consécutives → résolution de la dette.</p>
@@ -503,7 +515,7 @@
         <p class="kicker">Économie</p>
         <h2>L’échelle de l’OR</h2>
         <div class="banner">
-          <img src="../Images_Alt_16bit/Roi_Tamakvak.png" alt="Trésor et tribut aux pieds du roi.">
+          <img src="img/illu-Roi_Tamakvak.png" alt="Trésor et tribut aux pieds du roi.">
           <div class="cap">Payer, c’est pousser le pion vers l’adversaire.</div>
         </div>
         <p>Le pion peut être sur zéro (neutre) ou d’un côté ou de l’autre. S’il est de votre côté, <strong>vous avez de l’OR</strong> ; l’autre joueur est <strong>endetté</strong>.</p>
@@ -525,7 +537,7 @@
         </div>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Chimiste.png" alt="Une carte à 2 OR, ici le Chimiste">
+            <img src="img/carte-Chimiste.png" alt="Une carte à 2 OR, ici le Chimiste">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple — payer</p>
@@ -550,7 +562,7 @@
         <p class="kicker">Anatomie</p>
         <h2>Les cartes</h2>
         <div class="banner">
-          <img src="../Images_Alt_16bit/Phare.png" alt="Un phare éclaire une côte au crépuscule.">
+          <img src="img/illu-Phare.png" alt="Un phare éclaire une côte au crépuscule.">
           <div class="cap">Unités, bâtiments, équipements, événements, plans, lieux.</div>
         </div>
 
@@ -559,8 +571,8 @@
         <p>On place des jetons de dommages sur la carte. Autant de dommages que de PV actuels → l’unité est tuée. En principe on ne dépasse pas les PV. Si à la fin d’un tour une unité encore en jeu a plus de dommages que de PV, on retire le surplus pour égaliser.</p>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Les_trois_meneurs.png" alt="Les trois meneurs">
-            <img src="../Cartes/Directive_227.png" alt="Directive 227">
+            <img src="img/carte-Les_trois_meneurs.png" alt="Les trois meneurs">
+            <img src="img/carte-Directive_227.png" alt="Directive 227">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -581,8 +593,8 @@
         <p>Si l’état du jeu rend un équipement illégal, on revient immédiatement à une situation légale. Le contrôleur de la carte dont l’état a changé décide comment.</p>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Boite_mysterieuse.png" alt="Boîte mystérieuse">
-            <img src="../Cartes/Automne_pluvieux.png" alt="Automne pluvieux">
+            <img src="img/carte-Boite_mysterieuse.png" alt="Boîte mystérieuse">
+            <img src="img/carte-Automne_pluvieux.png" alt="Automne pluvieux">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -591,8 +603,8 @@
         </figure>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Bete_de_somme.png" alt="Bête de somme">
-            <img src="../Cartes/Chantage.png" alt="Chantage">
+            <img src="img/carte-Bete_de_somme.png" alt="Bête de somme">
+            <img src="img/carte-Chantage.png" alt="Chantage">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple 1</p>
@@ -601,8 +613,8 @@
         </figure>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Chevalier.png" alt="Chevalier">
-            <img src="../Cartes/Elixir_des_Dieux.png" alt="Élixir des Dieux">
+            <img src="img/carte-Chevalier.png" alt="Chevalier">
+            <img src="img/carte-Elixir_des_Dieux.png" alt="Élixir des Dieux">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple 2</p>
@@ -611,7 +623,7 @@
         </figure>
         <figure class="ex solo">
           <div class="ex-art">
-            <img src="../Cartes/Les_trois_meneurs.png" alt="Les trois meneurs, PAS D'EQUIPEMENT">
+            <img src="img/carte-Les_trois_meneurs.png" alt="Les trois meneurs, PAS D'EQUIPEMENT">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple 3</p>
@@ -645,7 +657,7 @@
         <p>Vous payez le coût indiqué (même procédure OR que pour jouer une carte) et vous faites ce que le texte dit. <strong>(Max2)</strong> = au plus 2 fois par tour, etc.</p>
         <figure class="ex quote">
           <div class="ex-art">
-            <img src="../Cartes/Chimiste.png" alt="Chimiste">
+            <img src="img/carte-Chimiste.png" alt="Chimiste">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -680,7 +692,7 @@
         </div>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Doppelganger.png" alt="Doppelgänger">
+            <img src="img/carte-Doppelganger.png" alt="Doppelgänger">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -695,8 +707,8 @@
         </div>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Banniere_de_Peur.png" alt="Bannière de peur">
-            <img src="../Cartes/Armure_Enchantee.png" alt="Armure enchantée">
+            <img src="img/carte-Banniere_de_Peur.png" alt="Bannière de peur">
+            <img src="img/carte-Armure_Enchantee.png" alt="Armure enchantée">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -731,7 +743,7 @@
         </div>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Chimiste.png" alt="Payer un coût pour jouer une unité">
+            <img src="img/carte-Chimiste.png" alt="Payer un coût pour jouer une unité">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -773,7 +785,7 @@
         </div>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Soldat.png" alt="Une unité en citadelle">
+            <img src="img/carte-Soldat.png" alt="Une unité en citadelle">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -816,7 +828,7 @@
         </div>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Griffon.png" alt="Griffon, une Créature">
+            <img src="img/carte-Griffon.png" alt="Griffon, une Créature">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -831,8 +843,8 @@
         </div>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Seigneur_Vampire.png" alt="Seigneur vampire">
-            <img src="../Cartes/Infirmier_du_Bataillon.png" alt="Infirmier du Bataillon">
+            <img src="img/carte-Seigneur_Vampire.png" alt="Seigneur vampire">
+            <img src="img/carte-Infirmier_du_Bataillon.png" alt="Infirmier du Bataillon">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -876,7 +888,7 @@
         </div>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Infirmier_du_Bataillon.png" alt="Infirmier du Bataillon">
+            <img src="img/carte-Infirmier_du_Bataillon.png" alt="Infirmier du Bataillon">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -899,7 +911,7 @@
         </div>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Epee_Magique.png" alt="Épée magique">
+            <img src="img/carte-Epee_Magique.png" alt="Épée magique">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -918,7 +930,7 @@
         </div>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Images_Alt_16bit/Usurier.png" alt="L’échelle de l’OR">
+            <img src="img/illu-Usurier.png" alt="L’échelle de l’OR">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -937,8 +949,8 @@
         </div>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Phare.png" alt="Phare">
-            <img src="../Cartes/Comission_des_Taxes.png" alt="Commission des Taxes">
+            <img src="img/carte-Phare.png" alt="Phare">
+            <img src="img/carte-Comission_des_Taxes.png" alt="Commission des Taxes">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -958,7 +970,7 @@
         </div>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Pixie.png" alt="Pixie">
+            <img src="img/carte-Pixie.png" alt="Pixie">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -977,7 +989,7 @@
         </div>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Tour_des_Mysteres.png" alt="Tour des Mystères">
+            <img src="img/carte-Tour_des_Mysteres.png" alt="Tour des Mystères">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple</p>
@@ -1029,8 +1041,8 @@
         </div>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Eclair.png" alt="Éclair">
-            <img src="../Cartes/Fantome.png" alt="Fantôme, ETHERE">
+            <img src="img/carte-Eclair.png" alt="Éclair">
+            <img src="img/carte-Fantome.png" alt="Fantôme, ETHERE">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple — ETHERE</p>
@@ -1039,7 +1051,7 @@
         </figure>
         <figure class="ex">
           <div class="ex-art">
-            <img src="../Cartes/Duel.png" alt="Duel">
+            <img src="img/carte-Duel.png" alt="Duel">
           </div>
           <div class="ex-body">
             <p class="ex-lbl">Exemple — POISON et MORTEL</p>
@@ -1083,7 +1095,7 @@
       </section>
 
       <footer class="footer">
-        <p><strong>Pixel of Glory</strong> — document de règles version 0.10. Ouvrez ce fichier dans un navigateur. Le bouton <strong>Imprimer / PDF</strong> exporte le livret : la couverture (griffon) est la page 1, les illustrations et les cartes d’exemples sont incluses.</p>
+        <p><strong>Pixel of Glory</strong> — document de règles version 0.10. Dossier autonome : ouvrez <code>index.html</code> (les images sont dans <code>img/</code>). Le bouton <strong>Imprimer / PDF</strong> exporte le livret : la couverture griffon est la page 1.</p>
       </footer>
     </main>
   </div>
@@ -1171,6 +1183,123 @@
         wrap.innerHTML = html;
         node.parentNode.replaceChild(wrap, node);
       });
+    })();
+
+    (function searchRules() {
+      var input = document.getElementById("q");
+      var tools = document.getElementById("q-tools");
+      var countEl = document.getElementById("q-count");
+      var prevBtn = document.getElementById("q-prev");
+      var nextBtn = document.getElementById("q-next");
+      var openBtn = document.getElementById("q-open");
+      var root = document.querySelector("main.page");
+      if (!input || !root) return;
+      var hits = [];
+      var cur = -1;
+      var timer = null;
+
+      function fold(s) {
+        return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      }
+      function foldMap(s) {
+        var folded = "";
+        var map = [];
+        for (var i = 0; i < s.length; i++) {
+          var f = s[i].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+          for (var j = 0; j < f.length; j++) {
+            folded += f[j];
+            map.push(i);
+          }
+        }
+        return { folded: folded, map: map };
+      }
+      function clearHits() {
+        document.querySelectorAll("mark.hit").forEach(function (m) {
+          var t = document.createTextNode(m.textContent);
+          m.parentNode.replaceChild(t, m);
+        });
+        root.normalize();
+        hits = [];
+        cur = -1;
+      }
+      function go(i) {
+        if (!hits.length) return;
+        if (cur >= 0 && hits[cur]) hits[cur].classList.remove("cur");
+        cur = (i + hits.length) % hits.length;
+        hits[cur].classList.add("cur");
+        hits[cur].scrollIntoView({ block: "center", behavior: "smooth" });
+        countEl.textContent = (cur + 1) + " / " + hits.length;
+      }
+      function run(q) {
+        clearHits();
+        q = (q || "").trim();
+        if (q.length < 2) {
+          tools.hidden = true;
+          return;
+        }
+        var qf = fold(q);
+        var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+          acceptNode: function (n) {
+            if (!n.nodeValue || !n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+            var p = n.parentElement;
+            if (!p || /^(SCRIPT|STYLE)$/.test(p.tagName)) return NodeFilter.FILTER_REJECT;
+            if (p.closest("mark.hit")) return NodeFilter.FILTER_REJECT;
+            return NodeFilter.FILTER_ACCEPT;
+          }
+        });
+        var nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+        nodes.forEach(function (node) {
+          var raw = node.nodeValue;
+          var fm = foldMap(raw);
+          var idx = fm.folded.indexOf(qf);
+          if (idx < 0) return;
+          var ranges = [];
+          while (idx !== -1) {
+            var start = fm.map[idx];
+            var end = fm.map[idx + qf.length - 1] + 1;
+            ranges.push([start, end]);
+            idx = fm.folded.indexOf(qf, idx + qf.length);
+          }
+          for (var r = ranges.length - 1; r >= 0; r--) {
+            var a = ranges[r][0], b = ranges[r][1];
+            node.splitText(b);
+            var mid = node.splitText(a);
+            var mark = document.createElement("mark");
+            mark.className = "hit";
+            mid.parentNode.replaceChild(mark, mid);
+            mark.appendChild(mid);
+          }
+        });
+        hits = Array.prototype.slice.call(root.querySelectorAll("mark.hit"));
+        tools.hidden = hits.length === 0;
+        if (hits.length) go(0);
+        else countEl.textContent = "0";
+      }
+
+      input.addEventListener("input", function () {
+        clearTimeout(timer);
+        timer = setTimeout(function () { run(input.value); }, 140);
+      });
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          if (e.shiftKey) go(cur - 1);
+          else go(cur + 1);
+        } else if (e.key === "Escape") {
+          input.value = "";
+          run("");
+          input.blur();
+        }
+      });
+      prevBtn.addEventListener("click", function () { go(cur - 1); });
+      nextBtn.addEventListener("click", function () { go(cur + 1); });
+      if (openBtn) {
+        openBtn.addEventListener("click", function () {
+          document.body.classList.add("nav-open");
+          setTimeout(function () { input.focus(); input.select(); }, 50);
+        });
+      }
     })();
   </script>
 </body>
