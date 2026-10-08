@@ -645,7 +645,7 @@ tr:last-child td { border-bottom: 0; }
   .cover { min-height: calc(100vh - 48px); }
   .cover .inner { padding: 36px 18px 56px; }
   .page { padding: 28px 16px 96px; }
-  .section { scroll-margin-top: 56px; }
+  .section { scroll-margin-top: 72px; }
   .grid-2, .grid-3, .grid-5, .phase-overview, .kw-grid, .ravage-levels { grid-template-columns: 1fr; }
   .board .r-opp, .board .r-mid, .board .r-you { grid-template-columns: 1fr; }
   .track { grid-template-columns: repeat(7, 1fr); }
