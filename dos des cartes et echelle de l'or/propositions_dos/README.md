@@ -41,6 +41,8 @@ Pistes fortes pour un dos de deck : **01 épée**, **02 dragon**, **03 filigrane
 
 Suite titre bleu/rouge : [titre_pixel/](titre_pixel/) — 20 variantes avec le logo **Pixel of Glory**.
 
+Suite sobre : [titre_sobre/](titre_sobre/) — 20 variantes plus calmes (sans gantelets ni volutes, titre plus discret).
+
 ```bash
 python3 "dos des cartes et echelle de l'or/scripts/preparer_dos.py"
 ```
