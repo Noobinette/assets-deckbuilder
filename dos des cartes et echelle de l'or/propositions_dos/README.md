@@ -39,6 +39,8 @@ Aperçu : [apercu.html](apercu.html) — planches `planche_1.jpg` et `planche_2.
 
 Pistes fortes pour un dos de deck : **01 épée**, **02 dragon**, **03 filigrane** (le plus « carte à jouer »), **06 épées croisées**, **10 griffon**, **18 phénix**, **29 titre**.
 
+Suite titre bleu/rouge : [titre_pixel/](titre_pixel/) — 20 variantes avec le logo **Pixel of Glory**.
+
 ```bash
 python3 "dos des cartes et echelle de l'or/scripts/preparer_dos.py"
 ```
