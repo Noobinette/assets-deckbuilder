@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Génère 5 propositions de carte « échelle de l'OR ».
+"""Génère 6 propositions de carte « échelle de l'OR ».
 
-Une seule piste partagée : 6 → 0 → 6.
-Chaque joueur lit SES chiffres à l'endroit (côté adversaire tourné de 180°).
+Piste unique en S : 6 → 0 → 6.
+Chaque joueur lit SES chiffres à l'endroit (côté adverse tourné de 180°).
+Les 13 pièces sont posées à pas (quasi) égal le long du serpentin.
 """
 from __future__ import annotations
 
@@ -10,7 +11,7 @@ import math
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter, ImageEnhance, ImageChops
+from PIL import Image, ImageDraw, ImageFilter, ImageEnhance
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parent
@@ -18,8 +19,6 @@ OUT = ROOT / "propositions"
 FONDS = ROOT / "fonds"
 CARD_W, CARD_H = 750, 1050
 
-# Chiffres pixel 9×11, style de la pièce 0 des cartes du jeu.
-# 1 = encre, 0 = vide
 DIGITS = {
     "0": [
         "001111100",
@@ -127,73 +126,31 @@ def cover_crop(im: Image.Image, w: int, h: int) -> Image.Image:
 
 
 def chromakey_magenta(im: Image.Image, thresh: float = 75.0) -> Image.Image:
-    """Retire le magenta de fond, avec anti-aliasing sur les bords."""
     rgba = im.convert("RGBA")
     arr = np.asarray(rgba).astype(np.float32)
     r, g, b, a = arr[..., 0], arr[..., 1], arr[..., 2], arr[..., 3]
-    # Distance au magenta (255, 0, 255)
     dist = np.sqrt((r - 255) ** 2 + (g - 0) ** 2 + (b - 255) ** 2)
-    # Aussi : pixels très saturés magenta (R et B hauts, G bas)
     mag = np.minimum(r, b) - g
     alpha = np.clip((dist - thresh) / 40.0, 0, 1) * a
     alpha = np.where(mag > 80, alpha * 0.15, alpha)
-    # Masque circulaire de sécurité : garde le disque central
     h, w = alpha.shape
     yy, xx = np.ogrid[:h, :w]
     cy, cx = h / 2.0, w / 2.0
     rad = min(h, w) * 0.46
     circ = ((xx - cx) ** 2 + (yy - cy) ** 2) <= rad ** 2
-    # À l'intérieur du disque, on force opaque sauf vrai magenta
     inside = circ & (dist > 55)
     alpha = np.where(inside, np.maximum(alpha, 220), alpha)
     alpha = np.where(dist < 45, 0, alpha)
     arr[..., 3] = alpha
     out = Image.fromarray(arr.astype(np.uint8), "RGBA")
-    # Recadre au bounding box
     bbox = out.getbbox()
     if bbox:
         out = out.crop(bbox)
     return out
 
 
-def extract_game_coin() -> Image.Image:
-    """Pièce d'or des cartes du jeu, sans le chiffre."""
-    src = Image.open(REPO / "Cartes" / "Mine_d_or.png").convert("RGBA")
-    # La pièce est en haut à gauche, ~88 px
-    crop = src.crop((8, 8, 118, 118))
-    arr = np.asarray(crop).astype(np.float32)
-    h, w = arr.shape[:2]
-    yy, xx = np.ogrid[:h, :w]
-    cy, cx = h / 2.0 - 1, w / 2.0 - 1
-    rad = min(h, w) * 0.48
-    circ = ((xx - cx) ** 2 + (yy - cy) ** 2) <= rad ** 2
-    # Fond hors cercle → transparent
-    arr[..., 3] = np.where(circ, 255, 0)
-    # Inpaint grossier du « 0 » central : pixels très sombres au centre
-    r, g, b = arr[..., 0], arr[..., 1], arr[..., 2]
-    luma = 0.3 * r + 0.59 * g + 0.11 * b
-    inner = ((xx - cx) ** 2 + (yy - cy) ** 2) <= (rad * 0.42) ** 2
-    ink = inner & (luma < 80) & circ
-    # Couleur or moyenne de l'anneau autour du chiffre
-    ring = inner & (~ink) & (luma > 120)
-    if ring.any():
-        fill = arr[ring].mean(axis=0)
-    else:
-        fill = np.array([212, 168, 48, 255], dtype=np.float32)
-    # Un peu de variation
-    noise = np.random.RandomState(3).randn(*arr.shape[:2], 1) * 4
-    filled = np.clip(fill + noise, 0, 255)
-    arr[ink] = filled[ink]
-    # Légère flou local pour fondre le patch
-    coin = Image.fromarray(arr.astype(np.uint8), "RGBA")
-    return coin
-
-
 def load_blank_coin() -> Image.Image:
-    """Pièce générée (centre vide) + pièce du jeu, on privilégie le centre vide."""
-    generated = FONDS / "piece_or_pixel.jpg"
-    coin = chromakey_magenta(Image.open(generated))
-    # Recentre dans un carré
+    coin = chromakey_magenta(Image.open(FONDS / "piece_or_pixel.jpg"))
     w, h = coin.size
     side = max(w, h)
     canvas = Image.new("RGBA", (side, side), (0, 0, 0, 0))
@@ -229,21 +186,25 @@ def stamp_number(coin: Image.Image, value: int, rotate: bool, scale: int) -> Ima
     return coin
 
 
-def make_parchemin(size: int, value: int, rotate: bool, scale: int) -> Image.Image:
-    """Case parchemin façon EchelleGold, chiffre pixel."""
-    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img)
-    m = max(2, size // 18)
-    # ombre
-    d.rounded_rectangle((m + 3, m + 4, size - m + 3, size - m + 4), radius=size // 8, fill=(40, 22, 8, 120))
-    # bordure or
-    d.rounded_rectangle((m, m, size - m, size - m), radius=size // 8, fill=(92, 62, 22, 255))
-    d.rounded_rectangle((m + 3, m + 3, size - m - 3, size - m - 3), radius=size // 9, fill=(214, 186, 128, 255))
-    d.rounded_rectangle((m + 7, m + 7, size - m - 7, size - m - 7), radius=size // 11, fill=(236, 214, 164, 255))
-    # fibre
-    for i in range(m + 10, size - m - 10, max(4, size // 16)):
-        d.line((m + 10, i, size - m - 10, i + 1), fill=(200, 172, 120, 70), width=1)
-    return stamp_number(img, value, rotate, scale)
+def equal_arc_points(samples: list[tuple[float, float]], count: int) -> list[tuple[float, float]]:
+    if count == 1:
+        return [samples[0]]
+    dist = [0.0]
+    for (x0, y0), (x1, y1) in zip(samples, samples[1:]):
+        dist.append(dist[-1] + math.hypot(x1 - x0, y1 - y0))
+    total = dist[-1] or 1.0
+    targets = [total * i / (count - 1) for i in range(count)]
+    out: list[tuple[float, float]] = []
+    j = 0
+    for t in targets:
+        while j < len(dist) - 2 and dist[j + 1] < t:
+            j += 1
+        span = dist[j + 1] - dist[j]
+        u = 0.0 if span <= 1e-6 else (t - dist[j]) / span
+        x = samples[j][0] + (samples[j + 1][0] - samples[j][0]) * u
+        y = samples[j][1] + (samples[j + 1][1] - samples[j][1]) * u
+        out.append((x, y))
+    return out
 
 
 def catmull_rom(points: list[tuple[float, float]], n_per: int = 24) -> list[tuple[float, float]]:
@@ -273,17 +234,115 @@ def catmull_rom(points: list[tuple[float, float]], n_per: int = 24) -> list[tupl
     return out
 
 
-def polyline_samples(points: list[tuple[float, float]], step: float = 2.0) -> list[tuple[float, float]]:
-    """Segments droits, coins arrondis par densité — pas de boucle de spline."""
-    out: list[tuple[float, float]] = []
-    for (x0, y0), (x1, y1) in zip(points, points[1:]):
-        dist = max(1.0, math.hypot(x1 - x0, y1 - y0))
-        n = max(2, int(dist / step))
-        for i in range(n):
-            t = i / n
-            out.append((x0 + (x1 - x0) * t, y0 + (y1 - y0) * t))
-    out.append(points[-1])
-    return out
+def layout_from_waypoints(
+    w: int,
+    h: int,
+    a_points: list[tuple[float, float]],
+    *,
+    cx: float = 0.50,
+    cy: float = 0.50,
+) -> list[dict]:
+    """S 180°-symétrique. `a_points` = forme du côté A (0 → 6), puis pas égal.
+
+    A (bas, chiffres droits). B = rotation 180° autour de (cx, cy).
+    """
+    px = [(x * w, y * h) for x, y in a_points]
+    samples = catmull_rom(px, n_per=48)
+    half = equal_arc_points(samples, 7)
+    half[0] = (cx * w, cy * h)
+
+    nodes = [{"x": half[0][0], "y": half[0][1], "v": 0, "rot": False}]
+    for i, (x, y) in enumerate(half[1:], start=1):
+        nodes.append({"x": x, "y": y, "v": i, "rot": False})
+    for i, (x, y) in enumerate(half[1:], start=1):
+        nodes.append({"x": 2 * cx * w - x, "y": 2 * cy * h - y, "v": i, "rot": True})
+
+    order = (
+        [(6, True), (5, True), (4, True), (3, True), (2, True), (1, True)]
+        + [(0, False)]
+        + [(1, False), (2, False), (3, False), (4, False), (5, False), (6, False)]
+    )
+    by_key = {(n["v"], n["rot"]): n for n in nodes}
+    return [by_key[k] for k in order]
+
+
+# Formes du côté A (0 → 6), fractions de la carte. Virages arrondis, pas une grille.
+SHAPES: dict[str, list[tuple[float, float]]] = {
+    # S ouvert façon 1re proposition, mais on ré-espace ensuite.
+    "ouvert": [
+        (0.50, 0.50),
+        (0.68, 0.505),
+        (0.80, 0.58),
+        (0.81, 0.71),
+        (0.72, 0.845),
+        (0.50, 0.885),
+        (0.26, 0.875),
+    ],
+    # Plus enroulé / circulaire, pour qu’on voie bien la différence.
+    "enroule": [
+        (0.50, 0.50),
+        (0.70, 0.53),
+        (0.82, 0.66),
+        (0.76, 0.80),
+        (0.58, 0.89),
+        (0.36, 0.88),
+        (0.20, 0.78),
+    ],
+    # 0 calé sur le seuil d’or ; 4-5-6 entre les coffres.
+    "seuil": [
+        (0.50, 0.490),
+        (0.66, 0.52),
+        (0.74, 0.60),
+        (0.74, 0.70),
+        (0.64, 0.785),
+        (0.50, 0.805),
+        (0.34, 0.790),
+    ],
+    # Serpentin dans l’arche : coffres à gauche, escalier à droite.
+    "arche": [
+        (0.50, 0.50),
+        (0.64, 0.53),
+        (0.70, 0.63),
+        (0.68, 0.74),
+        (0.60, 0.84),
+        (0.48, 0.875),
+        (0.36, 0.86),
+    ],
+    # Mine galerie : colonne droite rentrée pour laisser le wagonnet.
+    "mine_galerie": [
+        (0.50, 0.48),
+        (0.62, 0.505),
+        (0.68, 0.60),
+        (0.66, 0.72),
+        (0.54, 0.83),
+        (0.36, 0.855),
+        (0.22, 0.83),
+    ],
+    # Mine filon : S plus large, 6 au sol, 3 au-dessus de la pelle.
+    "mine_filon": [
+        (0.50, 0.50),
+        (0.66, 0.52),
+        (0.78, 0.61),
+        (0.78, 0.72),
+        (0.68, 0.84),
+        (0.48, 0.88),
+        (0.28, 0.86),
+    ],
+}
+
+
+def neighbor_distances(nodes: list[dict]) -> list[float]:
+    ds = []
+    for a, b in zip(nodes, nodes[1:]):
+        ds.append(math.hypot(b["x"] - a["x"], b["y"] - a["y"]))
+    return ds
+
+
+def fit_coin_size(nodes: list[dict], desired: int, gap: int = 14) -> int:
+    ds = neighbor_distances(nodes)
+    min_d = min(ds) if ds else desired + gap
+    size = min(desired, int(min_d - gap))
+    return max(88, size)
 
 
 def draw_ribbon(
@@ -291,9 +350,8 @@ def draw_ribbon(
     points: list[tuple[float, float]],
     width: float,
     style: str = "gold",
-    curved: bool = True,
 ) -> None:
-    samples = catmull_rom(points, n_per=28) if curved else polyline_samples(points, step=1.8)
+    samples = catmull_rom(points, n_per=28)
     overlay = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
     d = ImageDraw.Draw(overlay)
     if style == "stone":
@@ -311,7 +369,7 @@ def draw_ribbon(
             (width - 1, (186, 132, 28, 255)),
             (width - 6, (230, 178, 52, 235)),
         ]
-    else:  # gold
+    else:
         layers = [
             (width + 8, (36, 20, 4, 240)),
             (width + 3, (132, 88, 16, 255)),
@@ -325,68 +383,16 @@ def draw_ribbon(
     canvas.alpha_composite(overlay)
 
 
-def layout_smooth(w: int, h: int) -> list[dict]:
-    """S fluide : 6-5-4 en haut, colonne, 1-0-1, colonne, 4-5-6 en bas."""
-    # (nx, ny, value, rotate) — rotate True = côté adversaire (haut de carte)
-    raw = [
-        (0.72, 0.125, 6, True),
-        (0.50, 0.118, 5, True),
-        (0.28, 0.175, 4, True),
-        (0.22, 0.310, 3, True),
-        (0.22, 0.430, 2, True),
-        (0.32, 0.500, 1, True),
-        (0.50, 0.500, 0, False),
-        (0.68, 0.500, 1, False),
-        (0.78, 0.570, 2, False),
-        (0.78, 0.690, 3, False),
-        (0.72, 0.825, 4, False),
-        (0.50, 0.882, 5, False),
-        (0.28, 0.875, 6, False),
-    ]
-    return [{"x": nx * w, "y": ny * h, "v": v, "rot": rot} for nx, ny, v, rot in raw]
-
-
-def layout_manuscrit(w: int, h: int) -> list[dict]:
-    """S en créneau, fidèle au croquis : 5-6 / 4-3-2 / 1-0-1 / 2-3-4 / 6-5.
-
-    Colonne gauche = 4-3-2 adversaire, barre centrale, colonne droite = 2-3-4 joueur.
-    """
-    raw = [
-        (0.74, 0.125, 6, True),
-        (0.50, 0.125, 5, True),
-        (0.26, 0.125, 4, True),
-        (0.26, 0.250, 3, True),
-        (0.26, 0.375, 2, True),
-        (0.26, 0.500, 1, True),
-        (0.50, 0.500, 0, False),
-        (0.74, 0.500, 1, False),
-        (0.74, 0.625, 2, False),
-        (0.74, 0.750, 3, False),
-        (0.74, 0.875, 4, False),
-        (0.50, 0.875, 5, False),
-        (0.26, 0.875, 6, False),
-    ]
-    return [{"x": nx * w, "y": ny * h, "v": v, "rot": rot} for nx, ny, v, rot in raw]
-
-
-def layout_serré(w: int, h: int) -> list[dict]:
-    """S un peu plus vertical, pièces plus groupées au centre."""
-    raw = [
-        (0.68, 0.135, 6, True),
-        (0.50, 0.110, 5, True),
-        (0.32, 0.155, 4, True),
-        (0.24, 0.290, 3, True),
-        (0.26, 0.410, 2, True),
-        (0.36, 0.500, 1, True),
-        (0.50, 0.500, 0, False),
-        (0.64, 0.500, 1, False),
-        (0.74, 0.590, 2, False),
-        (0.76, 0.710, 3, False),
-        (0.68, 0.845, 4, False),
-        (0.50, 0.890, 5, False),
-        (0.32, 0.865, 6, False),
-    ]
-    return [{"x": nx * w, "y": ny * h, "v": v, "rot": rot} for nx, ny, v, rot in raw]
+def draw_zero_medallion(canvas: Image.Image, cx: float, cy: float, size: int) -> None:
+    """Disque pierre/or derrière le 0, pour marquer la moitié."""
+    overlay = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(overlay)
+    r = size * 0.72
+    d.ellipse((cx - r - 3, cy - r + 4, cx + r + 3, cy + r + 8), fill=(20, 10, 4, 90))
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(92, 62, 18, 230))
+    d.ellipse((cx - r + 5, cy - r + 5, cx + r - 5, cy + r - 5), fill=(168, 122, 36, 235))
+    d.ellipse((cx - r + 11, cy - r + 11, cx + r - 11, cy + r - 11), fill=(58, 38, 12, 200))
+    canvas.alpha_composite(overlay.filter(ImageFilter.GaussianBlur(0.6)))
 
 
 def paste_shadow(canvas: Image.Image, size: int, cx: float, cy: float, strength=90) -> None:
@@ -394,7 +400,10 @@ def paste_shadow(canvas: Image.Image, size: int, cx: float, cy: float, strength=
     d = ImageDraw.Draw(shadow)
     r = size / 2
     off = size * 0.06
-    d.ellipse((cx - r + off, cy - r + off * 1.4, cx + r + off, cy + r + off * 1.4), fill=(0, 0, 0, strength))
+    d.ellipse(
+        (cx - r + off, cy - r + off * 1.4, cx + r + off, cy + r + off * 1.4),
+        fill=(0, 0, 0, strength),
+    )
     shadow = shadow.filter(ImageFilter.GaussianBlur(size * 0.08))
     canvas.alpha_composite(shadow)
 
@@ -405,19 +414,17 @@ def compose_card(
     coin_src: Image.Image,
     *,
     ribbon: str = "gold",
-    coin_size: int = 108,
-    zero_size: int = 124,
+    coin_size: int = 100,
+    zero_size: int = 114,
     digit_scale: int = 6,
-    vignette: float = 0.35,
+    vignette: float = 0.28,
     warmth: float = 1.0,
-    path_width: float = 22,
-    curved: bool = True,
-    marker: str = "coin",
+    path_width: float = 20,
 ) -> Image.Image:
     bg = cover_crop(background, CARD_W, CARD_H).convert("RGBA")
     if warmth != 1.0:
         bg = ImageEnhance.Color(bg).enhance(warmth)
-        bg = ImageEnhance.Contrast(bg).enhance(1.05)
+        bg = ImageEnhance.Contrast(bg).enhance(1.04)
 
     canvas = bg.copy()
     if vignette > 0:
@@ -430,30 +437,53 @@ def compose_card(
         black = Image.new("RGBA", (CARD_W, CARD_H), (0, 0, 0, int(180 * vignette)))
         canvas = Image.composite(canvas, Image.alpha_composite(canvas, black), vig)
 
+    zero = next(n for n in nodes if n["v"] == 0)
+    draw_zero_medallion(canvas, zero["x"], zero["y"], zero_size)
+
     pts = [(n["x"], n["y"]) for n in nodes]
-    draw_ribbon(canvas, pts, path_width, style=ribbon, curved=curved)
+    draw_ribbon(canvas, pts, path_width, style=ribbon)
 
     for n in nodes:
         size = zero_size if n["v"] == 0 else coin_size
-        paste_shadow(canvas, size, n["x"], n["y"], strength=110 if marker == "parchemin" else 90)
+        paste_shadow(canvas, size, n["x"], n["y"], strength=90)
         ds = digit_scale if n["v"] != 0 else digit_scale + 1
-        if marker == "parchemin":
-            stamped = make_parchemin(size, n["v"], n["rot"], ds)
-        else:
-            coin = coin_src.resize((size, size), Image.Resampling.LANCZOS)
-            stamped = stamp_number(coin, n["v"], n["rot"], ds)
+        coin = coin_src.resize((size, size), Image.Resampling.LANCZOS)
+        stamped = stamp_number(coin, n["v"], n["rot"], ds)
         x, y = int(n["x"] - size / 2), int(n["y"] - size / 2)
         canvas.alpha_composite(stamped, (x, y))
 
     return canvas.convert("RGB")
 
 
+def debug_layout(nodes: list[dict], coin_size: int, name: str) -> None:
+    img = Image.new("RGB", (CARD_W, CARD_H), (24, 18, 12))
+    d = ImageDraw.Draw(img)
+    pts = [(n["x"], n["y"]) for n in nodes]
+    samples = catmull_rom(pts, 20)
+    for (x0, y0), (x1, y1) in zip(samples, samples[1:]):
+        d.line((x0, y0, x1, y1), fill=(180, 140, 40), width=4)
+    ds = neighbor_distances(nodes)
+    print(f"  {name}: min {min(ds):.1f}  mean {sum(ds)/len(ds):.1f}  max {max(ds):.1f}  coin {coin_size}")
+    for n, dist in zip(nodes, ds + [None]):
+        r = (coin_size + 8) / 2 if n["v"] == 0 else coin_size / 2
+        d.ellipse((n["x"] - r, n["y"] - r, n["x"] + r, n["y"] + r), outline=(240, 200, 80), width=2)
+        label = f"{n['v']}{'R' if n['rot'] else ''}"
+        d.text((n["x"] - 8, n["y"] - 6), label, fill=(255, 230, 160))
+        if dist is not None:
+            mx = (n["x"] + nodes[nodes.index(n) + 1]["x"]) / 2
+            my = (n["y"] + nodes[nodes.index(n) + 1]["y"]) / 2
+            d.text((mx, my), f"{dist:.0f}", fill=(120, 200, 120))
+    Path("/tmp/echelle_debug").mkdir(parents=True, exist_ok=True)
+    img.save(Path("/tmp/echelle_debug") / f"{name}.png")
+
+
 CAPTIONS = {
-    "01_donjon_serpentin.png": "Donjon — S fluide, fond fourni, pièces d’or",
-    "02_donjon_manuscrit.png": "Donjon — S en créneau (croquis à la main)",
-    "03_donjon_piste.png": "Donjon — même fond, piste pierre/or un peu plus serrée",
-    "04_salle_tresor.png": "Salle du trésor — autre fond, même S fluide",
-    "05_table_bois.png": "Table de bois — cases parchemin, chiffres inversés",
+    "01_donjon_serpentin.png": "Donjon (ton fond) — S ouvert, pièces rondes, pas plus régulier",
+    "02_donjon_enroule.png": "Donjon (ton fond) — S plus enroulé, virages plus ronds",
+    "03_tresor_moitie.png": "Salle au trésor — bas = coffres, haut = porte, 0 sur le seuil",
+    "04_tresor_cotes.png": "Salle au trésor de côté — coffres à gauche, escalier à droite",
+    "05_mine_galerie.png": "Mine d’or — galerie et wagonnet, S ouvert",
+    "06_mine_filon.png": "Mine d’or — filons dans la roche, S un peu plus ample",
 }
 
 
@@ -470,22 +500,24 @@ def write_apercu(paths: list[Path]) -> None:
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<title>Échelle de l'OR — propositions</title>
+<title>Échelle de l'OR — 6 propositions</title>
 <style>
   :root {{ background:#1a1410; color:#f3e6c4; font-family:Georgia, serif; }}
-  body {{ max-width:1200px; margin:32px auto; padding:0 20px; }}
+  body {{ max-width:1400px; margin:32px auto; padding:0 20px; }}
   h1 {{ font-weight:normal; letter-spacing:.04em; }}
-  p {{ color:#cbb98a; max-width:70ch; line-height:1.45; }}
-  .grid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:22px; margin-top:28px; }}
+  p {{ color:#cbb98a; max-width:72ch; line-height:1.45; }}
+  .grid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:22px; margin-top:28px; }}
   figure {{ margin:0; background:#0e0b08; border:1px solid #5a4520; border-radius:8px; overflow:hidden; }}
   img {{ width:100%; height:auto; display:block; }}
   figcaption {{ padding:10px 12px 14px; font-size:14px; color:#e8d5a0; }}
 </style>
 </head>
 <body>
-  <h1>Échelle de l'OR — 5 propositions</h1>
-  <p>Piste unique 6 → 0 → 6. Les chiffres du côté adverse sont tournés de 180°,
-  pour que chaque joueur lise les siens à l'endroit. On y déplace une pièce d'or.</p>
+  <h1>Échelle de l'OR — 6 propositions</h1>
+  <p>Pièces <strong>rondes</strong>, piste en <strong>serpentin</strong> (pas la grille carrée).
+  Chiffres espacés à pas plus régulier. Côté adverse tourné de 180°.
+  Deux cartes sur ton donjon, deux salles au trésor avec l’autre côté distinct,
+  deux mines.</p>
   <div class="grid">{cards}
   </div>
 </body>
@@ -498,54 +530,72 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     coin = load_blank_coin()
     fond_or = Image.open(ROOT / "Fond_Carte_Or.jpg")
-    fond_tresor = Image.open(FONDS / "fond_salle_tresor.jpg")
-    fond_bois = Image.open(FONDS / "fond_table_bois.jpg")
+    fond_moitie = Image.open(FONDS / "fond_tresor_moitie.jpg")
+    fond_cotes = Image.open(FONDS / "fond_tresor_cotes.jpg")
+    fond_galerie = Image.open(FONDS / "fond_mine_galerie.jpg")
+    fond_filon = Image.open(FONDS / "fond_mine_filon.jpg")
 
     jobs = [
         (
             "01_donjon_serpentin.png",
             fond_or,
-            layout_smooth(CARD_W, CARD_H),
-            dict(ribbon="gold", coin_size=112, zero_size=128, path_width=20, vignette=0.26, warmth=1.0),
+            "ouvert",
+            0.50,
+            0.50,
+            dict(ribbon="gold", desired=102, path_width=18, vignette=0.24, warmth=1.0),
         ),
         (
-            "02_donjon_manuscrit.png",
+            "02_donjon_enroule.png",
             fond_or,
-            layout_manuscrit(CARD_W, CARD_H),
-            dict(ribbon="glow", coin_size=108, zero_size=124, path_width=18, vignette=0.28, warmth=1.04, curved=False),
+            "enroule",
+            0.50,
+            0.50,
+            dict(ribbon="glow", desired=100, path_width=18, vignette=0.20, warmth=1.03),
         ),
         (
-            "03_donjon_piste.png",
-            fond_or,
-            layout_serré(CARD_W, CARD_H),
-            dict(ribbon="stone", coin_size=110, zero_size=126, path_width=26, vignette=0.20, warmth=0.96),
+            "03_tresor_moitie.png",
+            fond_moitie,
+            "seuil",
+            0.50,
+            0.490,
+            dict(ribbon="glow", desired=98, path_width=18, vignette=0.10, warmth=1.04),
         ),
         (
-            "04_salle_tresor.png",
-            fond_tresor,
-            layout_smooth(CARD_W, CARD_H),
-            dict(ribbon="glow", coin_size=112, zero_size=128, path_width=20, vignette=0.16, warmth=1.06),
+            "04_tresor_cotes.png",
+            fond_cotes,
+            "arche",
+            0.50,
+            0.50,
+            dict(ribbon="glow", desired=96, path_width=16, vignette=0.08, warmth=1.02),
         ),
         (
-            "05_table_bois.png",
-            fond_bois,
-            layout_manuscrit(CARD_W, CARD_H),
-            dict(
-                ribbon="gold",
-                coin_size=104,
-                zero_size=118,
-                path_width=16,
-                vignette=0.10,
-                warmth=1.0,
-                curved=False,
-                marker="parchemin",
-            ),
+            "05_mine_galerie.png",
+            fond_galerie,
+            "mine_galerie",
+            0.50,
+            0.48,
+            dict(ribbon="gold", desired=100, path_width=18, vignette=0.16, warmth=1.05),
+        ),
+        (
+            "06_mine_filon.png",
+            fond_filon,
+            "mine_filon",
+            0.50,
+            0.50,
+            dict(ribbon="glow", desired=100, path_width=18, vignette=0.14, warmth=1.06),
         ),
     ]
 
     written: list[Path] = []
-    for name, bg, nodes, kw in jobs:
-        img = compose_card(bg, nodes, coin, **kw)
+    for name, bg, shape, cx, cy, kw in jobs:
+        nodes = layout_from_waypoints(CARD_W, CARD_H, SHAPES[shape], cx=cx, cy=cy)
+        desired = kw.pop("desired")
+        coin_size = fit_coin_size(nodes, desired, gap=20)
+        zero_size = coin_size + 14
+        debug_layout(nodes, coin_size, Path(name).stem)
+        img = compose_card(
+            bg, nodes, coin, coin_size=coin_size, zero_size=zero_size, **kw
+        )
         dest = OUT / name
         img.save(dest, "PNG", optimize=True)
         written.append(dest)
