@@ -1767,12 +1767,12 @@
                             <hr style="border:0; border-top:1px solid #444; width:100%; margin: 5px 0;">
 
                             <label>Taille du deck (hors Lieux/Plans)</label>
-                            <input type="number" id="deckSizeInput" min="40" max="50" value="40"
+                            <input type="number" id="deckSizeInput" min="40" max="50" value="45"
                                 onchange="changeDeckSize(this.value)"
                                 style="width:100%; margin-bottom:5px; background: var(--ui-bg); color: white; border: 1px solid var(--border-color); padding: 6px; border-radius: 4px; box-sizing: border-box;">
 
                             <label>Nombre de plans</label>
-                            <input type="number" id="planSizeInput" min="0" max="20" value="6"
+                            <input type="number" id="planSizeInput" min="5" max="10" value="7"
                                 onchange="changePlanSize(this.value)"
                                 style="width:100%; margin-bottom:5px; background: var(--ui-bg); color: white; border: 1px solid var(--border-color); padding: 6px; border-radius: 4px; box-sizing: border-box;">
 
@@ -1827,7 +1827,7 @@
                                 <button onclick="startGoldfish()" style="background: #3f51b5;">🔄 Nouvelle
                                     Partie</button>
                                 <button onclick="drawGoldfishCards(1)">🃏 Piocher 1</button>
-                                <button onclick="drawUpToSix()">🖐️ Refaire main (6)</button>
+                                <button onclick="drawUpToSix()">🖐️ Refaire main</button>
                                 <button onclick="toggleGoldfishFullscreen()" style="background: #9c27b0;">🖵 Plein
                                     Écran</button>
                                 <div style="color: #aaa; font-size: 0.95em; white-space: nowrap; margin-left: 10px;">
@@ -1944,8 +1944,8 @@
         document.addEventListener('contextmenu', event => event.preventDefault());
         const TYPE_ORDER = ["lieu", "plan", "unité", "batiment", "bâtiment", "equipement", "équipement", "sort"];
 
-        let targetDeckSize = parseInt(localStorage.getItem(STORAGE_KEY_DECK_SIZE)) || 40;
-        let targetPlanSize = parseInt(localStorage.getItem(STORAGE_KEY_PLAN_SIZE)) || 6;
+        let targetDeckSize = parseInt(localStorage.getItem(STORAGE_KEY_DECK_SIZE)) || 45;
+        let targetPlanSize = parseInt(localStorage.getItem(STORAGE_KEY_PLAN_SIZE)) || 7;
         let imageCacheVersion = localStorage.getItem('deckbuilder_img_version') || '1';
 
         let libSearchTimeout = null;
@@ -2827,11 +2827,11 @@
             if (zoomSelect) zoomSelect.value = sZoomVal;
             changeZoom(sZoomVal);
 
-            let sDeckSize = localStorage.getItem(STORAGE_KEY_DECK_SIZE) || "40";
+            let sDeckSize = localStorage.getItem(STORAGE_KEY_DECK_SIZE) || "45";
             let deckSizeInput = document.getElementById('deckSizeInput');
             if (deckSizeInput) deckSizeInput.value = sDeckSize;
 
-            let sPlanSize = localStorage.getItem(STORAGE_KEY_PLAN_SIZE) || "6";
+            let sPlanSize = localStorage.getItem(STORAGE_KEY_PLAN_SIZE) || "7";
             let planSizeInput = document.getElementById('planSizeInput');
             if (planSizeInput) planSizeInput.value = sPlanSize;
 
@@ -3952,7 +3952,7 @@
                 }
             }
             shuffleArray(gfDeck);
-            drawGoldfishCards(6);
+            drawGoldfishCards(7);
         }
 
         function drawGoldfishCards(num) {
@@ -3962,9 +3962,9 @@
             renderGoldfish();
         }
 
-        function drawUpToSix() {
+        function drawUpToSix() { // 7 du coup =D
             const activeCards = gfHand.filter(h => !h.played).length;
-            const toDraw = 6 - activeCards;
+            const toDraw = 7 - activeCards;
             if (toDraw > 0) drawGoldfishCards(toDraw);
         }
 
