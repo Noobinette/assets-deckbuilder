@@ -1,0 +1,348 @@
+{
+  "styles": {
+    "tampon": {
+      "label": "Tampon",
+      "hint": "Encre noire, cercle un peu usé comme un tampon de poste."
+    },
+    "esquisse": {
+      "label": "Esquisse",
+      "hint": "Trait de crayon simple, presque un pictogramme."
+    },
+    "crayon": {
+      "label": "Crayon",
+      "hint": "Esquisse plus travaillée — plus de volume, un peu plus chargée à 64 px."
+    }
+  },
+  "types": {
+    "unite": {
+      "label": "Unité",
+      "icons": [
+        {
+          "id": "01_casque",
+          "name": "casque",
+          "label": "Casque"
+        },
+        {
+          "id": "02_casque_profil",
+          "name": "casque_profil",
+          "label": "Casque de profil"
+        },
+        {
+          "id": "03_heaume",
+          "name": "heaume",
+          "label": "Heaume"
+        },
+        {
+          "id": "04_epees",
+          "name": "epees",
+          "label": "Épées croisées"
+        },
+        {
+          "id": "05_bouclier",
+          "name": "bouclier",
+          "label": "Bouclier"
+        },
+        {
+          "id": "06_lance",
+          "name": "lance",
+          "label": "Lance"
+        },
+        {
+          "id": "07_soldat",
+          "name": "soldat",
+          "label": "Soldat"
+        },
+        {
+          "id": "08_gantelet",
+          "name": "gantelet",
+          "label": "Gantelet"
+        },
+        {
+          "id": "09_cor",
+          "name": "cor",
+          "label": "Cor"
+        },
+        {
+          "id": "10_banniere",
+          "name": "banniere",
+          "label": "Bannière"
+        }
+      ]
+    },
+    "batiment": {
+      "label": "Bâtiment",
+      "icons": [
+        {
+          "id": "01_tour",
+          "name": "tour",
+          "label": "Tour"
+        },
+        {
+          "id": "02_tour_drapeau",
+          "name": "tour_drapeau",
+          "label": "Tour au drapeau"
+        },
+        {
+          "id": "03_donjon",
+          "name": "donjon",
+          "label": "Donjon"
+        },
+        {
+          "id": "04_chateau",
+          "name": "chateau",
+          "label": "Château"
+        },
+        {
+          "id": "05_portail",
+          "name": "portail",
+          "label": "Portail"
+        },
+        {
+          "id": "06_maison",
+          "name": "maison",
+          "label": "Maison"
+        },
+        {
+          "id": "07_rempart",
+          "name": "rempart",
+          "label": "Rempart"
+        },
+        {
+          "id": "08_phare",
+          "name": "phare",
+          "label": "Phare"
+        },
+        {
+          "id": "09_pont_levis",
+          "name": "pont_levis",
+          "label": "Pont-levis"
+        },
+        {
+          "id": "10_grange",
+          "name": "grange",
+          "label": "Grange"
+        }
+      ]
+    },
+    "equipement": {
+      "label": "Équipement",
+      "icons": [
+        {
+          "id": "01_sac",
+          "name": "sac",
+          "label": "Sac"
+        },
+        {
+          "id": "02_coffre",
+          "name": "coffre",
+          "label": "Coffre"
+        },
+        {
+          "id": "03_epee",
+          "name": "epee",
+          "label": "Épée"
+        },
+        {
+          "id": "04_anneau",
+          "name": "anneau",
+          "label": "Anneau"
+        },
+        {
+          "id": "05_sacoche",
+          "name": "sacoche",
+          "label": "Sacoche"
+        },
+        {
+          "id": "06_hache",
+          "name": "hache",
+          "label": "Hache"
+        },
+        {
+          "id": "07_marteau",
+          "name": "marteau",
+          "label": "Marteau"
+        },
+        {
+          "id": "08_arc",
+          "name": "arc",
+          "label": "Arc"
+        },
+        {
+          "id": "09_amulette",
+          "name": "amulette",
+          "label": "Amulette"
+        },
+        {
+          "id": "10_bottes",
+          "name": "bottes",
+          "label": "Bottes"
+        }
+      ]
+    },
+    "evenement": {
+      "label": "Événement",
+      "icons": [
+        {
+          "id": "01_grimoire",
+          "name": "grimoire",
+          "label": "Grimoire"
+        },
+        {
+          "id": "02_parchemin",
+          "name": "parchemin",
+          "label": "Parchemin"
+        },
+        {
+          "id": "03_eclair",
+          "name": "eclair",
+          "label": "Éclair"
+        },
+        {
+          "id": "04_potion",
+          "name": "potion",
+          "label": "Potion"
+        },
+        {
+          "id": "05_rune",
+          "name": "rune",
+          "label": "Rune"
+        },
+        {
+          "id": "06_flamme",
+          "name": "flamme",
+          "label": "Flamme"
+        },
+        {
+          "id": "07_etincelle",
+          "name": "etincelle",
+          "label": "Étincelle"
+        },
+        {
+          "id": "08_lune",
+          "name": "lune",
+          "label": "Lune"
+        },
+        {
+          "id": "09_sablier",
+          "name": "sablier",
+          "label": "Sablier"
+        },
+        {
+          "id": "10_oeil",
+          "name": "oeil",
+          "label": "Œil"
+        }
+      ]
+    },
+    "plan": {
+      "label": "Plan",
+      "icons": [
+        {
+          "id": "01_lettre",
+          "name": "lettre",
+          "label": "Lettre scellée"
+        },
+        {
+          "id": "02_rouleau",
+          "name": "rouleau",
+          "label": "Rouleau"
+        },
+        {
+          "id": "03_tactique",
+          "name": "tactique",
+          "label": "Carte tactique"
+        },
+        {
+          "id": "04_plume",
+          "name": "plume",
+          "label": "Plume"
+        },
+        {
+          "id": "05_decret",
+          "name": "decret",
+          "label": "Décret"
+        },
+        {
+          "id": "06_enveloppe",
+          "name": "enveloppe",
+          "label": "Enveloppe"
+        },
+        {
+          "id": "07_cachet",
+          "name": "cachet",
+          "label": "Cachet"
+        },
+        {
+          "id": "08_pions",
+          "name": "pions",
+          "label": "Pions"
+        },
+        {
+          "id": "09_fleches",
+          "name": "fleches",
+          "label": "Flèches"
+        },
+        {
+          "id": "10_pli",
+          "name": "pli",
+          "label": "Pli"
+        }
+      ]
+    },
+    "lieu": {
+      "label": "Lieu",
+      "icons": [
+        {
+          "id": "01_carte",
+          "name": "carte",
+          "label": "Carte"
+        },
+        {
+          "id": "02_boussole",
+          "name": "boussole",
+          "label": "Boussole"
+        },
+        {
+          "id": "03_drapeau",
+          "name": "drapeau",
+          "label": "Drapeau"
+        },
+        {
+          "id": "04_montagne",
+          "name": "montagne",
+          "label": "Montagne"
+        },
+        {
+          "id": "05_borne",
+          "name": "borne",
+          "label": "Borne"
+        },
+        {
+          "id": "06_arbre",
+          "name": "arbre",
+          "label": "Arbre"
+        },
+        {
+          "id": "07_pont",
+          "name": "pont",
+          "label": "Pont"
+        },
+        {
+          "id": "08_grotte",
+          "name": "grotte",
+          "label": "Grotte"
+        },
+        {
+          "id": "09_rose",
+          "name": "rose",
+          "label": "Rose des vents"
+        },
+        {
+          "id": "10_collines",
+          "name": "collines",
+          "label": "Collines"
+        }
+      ]
+    }
+  }
+}

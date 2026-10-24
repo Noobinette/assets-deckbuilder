@@ -1,10 +1,15 @@
 # Icônes de type — propositions
 
-Trente pictogrammes pixel art 32-bit (cinq par type de carte), **sans médaillon circulaire**, fond **transparent** (PNG 32 bits RGBA).
+Deux pistes :
 
-Ils sont faits pour remplacer les petites icônes actuelles (casque, tour, sac, grimoire, parchemin scellé, carte) qui se lisent mal sur le parchemin beige.
+1. **Tampon / esquisse, noir et blanc** — [`nb/apercu.html`](nb/apercu.html)  
+   Une vingtaine de pictos par type, encre ou trait de crayon, peu de détails. C’est la réponse au « trop de détail sur une petite carte ».
+2. **Pixel art 32-bit, couleur** — [`apercu.html`](apercu.html)  
+   Cinq lectures par type, sans médaillon. Plus riches, moins lisibles à ~70 px.
 
-Ouvrir [`apercu.html`](apercu.html) dans un navigateur pour tout comparer (parchemin / sombre / damier).
+Les pictos actuels (casque, tour, sac, grimoire, parchemin scellé, carte) se lisent mal sur le parchemin beige.
+
+## Pixel art 32-bit (cette page)
 
 ## Types
 
