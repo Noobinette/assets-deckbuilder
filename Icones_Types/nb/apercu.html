@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Icônes tampon / esquisse — Pixel of Glory</title>
+  <style>
+    :root {
+      --bg: #161416;
+      --panel: #221e22;
+      --ink: #efe6d6;
+      --muted: #b9aa96;
+      --gold: #d4b46a;
+      --parchment: #e2c792;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Segoe UI", Tahoma, sans-serif; }
+    header { padding: 28px 32px 12px; border-bottom: 1px solid #3a3330; }
+    header h1 { margin: 0 0 6px; font-size: 1.55rem; }
+    header p { margin: 0; color: var(--muted); max-width: 860px; line-height: 1.45; }
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      padding: 16px 32px; position: sticky; top: 0; background: #161416ee; z-index: 2;
+      backdrop-filter: blur(8px);
+    }
+    .toolbar button, .toolbar a {
+      background: #2c272c; color: var(--ink); border: 1px solid #4a4240;
+      border-radius: 999px; padding: 6px 12px; cursor: pointer; font-size: 13px; text-decoration: none;
+    }
+    .toolbar button.active { background: var(--gold); color: #1a140c; border-color: var(--gold); font-weight: 700; }
+    .toolbar .hint { color: var(--muted); font-size: 12px; margin-left: 8px; }
+    main { padding: 8px 32px 64px; }
+    section { margin: 28px 0 40px; }
+    h2 { margin: 0 0 6px; font-size: 1.2rem; color: var(--gold); }
+    .lead { color: var(--muted); margin: 0 0 16px; font-size: .95rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid #3a3330;
+      border-radius: 12px;
+      padding: 10px 10px 12px;
+      text-align: center;
+    }
+    .tile {
+      width: 128px; height: 128px; margin: 0 auto 8px;
+      border-radius: 10px;
+      display: grid; place-items: center;
+      background: var(--parchment);
+    }
+    body.bg-dark .tile { background: #1b181c; }
+    body.bg-check .tile {
+      background-color: #cfcfcf;
+      background-image:
+        linear-gradient(45deg, #9a9a9a 25%, transparent 25%),
+        linear-gradient(-45deg, #9a9a9a 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #9a9a9a 75%),
+        linear-gradient(-45deg, transparent 75%, #9a9a9a 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+    }
+    .tile img { width: 112px; height: 112px; }
+    .card b { display: block; font-size: .92rem; }
+    .mock img, .planche { width: min(100%, 1100px); border-radius: 10px; border: 1px solid #3a3330; }
+    footer { padding: 0 32px 40px; color: var(--muted); font-size: .85rem; }
+  </style>
+</head>
+<body class="bg-parchment" data-style="tampon" data-size="128">
+  <header>
+    <h1>Icônes de type — tampon &amp; esquisse</h1>
+    <p>
+      Noir et blanc, peu de détails, lisibles tout petits sur le parchemin.
+      <strong>Tampon</strong> : encre, cercle un peu effacé comme un cachet de poste.
+      <strong>Esquisse</strong> : trait de crayon simple.
+      Une vingtaine de propositions par type (10 tampon + 10 esquisse), plus une série crayon plus travaillée.
+    </p>
+  </header>
+  <div class="toolbar">
+    <button class="active" data-style="tampon">Tampon</button>
+    <button data-style="esquisse">Esquisse</button>
+    <button data-style="crayon">Crayon</button>
+    <button data-bg="bg-parchment" class="active">Fond parchemin</button>
+    <button data-bg="bg-dark">Fond sombre</button>
+    <button data-bg="bg-check">Damier</button>
+    <span class="hint" id="style-hint">Encre noire, cercle un peu usé comme un tampon de poste.</span>
+  </div>
+  <main>
+    <section>
+      <h2>À la taille de la carte</h2>
+      <p class="lead">48 / 64 / 96 px — c’est à peu près le médaillon actuel. Le tampon reste un pictogramme, l’ancien pixel se noie.</p>
+      <img class="planche" src="mockups/lisibilite_petite_taille.png" alt="Comparaison petite taille">
+    </section>
+    <section>
+      <h2>Planche tampon</h2>
+      <img class="planche" src="mockups/planche_tampon_parchemin.png" alt="Planche tampon">
+    </section>
+    <section>
+      <h2>Planche esquisse</h2>
+      <img class="planche" src="mockups/planche_esquisse_parchemin.png" alt="Planche esquisse">
+    </section>
+    <section id="unite">
+  <h2>Unité</h2>
+  <p class="lead">Dix lectures, même famille. La 01 reprend le symbole actuel (casque, tour, sac, grimoire, lettre, carte).</p>
+  <div class="grid">
+    <article class="card" data-name="casque">
+  <div class="tile"><img data-src="unite/01_casque.png" alt="Casque"></div>
+  <b>01 · Casque</b>
+</article><article class="card" data-name="casque_profil">
+  <div class="tile"><img data-src="unite/02_casque_profil.png" alt="Casque de profil"></div>
+  <b>02 · Casque de profil</b>
+</article><article class="card" data-name="heaume">
+  <div class="tile"><img data-src="unite/03_heaume.png" alt="Heaume"></div>
+  <b>03 · Heaume</b>
+</article><article class="card" data-name="epees">
+  <div class="tile"><img data-src="unite/04_epees.png" alt="Épées croisées"></div>
+  <b>04 · Épées croisées</b>
+</article><article class="card" data-name="bouclier">
+  <div class="tile"><img data-src="unite/05_bouclier.png" alt="Bouclier"></div>
+  <b>05 · Bouclier</b>
+</article><article class="card" data-name="lance">
+  <div class="tile"><img data-src="unite/06_lance.png" alt="Lance"></div>
+  <b>06 · Lance</b>
+</article><article class="card" data-name="soldat">
+  <div class="tile"><img data-src="unite/07_soldat.png" alt="Soldat"></div>
+  <b>07 · Soldat</b>
+</article><article class="card" data-name="gantelet">
+  <div class="tile"><img data-src="unite/08_gantelet.png" alt="Gantelet"></div>
+  <b>08 · Gantelet</b>
+</article><article class="card" data-name="cor">
+  <div class="tile"><img data-src="unite/09_cor.png" alt="Cor"></div>
+  <b>09 · Cor</b>
+</article><article class="card" data-name="banniere">
+  <div class="tile"><img data-src="unite/10_banniere.png" alt="Bannière"></div>
+  <b>10 · Bannière</b>
+</article>
+  </div>
+</section><section id="batiment">
+  <h2>Bâtiment</h2>
+  <p class="lead">Dix lectures, même famille. La 01 reprend le symbole actuel (casque, tour, sac, grimoire, lettre, carte).</p>
+  <div class="grid">
+    <article class="card" data-name="tour">
+  <div class="tile"><img data-src="batiment/01_tour.png" alt="Tour"></div>
+  <b>01 · Tour</b>
+</article><article class="card" data-name="tour_drapeau">
+  <div class="tile"><img data-src="batiment/02_tour_drapeau.png" alt="Tour au drapeau"></div>
+  <b>02 · Tour au drapeau</b>
+</article><article class="card" data-name="donjon">
+  <div class="tile"><img data-src="batiment/03_donjon.png" alt="Donjon"></div>
+  <b>03 · Donjon</b>
+</article><article class="card" data-name="chateau">
+  <div class="tile"><img data-src="batiment/04_chateau.png" alt="Château"></div>
+  <b>04 · Château</b>
+</article><article class="card" data-name="portail">
+  <div class="tile"><img data-src="batiment/05_portail.png" alt="Portail"></div>
+  <b>05 · Portail</b>
+</article><article class="card" data-name="maison">
+  <div class="tile"><img data-src="batiment/06_maison.png" alt="Maison"></div>
+  <b>06 · Maison</b>
+</article><article class="card" data-name="rempart">
+  <div class="tile"><img data-src="batiment/07_rempart.png" alt="Rempart"></div>
+  <b>07 · Rempart</b>
+</article><article class="card" data-name="phare">
+  <div class="tile"><img data-src="batiment/08_phare.png" alt="Phare"></div>
+  <b>08 · Phare</b>
+</article><article class="card" data-name="pont_levis">
+  <div class="tile"><img data-src="batiment/09_pont_levis.png" alt="Pont-levis"></div>
+  <b>09 · Pont-levis</b>
+</article><article class="card" data-name="grange">
+  <div class="tile"><img data-src="batiment/10_grange.png" alt="Grange"></div>
+  <b>10 · Grange</b>
+</article>
+  </div>
+</section><section id="equipement">
+  <h2>Équipement</h2>
+  <p class="lead">Dix lectures, même famille. La 01 reprend le symbole actuel (casque, tour, sac, grimoire, lettre, carte).</p>
+  <div class="grid">
+    <article class="card" data-name="sac">
+  <div class="tile"><img data-src="equipement/01_sac.png" alt="Sac"></div>
+  <b>01 · Sac</b>
+</article><article class="card" data-name="coffre">
+  <div class="tile"><img data-src="equipement/02_coffre.png" alt="Coffre"></div>
+  <b>02 · Coffre</b>
+</article><article class="card" data-name="epee">
+  <div class="tile"><img data-src="equipement/03_epee.png" alt="Épée"></div>
+  <b>03 · Épée</b>
+</article><article class="card" data-name="anneau">
+  <div class="tile"><img data-src="equipement/04_anneau.png" alt="Anneau"></div>
+  <b>04 · Anneau</b>
+</article><article class="card" data-name="sacoche">
+  <div class="tile"><img data-src="equipement/05_sacoche.png" alt="Sacoche"></div>
+  <b>05 · Sacoche</b>
+</article><article class="card" data-name="hache">
+  <div class="tile"><img data-src="equipement/06_hache.png" alt="Hache"></div>
+  <b>06 · Hache</b>
+</article><article class="card" data-name="marteau">
+  <div class="tile"><img data-src="equipement/07_marteau.png" alt="Marteau"></div>
+  <b>07 · Marteau</b>
+</article><article class="card" data-name="arc">
+  <div class="tile"><img data-src="equipement/08_arc.png" alt="Arc"></div>
+  <b>08 · Arc</b>
+</article><article class="card" data-name="amulette">
+  <div class="tile"><img data-src="equipement/09_amulette.png" alt="Amulette"></div>
+  <b>09 · Amulette</b>
+</article><article class="card" data-name="bottes">
+  <div class="tile"><img data-src="equipement/10_bottes.png" alt="Bottes"></div>
+  <b>10 · Bottes</b>
+</article>
+  </div>
+</section><section id="evenement">
+  <h2>Événement</h2>
+  <p class="lead">Dix lectures, même famille. La 01 reprend le symbole actuel (casque, tour, sac, grimoire, lettre, carte).</p>
+  <div class="grid">
+    <article class="card" data-name="grimoire">
+  <div class="tile"><img data-src="evenement/01_grimoire.png" alt="Grimoire"></div>
+  <b>01 · Grimoire</b>
+</article><article class="card" data-name="parchemin">
+  <div class="tile"><img data-src="evenement/02_parchemin.png" alt="Parchemin"></div>
+  <b>02 · Parchemin</b>
+</article><article class="card" data-name="eclair">
+  <div class="tile"><img data-src="evenement/03_eclair.png" alt="Éclair"></div>
+  <b>03 · Éclair</b>
+</article><article class="card" data-name="potion">
+  <div class="tile"><img data-src="evenement/04_potion.png" alt="Potion"></div>
+  <b>04 · Potion</b>
+</article><article class="card" data-name="rune">
+  <div class="tile"><img data-src="evenement/05_rune.png" alt="Rune"></div>
+  <b>05 · Rune</b>
+</article><article class="card" data-name="flamme">
+  <div class="tile"><img data-src="evenement/06_flamme.png" alt="Flamme"></div>
+  <b>06 · Flamme</b>
+</article><article class="card" data-name="etincelle">
+  <div class="tile"><img data-src="evenement/07_etincelle.png" alt="Étincelle"></div>
+  <b>07 · Étincelle</b>
+</article><article class="card" data-name="lune">
+  <div class="tile"><img data-src="evenement/08_lune.png" alt="Lune"></div>
+  <b>08 · Lune</b>
+</article><article class="card" data-name="sablier">
+  <div class="tile"><img data-src="evenement/09_sablier.png" alt="Sablier"></div>
+  <b>09 · Sablier</b>
+</article><article class="card" data-name="oeil">
+  <div class="tile"><img data-src="evenement/10_oeil.png" alt="Œil"></div>
+  <b>10 · Œil</b>
+</article>
+  </div>
+</section><section id="plan">
+  <h2>Plan</h2>
+  <p class="lead">Dix lectures, même famille. La 01 reprend le symbole actuel (casque, tour, sac, grimoire, lettre, carte).</p>
+  <div class="grid">
+    <article class="card" data-name="lettre">
+  <div class="tile"><img data-src="plan/01_lettre.png" alt="Lettre scellée"></div>
+  <b>01 · Lettre scellée</b>
+</article><article class="card" data-name="rouleau">
+  <div class="tile"><img data-src="plan/02_rouleau.png" alt="Rouleau"></div>
+  <b>02 · Rouleau</b>
+</article><article class="card" data-name="tactique">
+  <div class="tile"><img data-src="plan/03_tactique.png" alt="Carte tactique"></div>
+  <b>03 · Carte tactique</b>
+</article><article class="card" data-name="plume">
+  <div class="tile"><img data-src="plan/04_plume.png" alt="Plume"></div>
+  <b>04 · Plume</b>
+</article><article class="card" data-name="decret">
+  <div class="tile"><img data-src="plan/05_decret.png" alt="Décret"></div>
+  <b>05 · Décret</b>
+</article><article class="card" data-name="enveloppe">
+  <div class="tile"><img data-src="plan/06_enveloppe.png" alt="Enveloppe"></div>
+  <b>06 · Enveloppe</b>
+</article><article class="card" data-name="cachet">
+  <div class="tile"><img data-src="plan/07_cachet.png" alt="Cachet"></div>
+  <b>07 · Cachet</b>
+</article><article class="card" data-name="pions">
+  <div class="tile"><img data-src="plan/08_pions.png" alt="Pions"></div>
+  <b>08 · Pions</b>
+</article><article class="card" data-name="fleches">
+  <div class="tile"><img data-src="plan/09_fleches.png" alt="Flèches"></div>
+  <b>09 · Flèches</b>
+</article><article class="card" data-name="pli">
+  <div class="tile"><img data-src="plan/10_pli.png" alt="Pli"></div>
+  <b>10 · Pli</b>
+</article>
+  </div>
+</section><section id="lieu">
+  <h2>Lieu</h2>
+  <p class="lead">Dix lectures, même famille. La 01 reprend le symbole actuel (casque, tour, sac, grimoire, lettre, carte).</p>
+  <div class="grid">
+    <article class="card" data-name="carte">
+  <div class="tile"><img data-src="lieu/01_carte.png" alt="Carte"></div>
+  <b>01 · Carte</b>
+</article><article class="card" data-name="boussole">
+  <div class="tile"><img data-src="lieu/02_boussole.png" alt="Boussole"></div>
+  <b>02 · Boussole</b>
+</article><article class="card" data-name="drapeau">
+  <div class="tile"><img data-src="lieu/03_drapeau.png" alt="Drapeau"></div>
+  <b>03 · Drapeau</b>
+</article><article class="card" data-name="montagne">
+  <div class="tile"><img data-src="lieu/04_montagne.png" alt="Montagne"></div>
+  <b>04 · Montagne</b>
+</article><article class="card" data-name="borne">
+  <div class="tile"><img data-src="lieu/05_borne.png" alt="Borne"></div>
+  <b>05 · Borne</b>
+</article><article class="card" data-name="arbre">
+  <div class="tile"><img data-src="lieu/06_arbre.png" alt="Arbre"></div>
+  <b>06 · Arbre</b>
+</article><article class="card" data-name="pont">
+  <div class="tile"><img data-src="lieu/07_pont.png" alt="Pont"></div>
+  <b>07 · Pont</b>
+</article><article class="card" data-name="grotte">
+  <div class="tile"><img data-src="lieu/08_grotte.png" alt="Grotte"></div>
+  <b>08 · Grotte</b>
+</article><article class="card" data-name="rose">
+  <div class="tile"><img data-src="lieu/09_rose.png" alt="Rose des vents"></div>
+  <b>09 · Rose des vents</b>
+</article><article class="card" data-name="collines">
+  <div class="tile"><img data-src="lieu/10_collines.png" alt="Collines"></div>
+  <b>10 · Collines</b>
+</article>
+  </div>
+</section>
+    <section>
+      <h2>Sur les cartes</h2>
+      <p class="lead">Médaillon actuel, tampon du symbole actuel, autre tampon, esquisse. Le zoom dessous est à 3×.</p>
+      <div class="mock" style="margin-top:18px"><img src="mockups/mockup_unite.png" alt="Mockup Unité"></div><div class="mock" style="margin-top:8px"><img src="mockups/zoom_unite.png" alt="Zoom Unité"></div><div class="mock" style="margin-top:18px"><img src="mockups/mockup_batiment.png" alt="Mockup Bâtiment"></div><div class="mock" style="margin-top:8px"><img src="mockups/zoom_batiment.png" alt="Zoom Bâtiment"></div><div class="mock" style="margin-top:18px"><img src="mockups/mockup_equipement.png" alt="Mockup Équipement"></div><div class="mock" style="margin-top:8px"><img src="mockups/zoom_equipement.png" alt="Zoom Équipement"></div><div class="mock" style="margin-top:18px"><img src="mockups/mockup_evenement.png" alt="Mockup Événement"></div><div class="mock" style="margin-top:8px"><img src="mockups/zoom_evenement.png" alt="Zoom Événement"></div><div class="mock" style="margin-top:18px"><img src="mockups/mockup_plan.png" alt="Mockup Plan"></div><div class="mock" style="margin-top:8px"><img src="mockups/zoom_plan.png" alt="Zoom Plan"></div><div class="mock" style="margin-top:18px"><img src="mockups/mockup_lieu.png" alt="Mockup Lieu"></div><div class="mock" style="margin-top:8px"><img src="mockups/zoom_lieu.png" alt="Zoom Lieu"></div>
+    </section>
+  </main>
+  <footer>
+    Dossier <code>Icones_Types/nb/</code> — PNG 64 / 128 / 256, fond transparent.
+    Rien n’est encore branché sur le générateur de cartes.
+    Les pictos pixel colorés restent dans <a href="../apercu.html">Icones_Types/apercu.html</a>.
+  </footer>
+  <script>
+    const hints = {
+      tampon: "Encre noire, cercle un peu usé comme un tampon de poste.",
+      esquisse: "Trait de crayon simple, presque un pictogramme.",
+      crayon: "Esquisse plus travaillée — plus de volume, un peu plus chargée à 64 px."
+    };
+    const styleBtns = document.querySelectorAll('[data-style]');
+    const bgBtns = document.querySelectorAll('[data-bg]');
+    function applyStyle(style) {
+      document.body.dataset.style = style;
+      document.querySelectorAll('.tile img').forEach(img => {
+        img.src = 'png_128/' + style + '/' + img.dataset.src;
+      });
+      document.getElementById('style-hint').textContent = hints[style];
+      styleBtns.forEach(b => b.classList.toggle('active', b.dataset.style === style));
+    }
+    styleBtns.forEach(btn => btn.addEventListener('click', () => applyStyle(btn.dataset.style)));
+    bgBtns.forEach(btn => btn.addEventListener('click', () => {
+      document.body.classList.remove('bg-parchment', 'bg-dark', 'bg-check');
+      document.body.classList.add(btn.dataset.bg);
+      bgBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }));
+    applyStyle('tampon');
+  </script>
+</body>
+</html>
