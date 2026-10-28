@@ -34,6 +34,7 @@ Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre cuir br
 | `06_livre_brun_fondperdu.png` | même livre + 3 mm (35 px) de noir de chaque côté, 820×1120 |
 
 Quatre dos livre + logo 03e (`exemples/`) : droit et 90° antihoraire, ras et fond perdu.
+Alternatives `*_plat_*` : même logo, centré sur le plat (reliure ignorée).
 
 Ouvrir `apercu.html` pour tout voir, y compris des exemples logo + fond.
 

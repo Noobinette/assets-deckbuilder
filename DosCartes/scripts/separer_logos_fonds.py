@@ -352,10 +352,7 @@ def save_logo(rgba: np.ndarray, name: str, cap: str, items: list) -> None:
     print("logo", dest.name, rgba.shape)
 
 
-def paste_logo_on_fond(fond: Image.Image, logo_rgba: np.ndarray, scale: float = 0.72) -> Image.Image:
-    card = fond.convert("RGBA")
-    fw, fh = card.size
-    logo = Image.fromarray(logo_rgba)
+def _fit_logo(logo: Image.Image, scale: float) -> Image.Image:
     max_w = int(CARD_W * scale)
     if logo.width > max_w:
         nh = int(logo.height * max_w / logo.width)
@@ -364,8 +361,33 @@ def paste_logo_on_fond(fond: Image.Image, logo_rgba: np.ndarray, scale: float = 
     if logo.height > max_h:
         nw = int(logo.width * max_h / logo.height)
         logo = logo.resize((nw, max_h), Image.Resampling.LANCZOS)
+    return logo
+
+
+def paste_logo_on_fond(fond: Image.Image, logo_rgba: np.ndarray, scale: float = 0.72) -> Image.Image:
+    card = fond.convert("RGBA")
+    fw, fh = card.size
+    logo = _fit_logo(Image.fromarray(logo_rgba), scale)
     x = (fw - logo.width) // 2
     y = (fh - logo.height) // 2
+    card.alpha_composite(logo.convert("RGBA"), (x, y))
+    bg = Image.new("RGBA", (fw, fh), (0, 0, 0, 255))
+    return Image.alpha_composite(bg, card).convert("RGB")
+
+
+def paste_logo_in_rect(
+    fond: Image.Image,
+    logo_rgba: np.ndarray,
+    box: tuple[int, int, int, int],
+    scale: float = 0.72,
+) -> Image.Image:
+    """Centre le logo dans `box` (x0, y0, x1, y1), pas sur toute la carte."""
+    card = fond.convert("RGBA")
+    fw, fh = card.size
+    logo = _fit_logo(Image.fromarray(logo_rgba), scale)
+    x0, y0, x1, y1 = box
+    x = x0 + (x1 - x0 - logo.width) // 2
+    y = y0 + (y1 - y0 - logo.height) // 2
     card.alpha_composite(logo.convert("RGBA"), (x, y))
     bg = Image.new("RGBA", (fw, fh), (0, 0, 0, 255))
     return Image.alpha_composite(bg, card).convert("RGB")
@@ -602,6 +624,28 @@ def main() -> None:
         paste_logo_on_fond(Image.open(fp), lg, 0.72).save(p, "PNG", optimize=True)
         mixes.append(p)
 
+    # Alternatives : centre sur le plat, en ignorant la reliure (tranche gauche).
+    spine = 52
+    bleed = 35
+    plat_boxes = {
+        "06_livre_brun": (spine, 0, CARD_W, CARD_H),
+        "06_livre_brun_fondperdu": (bleed + spine, bleed, bleed + CARD_W, bleed + CARD_H),
+    }
+    for fond_name, mix_name, lg in (
+        ("06_livre_brun", "mix_03e_plat_livre_brun", logo_03e),
+        ("06_livre_brun_fondperdu", "mix_03e_plat_livre_fondperdu", logo_03e),
+        ("06_livre_brun", "mix_03e_90_plat_livre_brun", logo_03e_90),
+        ("06_livre_brun_fondperdu", "mix_03e_90_plat_livre_fondperdu", logo_03e_90),
+    ):
+        fp = FONDS / f"{fond_name}.png"
+        if not fp.exists():
+            continue
+        p = exemples / f"{mix_name}.png"
+        paste_logo_in_rect(Image.open(fp), lg, plat_boxes[fond_name], 0.72).save(
+            p, "PNG", optimize=True
+        )
+        mixes.append(p)
+
     write_apercu(logos, fonds_meta, mixes)
     make_planche(
         [(FONDS / f"{n}.png", c.split("—")[0].strip()) for n, c in fonds_meta],
@@ -645,6 +689,7 @@ Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre cuir br
 | `06_livre_brun_fondperdu.png` | même livre + 3 mm (35 px) de noir de chaque côté, 820×1120 |
 
 Quatre dos livre + logo 03e (`exemples/`) : droit et 90° antihoraire, ras et fond perdu.
+Alternatives `*_plat_*` : même logo, centré sur le plat (reliure ignorée).
 
 Ouvrir `apercu.html` pour tout voir, y compris des exemples logo + fond.
 
