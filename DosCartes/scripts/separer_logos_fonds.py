@@ -354,6 +354,7 @@ def save_logo(rgba: np.ndarray, name: str, cap: str, items: list) -> None:
 
 def paste_logo_on_fond(fond: Image.Image, logo_rgba: np.ndarray, scale: float = 0.72) -> Image.Image:
     card = fond.convert("RGBA")
+    fw, fh = card.size
     logo = Image.fromarray(logo_rgba)
     max_w = int(CARD_W * scale)
     if logo.width > max_w:
@@ -363,10 +364,10 @@ def paste_logo_on_fond(fond: Image.Image, logo_rgba: np.ndarray, scale: float = 
     if logo.height > max_h:
         nw = int(logo.width * max_h / logo.height)
         logo = logo.resize((nw, max_h), Image.Resampling.LANCZOS)
-    x = (CARD_W - logo.width) // 2
-    y = (CARD_H - logo.height) // 2
+    x = (fw - logo.width) // 2
+    y = (fh - logo.height) // 2
     card.alpha_composite(logo.convert("RGBA"), (x, y))
-    bg = Image.new("RGBA", (CARD_W, CARD_H), (0, 0, 0, 255))
+    bg = Image.new("RGBA", (fw, fh), (0, 0, 0, 255))
     return Image.alpha_composite(bg, card).convert("RGB")
 
 
@@ -420,7 +421,7 @@ def write_apercu(logos: list, fonds: list, mixes: list[Path]) -> None:
     <code>03e</code>, <code>07</code>, <code>09</code>, <code>42</code>) :
     tout ce qui n’est pas le logo est transparent. Fonds cuir plat 180°-symétriques
     (<code>01</code>–<code>05</code>) et fonds <strong>style livre</strong> cuir brun
-    (<code>06</code> ras le livre, <code>06_fondperdu</code> avec 3&nbsp;mm de noir).
+    (<code>06</code> ras 750×1050, <code>06_fondperdu</code> 820×1120 avec 3&nbsp;mm de noir).
     N’importe quel logo se pose sur n’importe quel fond.
   </p>
   <h2>Logos (PNG transparent)</h2>
@@ -543,7 +544,7 @@ def main() -> None:
         ("04_obsidienne", "Nouveau — obsidienne, grain cuir"),
         ("05_emeraude", "Nouveau — émeraude sombre"),
         ("06_livre_brun", "Livre — cuir brun, ras le livre"),
-        ("06_livre_brun_fondperdu", "Livre — cuir brun, fond perdu 3 mm noir"),
+        ("06_livre_brun_fondperdu", "Livre — cuir brun, fond perdu 820×1120"),
     ]
     fonds_meta = [(n, c) for n, c in fonds_meta if (FONDS / f"{n}.png").exists()]
     for name, _ in fonds_meta:
@@ -568,7 +569,7 @@ def main() -> None:
 
     livres = {
         "06_livre_brun": (l01, 0.55),
-        "06_livre_brun_fondperdu": (l01, 0.50),
+        "06_livre_brun_fondperdu": (l01, 0.55),
     }
     mix_names = {
         "06_livre_brun": "mix_laurier_sur_livre_brun",
@@ -591,7 +592,8 @@ def main() -> None:
     (OUT / "README.md").write_text(
         """# DosCartes — logos et fonds séparés
 
-Tout logo se pose sur tout fond. PNG 8 bits, fonds 750×1050.
+Tout logo se pose sur tout fond. PNG 8 bits, fonds 750×1050
+(sauf le fond perdu livre : 820×1120).
 
 ## Logos (`logos/`)
 
@@ -621,7 +623,7 @@ Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre cuir br
 | `04_obsidienne.png` | nouveau |
 | `05_emeraude.png` | nouveau |
 | `06_livre_brun.png` | grimoire cuir brun, ras le livre |
-| `06_livre_brun_fondperdu.png` | même livre, 3 mm (35 px) de noir de chaque côté |
+| `06_livre_brun_fondperdu.png` | même livre + 3 mm (35 px) de noir de chaque côté, 820×1120 |
 
 Ouvrir `apercu.html` pour tout voir, y compris des exemples logo + fond.
 

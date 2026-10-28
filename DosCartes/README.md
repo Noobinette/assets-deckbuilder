@@ -1,6 +1,7 @@
 # DosCartes — logos et fonds séparés
 
-Tout logo se pose sur tout fond. PNG 8 bits, fonds 750×1050.
+Tout logo se pose sur tout fond. PNG 8 bits, fonds 750×1050
+(sauf le fond perdu livre : 820×1120).
 
 ## Logos (`logos/`)
 
@@ -30,7 +31,7 @@ Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre cuir br
 | `04_obsidienne.png` | nouveau |
 | `05_emeraude.png` | nouveau |
 | `06_livre_brun.png` | grimoire cuir brun, ras le livre |
-| `06_livre_brun_fondperdu.png` | même livre, 3 mm (35 px) de noir de chaque côté |
+| `06_livre_brun_fondperdu.png` | même livre + 3 mm (35 px) de noir de chaque côté, 820×1120 |
 
 Ouvrir `apercu.html` pour tout voir, y compris des exemples logo + fond.
 

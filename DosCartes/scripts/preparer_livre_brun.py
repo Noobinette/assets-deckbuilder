@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Découpe le grimoire cuir brun en deux fonds 750×1050.
+"""Découpe le grimoire cuir brun en deux fonds.
 
-- 06_livre_brun.png            : ras le livre (plus de cadre brun autour)
-- 06_livre_brun_fondperdu.png  : 3 mm de noir de chaque côté (fond perdu)
+- 06_livre_brun.png            : ras le livre, 750×1050
+- 06_livre_brun_fondperdu.png  : même carte + 3 mm de noir de chaque côté
+                                 (820×1120)
 
 Carte poker 63,5 × 88,9 mm → 750×1050 px (~300 dpi) → 3 mm = 35 px.
 Source : scripts/src_livre_brun.jpg
@@ -36,17 +37,13 @@ def main() -> None:
     ras = round_card(book.resize((CARD_W, CARD_H), Image.Resampling.LANCZOS))
     ras.save(FONDS / "06_livre_brun.png", "PNG", optimize=True)
 
-    inner_w = CARD_W - 2 * BLEED_PX
-    inner_h = CARD_H - 2 * BLEED_PX
-    canvas = Image.new("RGB", (CARD_W, CARD_H), (0, 0, 0))
-    canvas.paste(
-        book.resize((inner_w, inner_h), Image.Resampling.LANCZOS),
-        (BLEED_PX, BLEED_PX),
-    )
-    fondperdu = round_card(canvas)
-    fondperdu.save(FONDS / "06_livre_brun_fondperdu.png", "PNG", optimize=True)
+    bleed_w = CARD_W + 2 * BLEED_PX
+    bleed_h = CARD_H + 2 * BLEED_PX
+    canvas = Image.new("RGB", (bleed_w, bleed_h), (0, 0, 0))
+    canvas.paste(ras, (BLEED_PX, BLEED_PX))
+    canvas.save(FONDS / "06_livre_brun_fondperdu.png", "PNG", optimize=True)
     print("livre ras", CARD_W, CARD_H)
-    print("livre fond perdu", BLEED_PX, "px =", BLEED_MM, "mm")
+    print("livre fond perdu", bleed_w, bleed_h, f"({BLEED_PX} px = {BLEED_MM} mm)")
 
 
 if __name__ == "__main__":
