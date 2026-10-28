@@ -583,6 +583,25 @@ def main() -> None:
         paste_logo_on_fond(Image.open(fp), logo, sc).save(p, "PNG", optimize=True)
         mixes.append(p)
 
+    v2 = LOGOS / "03e_titre_trois_lignesV2.png"
+    logo_03e = crop_alpha(
+        np.asarray(Image.open(v2 if v2.exists() else LOGOS / "03e_titre_trois_lignes.png").convert("RGBA")),
+        pad=6,
+    )
+    logo_03e_90 = np.asarray(Image.fromarray(logo_03e).transpose(Image.Transpose.ROTATE_90))
+    for fond_name, mix_name, lg in (
+        ("06_livre_brun", "mix_03e_sur_livre_brun", logo_03e),
+        ("06_livre_brun_fondperdu", "mix_03e_sur_livre_fondperdu", logo_03e),
+        ("06_livre_brun", "mix_03e_90_sur_livre_brun", logo_03e_90),
+        ("06_livre_brun_fondperdu", "mix_03e_90_sur_livre_fondperdu", logo_03e_90),
+    ):
+        fp = FONDS / f"{fond_name}.png"
+        if not fp.exists():
+            continue
+        p = exemples / f"{mix_name}.png"
+        paste_logo_on_fond(Image.open(fp), lg, 0.72).save(p, "PNG", optimize=True)
+        mixes.append(p)
+
     write_apercu(logos, fonds_meta, mixes)
     make_planche(
         [(FONDS / f"{n}.png", c.split("—")[0].strip()) for n, c in fonds_meta],
@@ -624,6 +643,8 @@ Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre cuir br
 | `05_emeraude.png` | nouveau |
 | `06_livre_brun.png` | grimoire cuir brun, ras le livre |
 | `06_livre_brun_fondperdu.png` | même livre + 3 mm (35 px) de noir de chaque côté, 820×1120 |
+
+Quatre dos livre + logo 03e (`exemples/`) : droit et 90° antihoraire, ras et fond perdu.
 
 Ouvrir `apercu.html` pour tout voir, y compris des exemples logo + fond.
 

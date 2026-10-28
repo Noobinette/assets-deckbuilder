@@ -33,6 +33,8 @@ Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre cuir br
 | `06_livre_brun.png` | grimoire cuir brun, ras le livre |
 | `06_livre_brun_fondperdu.png` | même livre + 3 mm (35 px) de noir de chaque côté, 820×1120 |
 
+Quatre dos livre + logo 03e (`exemples/`) : droit et 90° antihoraire, ras et fond perdu.
+
 Ouvrir `apercu.html` pour tout voir, y compris des exemples logo + fond.
 
 Regénérer les logos et les fonds 01–05 : `python3 DosCartes/scripts/separer_logos_fonds.py`  
