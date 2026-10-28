@@ -419,8 +419,9 @@ def write_apercu(logos: list, fonds: list, mixes: list[Path]) -> None:
     Logos extraits des dos Best (<code>01</code>, <code>03</code>, <code>03b</code>,
     <code>03e</code>, <code>07</code>, <code>09</code>, <code>42</code>) :
     tout ce qui n’est pas le logo est transparent. Fonds cuir plat 180°-symétriques
-    (<code>01</code>–<code>05</code>) et fond <strong>style livre</strong> cuir brun
-    avec tranche (<code>06</code>). N’importe quel logo se pose sur n’importe quel fond.
+    (<code>01</code>–<code>05</code>) et fonds <strong>style livre</strong> cuir brun
+    (<code>06</code> ras le livre, <code>06_fondperdu</code> avec 3&nbsp;mm de noir).
+    N’importe quel logo se pose sur n’importe quel fond.
   </p>
   <h2>Logos (PNG transparent)</h2>
   <div class="grid wide">{logo_html}</div>
@@ -541,7 +542,8 @@ def main() -> None:
         ("03_losanges_bordeaux", "Nouveau — losanges bordeaux, centre vide"),
         ("04_obsidienne", "Nouveau — obsidienne, grain cuir"),
         ("05_emeraude", "Nouveau — émeraude sombre"),
-        ("06_livre_brun", "Livre — grimoire cuir brun, cadre complet"),
+        ("06_livre_brun", "Livre — cuir brun, ras le livre"),
+        ("06_livre_brun_fondperdu", "Livre — cuir brun, fond perdu 3 mm noir"),
     ]
     fonds_meta = [(n, c) for n, c in fonds_meta if (FONDS / f"{n}.png").exists()]
     for name, _ in fonds_meta:
@@ -566,9 +568,11 @@ def main() -> None:
 
     livres = {
         "06_livre_brun": (l01, 0.55),
+        "06_livre_brun_fondperdu": (l01, 0.50),
     }
     mix_names = {
         "06_livre_brun": "mix_laurier_sur_livre_brun",
+        "06_livre_brun_fondperdu": "mix_laurier_sur_livre_fondperdu",
     }
     for fond_name, (logo, sc) in livres.items():
         fp = FONDS / f"{fond_name}.png"
@@ -607,7 +611,7 @@ Les `*_apercu.png` sont les mêmes logos sur damier (contrôle du alpha).
 
 ## Fonds (`fonds/`)
 
-Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre cuir brun avec tranche (`06`).
+Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre cuir brun (`06`).
 
 | Fichier | Origine |
 |---|---|
@@ -616,12 +620,13 @@ Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre cuir br
 | `03_losanges_bordeaux.png` | nouveau |
 | `04_obsidienne.png` | nouveau |
 | `05_emeraude.png` | nouveau |
-| `06_livre_brun.png` | grimoire cuir brun, cadre or complet (pas coupé) |
+| `06_livre_brun.png` | grimoire cuir brun, ras le livre |
+| `06_livre_brun_fondperdu.png` | même livre, 3 mm (35 px) de noir de chaque côté |
 
 Ouvrir `apercu.html` pour tout voir, y compris des exemples logo + fond.
 
-Regénérer les logos et les fonds 01–05 : `python3 DosCartes/scripts/separer_logos_fonds.py`
-(le fond livre `06` n’est pas écrasé).
+Regénérer les logos et les fonds 01–05 : `python3 DosCartes/scripts/separer_logos_fonds.py`  
+Regénérer les deux fonds livre : `python3 DosCartes/scripts/preparer_livre_brun.py`
 """,
         encoding="utf-8",
     )
