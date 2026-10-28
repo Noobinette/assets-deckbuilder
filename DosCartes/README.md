@@ -20,10 +20,7 @@ Les `*_apercu.png` sont les mêmes logos sur damier (contrôle du alpha).
 
 ## Fonds (`fonds/`)
 
-Deux familles :
-
-- **Cuir plat** (`01`–`05`) : cadre or simple, 180°-symétriques, **sans** tranche de livre.
-- **Style livre** (`06`–`09`) : tranche à gauche, cadre géométrique or, centre vide pour le logo.
+Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre cuir brun avec tranche (`06`).
 
 | Fichier | Origine |
 |---|---|
@@ -32,12 +29,9 @@ Deux familles :
 | `03_losanges_bordeaux.png` | nouveau |
 | `04_obsidienne.png` | nouveau |
 | `05_emeraude.png` | nouveau |
-| `06_livre_brun.png` | grimoire brun or, dans l’esprit du dos 01 |
-| `07_livre_bordeaux.png` | grimoire bordeaux |
-| `08_livre_nuit.png` | grimoire bleu nuit |
-| `09_livre_foret.png` | grimoire vert forêt |
+| `06_livre_brun.png` | grimoire cuir brun, cadre or complet (pas coupé) |
 
 Ouvrir `apercu.html` pour tout voir, y compris des exemples logo + fond.
 
-Regénérer les logos et les fonds 01–05 : `python3 DosCartes/scripts/separer_logos_fonds.py`  
-(les fonds livre `06`–`09` ne sont pas écrasés).
+Regénérer les logos et les fonds 01–05 : `python3 DosCartes/scripts/separer_logos_fonds.py`
+(le fond livre `06` n’est pas écrasé).

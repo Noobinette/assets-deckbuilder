@@ -419,8 +419,8 @@ def write_apercu(logos: list, fonds: list, mixes: list[Path]) -> None:
     Logos extraits des dos Best (<code>01</code>, <code>03</code>, <code>03b</code>,
     <code>03e</code>, <code>07</code>, <code>09</code>, <code>42</code>) :
     tout ce qui n’est pas le logo est transparent. Fonds cuir plat 180°-symétriques
-    (<code>01</code>–<code>05</code>) et fonds <strong>style livre</strong> avec tranche
-    (<code>06</code>–<code>09</code>). N’importe quel logo se pose sur n’importe quel fond.
+    (<code>01</code>–<code>05</code>) et fond <strong>style livre</strong> cuir brun
+    avec tranche (<code>06</code>). N’importe quel logo se pose sur n’importe quel fond.
   </p>
   <h2>Logos (PNG transparent)</h2>
   <div class="grid wide">{logo_html}</div>
@@ -541,10 +541,7 @@ def main() -> None:
         ("03_losanges_bordeaux", "Nouveau — losanges bordeaux, centre vide"),
         ("04_obsidienne", "Nouveau — obsidienne, grain cuir"),
         ("05_emeraude", "Nouveau — émeraude sombre"),
-        ("06_livre_brun", "Livre — grimoire brun or (esprit du dos 01)"),
-        ("07_livre_bordeaux", "Livre — grimoire bordeaux"),
-        ("08_livre_nuit", "Livre — grimoire bleu nuit"),
-        ("09_livre_foret", "Livre — grimoire vert forêt"),
+        ("06_livre_brun", "Livre — grimoire cuir brun, cadre complet"),
     ]
     fonds_meta = [(n, c) for n, c in fonds_meta if (FONDS / f"{n}.png").exists()]
     for name, _ in fonds_meta:
@@ -569,15 +566,9 @@ def main() -> None:
 
     livres = {
         "06_livre_brun": (l01, 0.55),
-        "07_livre_bordeaux": (l42, 0.52),
-        "08_livre_nuit": (l07, 0.62),
-        "09_livre_foret": (l03, 0.78),
     }
     mix_names = {
         "06_livre_brun": "mix_laurier_sur_livre_brun",
-        "07_livre_bordeaux": "mix_griffon_sur_livre_bordeaux",
-        "08_livre_nuit": "mix_07_sur_livre_nuit",
-        "09_livre_foret": "mix_03_sur_livre_foret",
     }
     for fond_name, (logo, sc) in livres.items():
         fp = FONDS / f"{fond_name}.png"
@@ -616,7 +607,7 @@ Les `*_apercu.png` sont les mêmes logos sur damier (contrôle du alpha).
 
 ## Fonds (`fonds/`)
 
-Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre avec tranche (`06`–`09`).
+Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre cuir brun avec tranche (`06`).
 
 | Fichier | Origine |
 |---|---|
@@ -625,15 +616,12 @@ Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre avec tr
 | `03_losanges_bordeaux.png` | nouveau |
 | `04_obsidienne.png` | nouveau |
 | `05_emeraude.png` | nouveau |
-| `06_livre_brun.png` | grimoire brun or, esprit du dos 01 |
-| `07_livre_bordeaux.png` | grimoire bordeaux |
-| `08_livre_nuit.png` | grimoire bleu nuit |
-| `09_livre_foret.png` | grimoire vert forêt |
+| `06_livre_brun.png` | grimoire cuir brun, cadre or complet (pas coupé) |
 
 Ouvrir `apercu.html` pour tout voir, y compris des exemples logo + fond.
 
 Regénérer les logos et les fonds 01–05 : `python3 DosCartes/scripts/separer_logos_fonds.py`
-(les fonds livre `06`–`09` ne sont pas écrasés).
+(le fond livre `06` n’est pas écrasé).
 """,
         encoding="utf-8",
     )
