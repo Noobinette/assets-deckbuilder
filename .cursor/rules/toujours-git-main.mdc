@@ -1,0 +1,11 @@
+---
+description: Toujours committer sur git, toujours sur main
+alwaysApply: true
+---
+
+# Git — toujours, et toujours sur main
+
+- Tout livrable va sur git.
+- Travailler uniquement sur `main` : checkout, pull, commit, `git push origin main`.
+- Ne pas créer de branche `cursor/...` ni ouvrir de PR, sauf si on le demande explicitement.
+- Relire `AGENTS.md` au début de chaque session.
