@@ -74,6 +74,7 @@
       border-radius: 4px;
     }
     .toolbar button:hover, .toolbar a:hover { background: rgba(201, 162, 39, 0.15); }
+    .toolbar button:disabled { opacity: 0.55; cursor: wait; }
 
     .desk { padding: 28px 16px 48px; }
 
@@ -295,6 +296,7 @@
   <div class="toolbar">
     <span>Fiche A5 — Pixel of Glory</span>
     <button type="button" id="print-btn">Imprimer / PDF</button>
+    <button type="button" id="png-btn">Télécharger PNG</button>
     <a href="TEXTE-POUR-GEMINI.txt">Texte pour Gemini</a>
   </div>
 
@@ -381,15 +383,81 @@
     </article>
   </div>
 
+  <script src="html2canvas.min.js"></script>
   <script>
     if (/[?&]shot\b/.test(location.search)) document.body.classList.add('shot');
-    document.getElementById('print-btn').addEventListener('click', function () {
-      var imgs = Array.prototype.slice.call(document.images);
-      Promise.all(imgs.map(function (img) {
+
+    function waitImages() {
+      return Promise.all(Array.prototype.slice.call(document.images).map(function (img) {
         if (img.complete) return Promise.resolve();
         return new Promise(function (res) { img.onload = res; img.onerror = res; });
-      })).then(function () { setTimeout(function () { window.print(); }, 150); });
+      }));
+    }
+
+    document.getElementById('print-btn').addEventListener('click', function () {
+      waitImages().then(function () { setTimeout(function () { window.print(); }, 150); });
     });
+
+    document.getElementById('png-btn').addEventListener('click', function () {
+      exportPng();
+    });
+    if (/[?&]previewPng\b/.test(location.search)) {
+      window.addEventListener('load', function () { exportPng({ preview: true }); });
+    }
+
+    async function exportPng(opts) {
+      opts = opts || {};
+      var btn = document.getElementById('png-btn');
+      var label = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Génération…';
+      try {
+        if (document.fonts && document.fonts.ready) await document.fonts.ready;
+        await waitImages();
+        var canvas = await html2canvas(document.getElementById('fiche'), {
+          scale: 2,
+          backgroundColor: '#fffaf0',
+          useCORS: true,
+          logging: false,
+          onclone: function (doc) {
+            var sheet = doc.getElementById('fiche');
+            sheet.style.boxShadow = 'none';
+            sheet.style.margin = '0';
+            sheet.style.border = 'none';
+            var frame = sheet.querySelector('.frame');
+            if (frame) {
+              frame.style.outline = 'none';
+              frame.style.boxShadow = 'inset 0 0 0 3.2mm #2a1814';
+            }
+          }
+        });
+        if (opts.preview) {
+          document.body.innerHTML = '';
+          document.body.style.margin = '0';
+          document.body.style.background = '#fff';
+          canvas.style.display = 'block';
+          canvas.style.width = '148mm';
+          canvas.style.height = '210mm';
+          document.body.appendChild(canvas);
+          return;
+        }
+        var blob = await new Promise(function (resolve) { canvas.toBlob(resolve, 'image/png'); });
+        var a = document.createElement('a');
+        a.download = 'Pixel-of-Glory-fiche-A5.png';
+        a.href = URL.createObjectURL(blob);
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+      } catch (err) {
+        alert('Impossible de générer le PNG.\nOuvre la fiche via un serveur local (pas en file://) et réessaie.');
+      } finally {
+        if (!opts.preview) {
+          btn.disabled = false;
+          btn.textContent = label;
+        }
+      }
+    }
   </script>
 </body>
 </html>
