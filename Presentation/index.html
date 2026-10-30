@@ -4,12 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pixel of Glory — fiche de présentation A5</title>
+  
+  <!-- Import des polices Google Fonts (Press Start 2P incluse) -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+
   <style>
     @font-face { font-family: Cinzel; src: url("fonts/Cinzel.ttf") format("truetype"); font-weight: 600 800; font-display: swap; }
-    @font-face { font-family: "Pixelify Sans"; src: url("fonts/PixelifySans.ttf") format("truetype"); font-weight: 500 700; font-display: swap; }
     @font-face { font-family: "Source Sans 3"; src: url("fonts/SourceSans3.ttf") format("truetype"); font-weight: 400 700; font-display: swap; }
     @font-face { font-family: "Source Serif 4"; src: url("fonts/SourceSerif4.ttf") format("truetype"); font-weight: 500 700; font-display: swap; }
+
     :root {
+      /* Police pour le corps du text05 (modifiable ici : Source Sans 3, Comic Sans MS, Fredoka...) */
+          --pixel-font: 'Fredoka', sans-serif;
+      
+      /* Échelle globale pour le reste du texte */
+      --text-scale: 1.04;
+
       --ink: #1c1410;
       --ink-soft: #4a3c32;
       --parchment: #f6eedc;
@@ -32,9 +42,10 @@
     html, body { background: #120d0b; }
 
     body {
-      font-family: "Source Serif 4", Georgia, serif;
+      font-family: var(--pixel-font);
       color: var(--ink);
       line-height: 1.32;
+      font-size: calc(7.7pt * var(--text-scale));
     }
 
     .toolbar {
@@ -96,29 +107,46 @@
 
     header.brand {
       text-align: center;
-      padding-bottom: 3mm;
+      padding-bottom: 2mm;
       border-bottom: 1px solid rgba(201, 162, 39, 0.45);
+      width: 100%;
     }
     .eyebrow {
-      font-family: "Pixelify Sans", "Courier New", monospace;
-      font-size: 8.2pt;
+      font-size: calc(7.5pt * var(--text-scale));
       letter-spacing: 0.22em;
       color: var(--gold-dim);
       text-transform: uppercase;
     }
+
+    /* Style spécifique pour le titre H1 en Press Start 2P sur 3 lignes et en couleurs */
     h1 {
-      font-family: Cinzel, Palatino, serif;
-      font-weight: 800;
-      font-size: 17.5pt;
-      letter-spacing: 0.06em;
-      line-height: 1.05;
-      color: #2a1810;
-      margin: 1mm 0 1.2mm;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 18pt; /* Taille fixe adaptée pour Press Start 2P */
+      line-height: 1.4;
+      margin: 1.5mm 0;
+      letter-spacing: 0.02em;
     }
-    h1 span { color: var(--gold-dim); }
+    
+    /* Couleurs basées sur l'image de référence */
+    h1 .pixel-word {
+      color: #1b365d; /* Bleu sombre/roi */
+      text-shadow: 1px 1px 0px #c9a227, -1px -1px 0px #c9a227;
+    }
+    h1 .of-word {
+      font-size: 16pt; /* Plus petit pour le "OF" du milieu */
+      display: inline-block;
+      margin: 0.5mm 0;
+      color: #e8c547; /* Or */
+      text-shadow: 1px 1px 0px #4a3c32;
+    }
+    h1 .glory-word {
+      color: #8b1e24; /* Rouge brique */
+      text-shadow: 1px 1px 0px #c9a227, -1px -1px 0px #c9a227;
+    }
+
     .lead {
       font-style: italic;
-      font-size: 9pt;
+      font-size: calc(8.2pt * var(--text-scale));
       color: var(--ink-soft);
     }
 
@@ -127,33 +155,52 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 1.6mm;
-      margin: 3mm 0 0;
-      font-family: "Source Sans 3", sans-serif;
-      font-size: 7.4pt;
+      margin: 2mm 0 0;
+      font-size: calc(7pt * var(--text-scale));
       font-weight: 600;
       letter-spacing: 0.02em;
     }
     .facts span {
       background: #2a1814;
       color: #f3e6c8;
-      padding: 1.1mm 2.4mm;
+      padding: 0.8mm 2mm;
       border-radius: 2px;
     }
 
     .pitch {
-      margin: 2.6mm 0 2.4mm;
-      font-size: 8.6pt;
+      margin: 2mm 0 2mm;
+      font-size: calc(8.2pt * var(--text-scale));
       text-align: justify;
       hyphens: auto;
     }
     .pitch strong { font-weight: 700; }
+
+    .strengths-section {
+      margin: 1.5mm 0 2mm;
+    }
+    .strengths-section h2 {
+      font-size: calc(10pt * var(--text-scale));
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-bottom: 0.8mm;
+    }
+    .strengths-section p {
+      font-size: calc(7.7pt * var(--text-scale));
+      margin-bottom: 0.8mm;
+    }
+    .strengths-section ol {
+      margin: 0 0 0 4mm;
+      font-size: calc(7.5pt * var(--text-scale));
+    }
+    .strengths-section li { margin: 0.25mm 0; text-align: justify; }
 
     .cards {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 6mm;
       justify-items: center;
-      margin: 0 6mm 2.4mm;
+      margin: 0 6mm 2mm;
       flex: 0 0 auto;
     }
     .card-shot {
@@ -170,8 +217,7 @@
       background: #111;
     }
     .card-shot figcaption {
-      font-family: "Source Sans 3", sans-serif;
-      font-size: 6.4pt;
+      font-size: calc(6.4pt * var(--text-scale));
       letter-spacing: 0.04em;
       text-transform: uppercase;
       color: var(--gold-dim);
@@ -185,41 +231,28 @@
       flex: 0 0 auto;
     }
     .copy h2 {
-      font-family: Cinzel, Palatino, serif;
-      font-size: 7.8pt;
+      font-size: calc(10pt * var(--text-scale));
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--crimson);
       margin: 0 0 1mm;
     }
     .copy p {
-      font-size: 7.7pt;
+      font-size: calc(7.7pt * var(--text-scale));
       text-align: justify;
       hyphens: auto;
     }
     .copy ol {
       margin: 0.8mm 0 0 4mm;
-      font-size: 7.5pt;
+      font-size: calc(7.5pt * var(--text-scale));
     }
     .copy li { margin: 0.25mm 0; }
-    .copy .note {
-      font-size: 7.3pt;
-      color: var(--ink-soft);
-      margin-top: 1mm;
-    }
-    .copy .proche {
-      grid-column: 1 / -1;
-      padding-top: 1.8mm;
-      border-top: 1px solid rgba(201, 162, 39, 0.4);
-    }
-    .copy .proche h2 { color: var(--gold-dim); }
 
     footer.meta {
-      margin-top: 2.4mm;
+      margin-top: auto;
       padding-top: 2mm;
       border-top: 1px solid rgba(201, 162, 39, 0.45);
-      font-family: "Source Sans 3", sans-serif;
-      font-size: 7pt;
+      font-size: calc(7pt * var(--text-scale));
       color: var(--ink-soft);
       display: grid;
       grid-template-columns: repeat(3, max-content);
@@ -269,8 +302,15 @@
     <article class="sheet" id="fiche">
       <div class="frame">
         <header class="brand">
-          <p class="eyebrow">Jeu de cartes · confrontation</p>
-          <h1>PIXEL <span>of</span> GLORY</h1>
+          <p class="eyebrow">Jeu de cartes évolutif (JCE) · confrontation</p>
+          
+          <!-- Titre mis à jour sur 3 lignes, avec couleurs et Press Start 2P -->
+          <h1>
+            <span class="pixel-word">PIXEL</span>
+            <span class="of-word">OF</span>
+            <span class="glory-word">GLORY</span>
+          </h1>
+
           <p class="lead">Deux citadelles. Un champ de bataille. Une seule gloire.</p>
           <div class="facts">
             <span>2 joueurs</span>
@@ -282,15 +322,19 @@
 
         <p class="pitch">
           <strong>Pixel of Glory</strong> est un duel de cartes fantasy en pixel art.
-          Avant la partie, chacun assemble son armée. Ensuite on s’affronte
-           jusqu’à vider son deck.
+          Chacun prépare son deck principal de 40 cartes, un 2ème deck de 7 plans et ses 3 lieux. Ensuite on s’affronte
+          jusqu’à vider son deck.
         </p>
 
-        <div class="cards">
-          <h2>Pourquoi passer à Pixel of Glory</h2>
-          <p>
-            
-          </p>
+        <div class="strengths-section">
+          <h2>Pourquoi Pixel of Glory ?</h2>
+          <ol>
+            <li><strong>Pas de mana:</strong> Vous pouvez jouer n'importe quelle carte. Cependant ce n'est pas sans conséquence, 
+              celui qui dépense le plus d'or prend des dégâts en retour.</li>
+            <li><strong>Les plans:</strong> En plus du deck de base, chaque joueur a un deck de plan. Chaque tour, choisissez en un: 
+            il indique l'initiative et offre une capacité unique pour que vous ayez toujours une solution.</li>
+            <li><strong>Pas de temps mort:</strong> Les actions alternées permettent un jeu très dynamique et beaucoup plus tactique.</li><br>
+          </ol>
         </div>
 
         <div class="cards">
@@ -307,7 +351,7 @@
         <div class="copy">
             <section>
               <h2>Comment on joue</h2>
-              <p>En 5 phases</p>
+              <p>En 5 phases :</p>
               <ol>
                 <li>Un plan est révélé : il donne un pouvoir et l’initiative du tour.</li>
                 <li>On joue unités, bâtiments, équipements, événements.</li>
@@ -319,8 +363,12 @@
 
             <section class="win">
               <h2>Comment on gagne</h2>
-              <p>Vous gagnez dès que le <strong>deck adverse est vide</strong>. La principale façon d'y arriver est de ravager les lieux adverse : 
-                les dommages en trop font défausser des cartes.</p>
+              <p>Vous gagnez dès que le <strong>deck adverse est vide</strong>. La principale façon d'y arriver est de ravager les lieux adverses.</p>
+           <!--    <figure class="card-shot">
+                <img src="img/QR.png" alt="QR code pour accéder au site.">
+                
+                <figcaption>QR site</figcaption>
+              </figure> -->
             </section>
         </div>
 
