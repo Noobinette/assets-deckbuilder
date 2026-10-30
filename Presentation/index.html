@@ -5,17 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pixel of Glory — fiche de présentation A5</title>
   
-  <!-- Import des polices Google Fonts (Press Start 2P incluse) -->
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
-
   <style>
     @font-face { font-family: Cinzel; src: url("fonts/Cinzel.ttf") format("truetype"); font-weight: 600 800; font-display: swap; }
     @font-face { font-family: "Source Sans 3"; src: url("fonts/SourceSans3.ttf") format("truetype"); font-weight: 400 700; font-display: swap; }
     @font-face { font-family: "Source Serif 4"; src: url("fonts/SourceSerif4.ttf") format("truetype"); font-weight: 500 700; font-display: swap; }
+    @font-face { font-family: Fredoka; src: url("fonts/Fredoka.ttf") format("truetype"); font-weight: 400 700; font-display: swap; }
+    @font-face { font-family: "Press Start 2P"; src: url("fonts/PressStart2P.ttf") format("truetype"); font-weight: 400; font-display: swap; }
 
     :root {
       /* Police pour le corps du text05 (modifiable ici : Source Sans 3, Comic Sans MS, Fredoka...) */
-          --pixel-font: 'Fredoka', sans-serif;
+          --pixel-font: Fredoka, sans-serif;
       
       /* Échelle globale pour le reste du texte */
       --text-scale: 1.04;
@@ -121,7 +120,7 @@
 
     /* Style spécifique pour le titre H1 en Press Start 2P sur 3 lignes et en couleurs */
     h1 {
-      font-family: 'Press Start 2P', monospace;
+      font-family: "Press Start 2P", monospace;
       font-size: 18pt; /* Taille fixe adaptée pour Press Start 2P */
       line-height: 1.4;
       margin: 1.5mm 0;
@@ -384,14 +383,36 @@
   </div>
 
   <script src="html2canvas.min.js"></script>
+  <script src="img-embed.js"></script>
   <script>
     if (/[?&]shot\b/.test(location.search)) document.body.classList.add('shot');
 
     function waitImages() {
       return Promise.all(Array.prototype.slice.call(document.images).map(function (img) {
-        if (img.complete) return Promise.resolve();
-        return new Promise(function (res) { img.onload = res; img.onerror = res; });
+        if (img.complete && img.naturalWidth) return Promise.resolve();
+        return new Promise(function (res) {
+          img.onload = res;
+          img.onerror = res;
+        });
       }));
+    }
+
+    function imageKey(img) {
+      var src = img.getAttribute("src") || "";
+      var parts = src.split("/");
+      return parts[parts.length - 1].split("?")[0];
+    }
+
+    function inlineEmbeddedImages() {
+      var imgs = document.querySelectorAll("#fiche img");
+      var restored = [];
+      imgs.forEach(function (img) {
+        var key = imageKey(img);
+        var data = window.EMBEDDED_IMAGES && window.EMBEDDED_IMAGES[key];
+        restored.push({ img: img, src: img.getAttribute("src") });
+        if (data) img.setAttribute("src", data);
+      });
+      return restored;
     }
 
     document.getElementById('print-btn').addEventListener('click', function () {
@@ -411,14 +432,18 @@
       var label = btn.textContent;
       btn.disabled = true;
       btn.textContent = 'Génération…';
+      var restored = [];
       try {
+        restored = inlineEmbeddedImages();
         if (document.fonts && document.fonts.ready) await document.fonts.ready;
         await waitImages();
         var canvas = await html2canvas(document.getElementById('fiche'), {
           scale: 2,
           backgroundColor: '#fffaf0',
           useCORS: true,
+          allowTaint: false,
           logging: false,
+          imageTimeout: 15000,
           onclone: function (doc) {
             var sheet = doc.getElementById('fiche');
             sheet.style.boxShadow = 'none';
@@ -441,7 +466,9 @@
           document.body.appendChild(canvas);
           return;
         }
-        var blob = await new Promise(function (resolve) { canvas.toBlob(resolve, 'image/png'); });
+        var blob = await new Promise(function (resolve, reject) {
+          canvas.toBlob(function (b) { b ? resolve(b) : reject(new Error('canvas vide')); }, 'image/png');
+        });
         var a = document.createElement('a');
         a.download = 'Pixel-of-Glory-fiche-A5.png';
         a.href = URL.createObjectURL(blob);
@@ -450,8 +477,9 @@
         a.remove();
         setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
       } catch (err) {
-        alert('Impossible de générer le PNG.\nOuvre la fiche via un serveur local (pas en file://) et réessaie.');
+        alert('Impossible de générer le PNG : ' + (err && err.message ? err.message : err));
       } finally {
+        restored.forEach(function (item) { item.img.setAttribute('src', item.src); });
         if (!opts.preview) {
           btn.disabled = false;
           btn.textContent = label;
