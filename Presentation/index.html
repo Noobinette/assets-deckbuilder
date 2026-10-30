@@ -20,7 +20,6 @@
       --crimson: #9b2335;
       --wine: #3a1520;
       --paper: #fffaf0;
-      --todo: #7a4a1a;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -140,13 +139,6 @@
       padding: 1.1mm 2.4mm;
       border-radius: 2px;
     }
-    .facts .todo {
-      background: transparent;
-      color: var(--todo);
-      border: 1px dashed rgba(122, 74, 26, 0.55);
-      font-weight: 600;
-      font-style: italic;
-    }
 
     .pitch {
       margin: 2.6mm 0 2.4mm;
@@ -237,10 +229,10 @@
       color: var(--ink);
       font-weight: 700;
     }
-    .todo-inline {
-      font-style: italic;
-      color: var(--todo);
-      border-bottom: 1px dashed rgba(122, 74, 26, 0.5);
+    footer.meta a {
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(201, 162, 39, 0.55);
     }
 
     body.shot { background: #fff; }
@@ -280,10 +272,10 @@
           <p class="lead">Deux citadelles. Un champ de bataille. Une seule gloire.</p>
           <div class="facts">
             <span>2 joueurs</span>
+            <span>30–45 min</span>
+            <span>12+</span>
             <span>Construction de deck</span>
             <span>Français</span>
-            <span class="todo">Durée : à compléter</span>
-            <span class="todo">Âge : à compléter</span>
           </div>
         </header>
 
@@ -330,9 +322,8 @@
         </div>
 
         <footer class="meta">
-          <div><b>Site</b> · <span class="todo-inline">à compléter</span></div>
-          <div><b>Auteur / éditeur</b> · <span class="todo-inline">à compléter</span></div>
-          <div><b>Contact</b> · <span class="todo-inline">à compléter</span></div>
+          <div><b>Site</b> · <a href="https://pixelofglory.com">pixelofglory.com</a></div>
+          <div><b>Auteurs</b> · Jean Necib et David Blanc</div>
           <div><b>Règles</b> · version 0.10</div>
         </footer>
       </div>

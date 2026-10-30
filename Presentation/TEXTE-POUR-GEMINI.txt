@@ -3,9 +3,8 @@ PROMPT DE MISE EN PAGE (à coller dans Gemini, avec les 2 images de cartes en pi
 Mise en page d’une fiche de présentation A5 portrait (148 × 210 mm), une seule face.
 Style fantasy pixel art, parchemin crème, encadrement or, titres façon jeu de cartes.
 Place joliment les deux cartes jointes (Griffon et Fée) — ce sont les visuels principaux.
-Les mentions « à compléter » restent visibles, en italique, pour qu’on puisse les remplir à la main ou plus tard.
 Ton : clair, accueillant, on peut tendre la feuille à quelqu’un et demander « ça te tente ? ».
-Pas de QR code inventé. Pas d’informations inventées.
+Pas de QR code inventé. Pas d’informations inventées. Pas de ligne Contact.
 
 —— TEXTE À COMPOSER ——
 
@@ -16,10 +15,10 @@ Deux citadelles. Un champ de bataille. Une seule gloire.
 
 INFOS (en tête, façon pastilles)
 • 2 joueurs
+• 30–45 min
+• 12+
 • Construction de deck (avant la partie)
 • Français
-• Durée : à compléter
-• Âge : à compléter
 
 ACCROCHE
 Pixel of Glory est un duel de cartes fantasy en pixel art. Avant la partie, chacun assemble son armée. Ensuite on s’affronte pour ravager les lieux de l’adversaire — jusqu’à vider son deck.
@@ -49,7 +48,6 @@ CARTES À MONTRER
 • Fée — Forestier, Magicien (coût 2, force 1, 3 PV)
 
 PIED DE PAGE
-• Site · à compléter
-• Auteur / éditeur · à compléter
-• Contact · à compléter
+• Site · pixelofglory.com
+• Auteurs · Jean Necib et David Blanc
 • Règles · version 0.10
