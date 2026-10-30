@@ -1,0 +1,55 @@
+PROMPT DE MISE EN PAGE (à coller dans Gemini, avec les 2 images de cartes en pièce jointe)
+
+Mise en page d’une fiche de présentation A5 portrait (148 × 210 mm), une seule face.
+Style fantasy pixel art, parchemin crème, encadrement or, titres façon jeu de cartes.
+Place joliment les deux cartes jointes (Griffon et Fée) — ce sont les visuels principaux.
+Les mentions « à compléter » restent visibles, en italique, pour qu’on puisse les remplir à la main ou plus tard.
+Ton : clair, accueillant, on peut tendre la feuille à quelqu’un et demander « ça te tente ? ».
+Pas de QR code inventé. Pas d’informations inventées.
+
+—— TEXTE À COMPOSER ——
+
+PIXEL OF GLORY
+Jeu de cartes · confrontation
+
+Deux citadelles. Un champ de bataille. Une seule gloire.
+
+INFOS (en tête, façon pastilles)
+• 2 joueurs
+• Construction de deck (avant la partie)
+• Français
+• Durée : à compléter
+• Âge : à compléter
+
+ACCROCHE
+Pixel of Glory est un duel de cartes fantasy en pixel art. Avant la partie, chacun assemble son armée. Ensuite on s’affronte pour ravager les lieux de l’adversaire — jusqu’à vider son deck.
+
+COMMENT ÇA SE PASSE
+Chacun arrive avec un deck de 40 cartes, 7 plans et 3 lieux (dont 1 quartier général).
+
+1. Un plan est révélé : il donne l’initiative du tour.
+2. On joue unités, bâtiments, équipements, événements.
+3. On envoie les troupes attaquer ou défendre les lieux.
+4. On résout les combats, lieu par lieu.
+5. On paie la dette d’or, puis on reconstitue sa main.
+
+L’or est une piste unique entre les deux joueurs : dépenser, c’est souvent pousser la fortune vers l’adversaire.
+
+COMMENT ON GAGNE
+Vous gagnez dès que le deck adverse est vide. On y arrive surtout en ravageant ses lieux : les dommages en trop font défausser des cartes — et sur le QG, des cartes de sa main.
+
+TYPE DE JEU
+Construction de deck avant la partie (comme Magic), pas du deck-building pendant la partie (contrairement à Dominion).
+
+PROCHE DE (en bas du texte, court)
+Magic: The Gathering (duel, deck construit à l’avance), avec des combats de sièges sur des lieux dans l’esprit de Game of Thrones LCG.
+
+CARTES À MONTRER
+• Griffon — Créature (coût 5, force 4, 6 PV)
+• Fée — Forestier, Magicien (coût 2, force 1, 3 PV)
+
+PIED DE PAGE
+• Site · à compléter
+• Auteur / éditeur · à compléter
+• Contact · à compléter
+• Règles · version 0.10
