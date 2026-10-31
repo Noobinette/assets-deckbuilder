@@ -17,6 +17,7 @@ from separer_logos_fonds import (
     LOGOS,
     crop_alpha,
     paste_logo_on_fond,
+    paste_logo_visual_center,
     preview_checker,
 )
 
@@ -71,16 +72,18 @@ def main() -> None:
 
     exemples = LOGOS.parent / "exemples"
     exemples.mkdir(parents=True, exist_ok=True)
-    for fond_name, mix_name, sc in (
-        ("01_cuir_brun", "mix_03e_v3_sur_brun", 0.72),
-        ("06_livre_brun", "mix_03e_v3_sur_livre_brun", 0.72),
-        ("04_obsidienne", "mix_03e_v3_sur_obsidienne", 0.72),
+    for fond_name, mix_name, sc, centered in (
+        ("01_cuir_brun", "mix_03e_v3_sur_brun", 0.72, False),
+        ("04_obsidienne", "mix_03e_v3_sur_obsidienne", 0.72, False),
+        ("06_livre_brun", "mix_03e_v3_sur_livre_brun", 0.72, True),
+        ("06_livre_brun_fondperdu", "mix_03e_v3_sur_livre_fondperdu", 0.72, True),
     ):
         fp = FONDS / f"{fond_name}.png"
         if not fp.exists():
             continue
         p = exemples / f"{mix_name}.png"
-        paste_logo_on_fond(Image.open(fp), v3, sc).save(p, "PNG", optimize=True)
+        paste = paste_logo_visual_center if centered else paste_logo_on_fond
+        paste(Image.open(fp), v3, sc).save(p, "PNG", optimize=True)
         print("mix", p.name)
 
 

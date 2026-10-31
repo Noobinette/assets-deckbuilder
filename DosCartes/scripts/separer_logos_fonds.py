@@ -375,6 +375,33 @@ def paste_logo_on_fond(fond: Image.Image, logo_rgba: np.ndarray, scale: float = 
     return Image.alpha_composite(bg, card).convert("RGB")
 
 
+def letter_bbox(rgba: np.ndarray, luma_min: int = 40) -> tuple[int, int, int, int]:
+    """Boîte des lettres, en ignorant l’ombre noire."""
+    a = rgba[..., 3] > 10
+    lum = rgba[..., :3].mean(axis=2)
+    letters = a & (lum > luma_min)
+    ys, xs = np.where(letters)
+    if len(xs) == 0:
+        ys, xs = np.where(a)
+    return int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1
+
+
+def paste_logo_visual_center(
+    fond: Image.Image, logo_rgba: np.ndarray, scale: float = 0.72
+) -> Image.Image:
+    """Centre le titre (pas l’ombre) au milieu du fond, horizontal et vertical."""
+    card = fond.convert("RGBA")
+    fw, fh = card.size
+    logo = _fit_logo(Image.fromarray(logo_rgba), scale)
+    arr = np.asarray(logo.convert("RGBA"))
+    x0, y0, x1, y1 = letter_bbox(arr)
+    x = int(round(fw / 2.0 - (x0 + x1) / 2.0))
+    y = int(round(fh / 2.0 - (y0 + y1) / 2.0))
+    card.alpha_composite(Image.fromarray(arr), (x, y))
+    bg = Image.new("RGBA", (fw, fh), (0, 0, 0, 255))
+    return Image.alpha_composite(bg, card).convert("RGB")
+
+
 def paste_logo_in_rect(
     fond: Image.Image,
     logo_rgba: np.ndarray,
@@ -639,7 +666,6 @@ def main() -> None:
     v3p = LOGOS / "03e_titre_trois_lignesV3.png"
     if v3p.exists():
         logo_v3 = crop_alpha(np.asarray(Image.open(v3p).convert("RGBA")), pad=6)
-        fond06 = FONDS / "06_livre_brun.png"
         for fond_im, mix_name in (
             (fond_cuir, "mix_03e_v3_sur_brun"),
             (fond_obs, "mix_03e_v3_sur_obsidienne"),
@@ -647,9 +673,17 @@ def main() -> None:
             p = exemples / f"{mix_name}.png"
             paste_logo_on_fond(fond_im, logo_v3, 0.72).save(p, "PNG", optimize=True)
             mixes.append(p)
-        if fond06.exists():
-            p = exemples / "mix_03e_v3_sur_livre_brun.png"
-            paste_logo_on_fond(Image.open(fond06), logo_v3, 0.72).save(p, "PNG", optimize=True)
+        for fond_name, mix_name in (
+            ("06_livre_brun", "mix_03e_v3_sur_livre_brun"),
+            ("06_livre_brun_fondperdu", "mix_03e_v3_sur_livre_fondperdu"),
+        ):
+            fp = FONDS / f"{fond_name}.png"
+            if not fp.exists():
+                continue
+            p = exemples / f"{mix_name}.png"
+            paste_logo_visual_center(Image.open(fp), logo_v3, 0.72).save(
+                p, "PNG", optimize=True
+            )
             mixes.append(p)
 
     write_apercu(logos, fonds_meta, mixes)
