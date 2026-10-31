@@ -13,7 +13,7 @@
     @font-face { font-family: "Press Start 2P"; src: url("fonts/PressStart2P.ttf") format("truetype"); font-weight: 400; font-display: swap; }
 
     :root {
-      /* Police pour le corps du text05 (modifiable ici : Source Sans 3, Comic Sans MS, Fredoka...) */
+      /* Police pour le corps du texte (modifiable ici : Source Sans 3, Comic Sans MS, Fredoka...) */
           --pixel-font: Fredoka, sans-serif;
       
       /* Échelle globale pour le reste du texte */
@@ -200,6 +200,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 6mm;
       justify-items: center;
+      align-items: center;
       margin: 0 6mm 2mm;
       flex: 0 0 auto;
     }
@@ -216,6 +217,29 @@
       border-radius: 2.2mm;
       background: #111;
     }
+    
+    /* Style spécifique pour la carte paysage (tournée de 90° en gardant les proportions exactes) */
+    .card-shot.landscape {
+      width: 48mm;
+    }
+    .card-shot.landscape .img-wrapper {
+      width: 48mm;
+      height: 35.5mm; /* Hauteur proportionnelle à la largeur de 48mm (ratio inversé) */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-shot.landscape img {
+      width: 35.5mm;
+      height: 48mm;
+      max-width: none;
+      max-height: none;
+      transform: rotate(90deg);
+      border-radius: 2.2mm;
+      background: #111;
+      display: block;
+    }
+
     .card-shot figcaption {
       font-size: calc(6.4pt * var(--text-scale));
       letter-spacing: 0.04em;
@@ -341,11 +365,14 @@
         <div class="cards">
           <figure class="card-shot">
             <img src="img/Griffon.png" alt="Carte Griffon, créature de coût 5">
-            <figcaption>Griffon · Créature</figcaption>
+            <figcaption>Unité - Griffon</figcaption>
           </figure>
-          <figure class="card-shot">
-            <img src="img/Tour_des_Mysteres.png" alt="Batiment, construction">
-            <figcaption>Tour des Mystères · Bâtiment</figcaption>
+          
+          <figure class="card-shot landscape">
+            <div class="img-wrapper">
+              <img src="img/Baume_au_coeur.png" alt="Plan Baume au cœur">
+            </div>
+            <figcaption>Plan - Baume au coeur</figcaption>
           </figure>
         </div>
 
@@ -365,11 +392,6 @@
             <section class="win">
               <h2>Comment on gagne</h2>
               <p>Vous gagnez dès que le <strong>deck adverse est vide</strong>. La principale façon d'y arriver est de ravager les lieux adverses.</p>
-           <!--    <figure class="card-shot">
-                <img src="img/QR.png" alt="QR code pour accéder au site.">
-                
-                <figcaption>QR site</figcaption>
-              </figure> -->
             </section>
         </div>
 
