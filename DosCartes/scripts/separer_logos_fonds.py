@@ -703,6 +703,7 @@ Ouvrir `apercu.html` pour tout voir, y compris des exemples logo + fond.
 Regénérer les logos et les fonds 01–05 : `python3 DosCartes/scripts/separer_logos_fonds.py`  
 Regénérer les deux fonds 06 : `python3 DosCartes/scripts/preparer_livre_brun.py`  
 Regénérer l’échelle de l’or (racine du dépôt) : `python3 DosCartes/scripts/preparer_echelle_or.py`  
+Extraire la piste d’or seule (fond transparent) : `python3 DosCartes/scripts/preparer_echelle_piste.py`  
 Regénérer le 03e V3 (ombre pixel) : `python3 DosCartes/scripts/preparer_logo_03e_v3.py`
 """,
         encoding="utf-8",
