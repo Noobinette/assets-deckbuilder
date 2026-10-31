@@ -2064,13 +2064,13 @@
         function getCardThumbPath(nom) {
             if (!nom) return "Illustrations/WorkInProgress.png";
             let clean = removeAccents(nom).replace(/[^a-zA-Z0-9]/g, '_');
-            return `Illustrations/${clean}_illustration.png?v=${imageCacheVersion}`;
+            return `Illustrations/${clean}_illustration.webp?v=${imageCacheVersion}`;
         }
 
         function getCardFullPath(nom) {
             if (!nom) return "Cartes/WorkInProgress.png";
             let clean = removeAccents(nom).replace(/[^a-zA-Z0-9]/g, '_');
-            return `Cartes/${clean}.png?v=${imageCacheVersion}`;
+            return `Cartes/${clean}.webp?v=${imageCacheVersion}`;
         }
 
         function openImageModal(src, isHorizontal) {
