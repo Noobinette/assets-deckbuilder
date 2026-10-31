@@ -10,6 +10,8 @@ Tout logo se pose sur tout fond. PNG 8 bits, fonds 750×1050
 | `03_titre_bicolore.png` | Best/03 | PIXEL / OF GLORY bleu-or-rouge |
 | `03b_titre_deux_lignes.png` | Best/03b | PIXEL OF / GLORY |
 | `03e_titre_trois_lignes.png` | Best/03e | PIXEL / OF / GLORY |
+| `03e_titre_trois_lignesV2.png` | 03e nettoyé à la main | PIXEL / OF / GLORY |
+| `03e_titre_trois_lignesV3.png` | V2 + ombre pixel noire bas-droite | PIXEL / OF / GLORY |
 | `07_titre_or.png` | Best/07 | PIXEL OF GLORY or |
 | `01a_laurier_diamant.png` | emblème du dos 01 | laurier + diamant |
 | `01_laurier_et_titre_or.png` | 01a + 07 | laurier + titre or (dos 01) |
@@ -39,4 +41,5 @@ Ouvrir `apercu.html` pour tout voir, y compris des exemples logo + fond.
 
 Regénérer les logos et les fonds 01–05 : `python3 DosCartes/scripts/separer_logos_fonds.py`  
 Regénérer les deux fonds 06 : `python3 DosCartes/scripts/preparer_livre_brun.py`  
-Regénérer l’échelle de l’or (racine du dépôt) : `python3 DosCartes/scripts/preparer_echelle_or.py`
+Regénérer l’échelle de l’or (racine du dépôt) : `python3 DosCartes/scripts/preparer_echelle_or.py`  
+Regénérer le 03e V3 (ombre pixel) : `python3 DosCartes/scripts/preparer_logo_03e_v3.py`

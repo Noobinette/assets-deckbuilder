@@ -513,6 +513,17 @@ def main() -> None:
 
     l03e = extract_title(im03e, (115, 412, 640, 715))
     save_logo(l03e, "03e_titre_trois_lignes", "03e — PIXEL / OF / GLORY", logos)
+    for extra_name, extra_cap in (
+        ("03e_titre_trois_lignesV2", "03e V2 — nettoyé"),
+        ("03e_titre_trois_lignesV3", "03e V3 — ombre pixel noire"),
+    ):
+        ep = LOGOS / f"{extra_name}.png"
+        if not ep.exists():
+            continue
+        arr = np.asarray(Image.open(ep).convert("RGBA"))
+        preview_checker(arr).save(LOGOS / f"{extra_name}_apercu.png", "PNG")
+        logos.append((extra_name, extra_cap, ep, arr.shape))
+        print("logo", ep.name, arr.shape)
 
     l07 = extract_gold_title(im07, (195, 455, 555, 610))
     save_logo(l07, "07_titre_or", "07 — titre or PIXEL OF GLORY", logos)
@@ -625,6 +636,22 @@ def main() -> None:
         paste_logo_on_fond(Image.open(fp), lg, 0.72).save(p, "PNG", optimize=True)
         mixes.append(p)
 
+    v3p = LOGOS / "03e_titre_trois_lignesV3.png"
+    if v3p.exists():
+        logo_v3 = crop_alpha(np.asarray(Image.open(v3p).convert("RGBA")), pad=6)
+        fond06 = FONDS / "06_livre_brun.png"
+        for fond_im, mix_name in (
+            (fond_cuir, "mix_03e_v3_sur_brun"),
+            (fond_obs, "mix_03e_v3_sur_obsidienne"),
+        ):
+            p = exemples / f"{mix_name}.png"
+            paste_logo_on_fond(fond_im, logo_v3, 0.72).save(p, "PNG", optimize=True)
+            mixes.append(p)
+        if fond06.exists():
+            p = exemples / "mix_03e_v3_sur_livre_brun.png"
+            paste_logo_on_fond(Image.open(fond06), logo_v3, 0.72).save(p, "PNG", optimize=True)
+            mixes.append(p)
+
     write_apercu(logos, fonds_meta, mixes)
     make_planche(
         [(FONDS / f"{n}.png", c.split("—")[0].strip()) for n, c in fonds_meta],
@@ -644,6 +671,8 @@ Tout logo se pose sur tout fond. PNG 8 bits, fonds 750×1050
 | `03_titre_bicolore.png` | Best/03 | PIXEL / OF GLORY bleu-or-rouge |
 | `03b_titre_deux_lignes.png` | Best/03b | PIXEL OF / GLORY |
 | `03e_titre_trois_lignes.png` | Best/03e | PIXEL / OF / GLORY |
+| `03e_titre_trois_lignesV2.png` | 03e nettoyé à la main | PIXEL / OF / GLORY |
+| `03e_titre_trois_lignesV3.png` | V2 + ombre pixel noire bas-droite | PIXEL / OF / GLORY |
 | `07_titre_or.png` | Best/07 | PIXEL OF GLORY or |
 | `01a_laurier_diamant.png` | emblème du dos 01 | laurier + diamant |
 | `01_laurier_et_titre_or.png` | 01a + 07 | laurier + titre or (dos 01) |
@@ -673,7 +702,8 @@ Ouvrir `apercu.html` pour tout voir, y compris des exemples logo + fond.
 
 Regénérer les logos et les fonds 01–05 : `python3 DosCartes/scripts/separer_logos_fonds.py`  
 Regénérer les deux fonds 06 : `python3 DosCartes/scripts/preparer_livre_brun.py`  
-Regénérer l’échelle de l’or (racine du dépôt) : `python3 DosCartes/scripts/preparer_echelle_or.py`
+Regénérer l’échelle de l’or (racine du dépôt) : `python3 DosCartes/scripts/preparer_echelle_or.py`  
+Regénérer le 03e V3 (ombre pixel) : `python3 DosCartes/scripts/preparer_logo_03e_v3.py`
 """,
         encoding="utf-8",
     )
