@@ -1,4 +1,12 @@
 Faction,Coût,Atk,PV,Unique,Type,Nom,Pouvoir,Trait,Mots clés,Remarques,Status
+,0,,,,Bâtiment,Soins de combat,Action: Mettez 3 cartes de votre défausse hors de la partie pour soigner 1 dommage à une unité. (Max1),Rituel,Rapide,,A faire
+"Quelle horreur, il y a eu des sacrifice ici !",0,,,,Bâtiment,Temple sinistre,"A la fin de la phase d'Organisation, mettez un compteur pierre sur cette carte. Puis, s'il y a au moins 2 compteurs pierre sur cette carte, vous pouvez défausser tous les compteurs pour mettre en jeu un équipement gratuitement depuis votre deck.",Malédiction,,A tester voir si pas trop fort,A faire
+,0,,,Oui,Bâtiment,Le trône déchu,"Action: En phase de Dette, défaussez ~Le trône déchu~ pour chercher une unité dans votre deck et la mettre en jeu gratuitement. Elle subit un nombre de dommage égal à son coût.","Malédiction, Déchu",,,A faire
+,3,2,2,,Unité,Le représailleur,"Après la résolution du combat et après que les unités survivantes soient retournées à leur Citadelle, si ~le représallieur~ a subi un ou des dommages, vous pouvez infliger 1 dommage au lieu où le combat a été résolu. (Max1)",Troll,Pas d'équipement,,A faire
+,0,,,,Bâtiment,Nature sauvage,"A la fin de la phase d'Organisation, mettez 1 compteur graine sur cette carte. Action: Si cette carte a 2 compteurs graine ou plus, défaussez-la pour cherchez dans votre deck une carte Nature de coût 3 ou moins, et mettez-la en jeu gratuitement.",Nature,,,A faire
+,2,,,,Plan,Panique !,A l'instant: Votre adversaire doit choisir une unité que vous contrôlez de coût 3OR ou moins et la tuer. Puis vous devez choisir une unité de coût 3OR ou moins que votre adversaire contrôle et la tuer.,Malédiction,,,A faire
+,1,,,,Équipement,Orcaniser les défenses,"(UNITE) // En défense, l'unité équipée a +1FOR par attaquants que l'adversaire contrôle dans le combat.",Tactique,Rapide,,A faire
+,0,,,,Équipement,Ordre de pillage,(UNITE A VOUS) // L'unité équipée a +1FOR pour chaque lieu adverse ravagé.,Tactique,"Rapide, Fragile",,A faire
 "La 101e et la 82e unité comptent sur moi ! La 7e souris est toujours là quand on a besoin d'elle, que ce soit en ville ou en campagne.",3,3,3,Oui,Unité,7e souris blindée,"En combat, la ~7e souris blindée~ a +1FOR dans les lieux Plaine, Colline, QG et Ville, jusqu'à la fin du combat.","Elite, Aube, Magicien",Poison,ok,A faire
 ,4,,,,Plan,A bas la monarchie,"A l'instant: Chaque joueur choisit une unité au coût le plus élévé parmi ses unités qu'il contrôle, puis la défausse.",Condition,,ok,A faire
 Bzzz,1,1,2,,Unité,Abeille Cool,"Quand l'~Abeille Cool~ quitte le jeu, vous pouvez chercher dans votre deck une carte ~Abeille Cool~ et la mettre en jeu gratuitement.","Nature, Créature",,ok,A faire
@@ -76,13 +84,12 @@ Ma demeure est épouventable !,3,4,3,Oui,Unité,B'Tooloo,Action: Tuez une unité
 ,1,,,,Équipement,Bannière d'affrontement,(UNITE A VOUS) // L'unité équipée a +1FOR pour chaque lieu adverse non-ravagé.,Bannière,,ok,A faire
 "Je résisterai jusqu'au bout, même si je dois finir sur un bûcher.",0,,,,Équipement,Bannière de courage,(UNITE A VOUS) // L'unité équipée a +2PV pour chacun de vos lieux ravagés.,Bannière,Rapide,ok,A faire
 ,2,,,Oui,Équipement,Bannière de guerre,"(UNITE A VOUS) // Action: En combat, choisissez jusqu'à trois unités ayant au moins un des traits suivants: Elite, Mineur ou Noble. Elles ont +1FOR et +1PV jusqu'à la fin du combat.",Bannière,,ok,A faire
-"A sa seule vue, c'est la panique.",2,,,,Équipement,Bannière de Peur,"(UNITE A VOUS) Action: En combat, choisissez une unité adverse, son contrôleur décide de la renvoyer vers sa zone Citadelle ou de lui infliger 2 dommages. (Max1) (il faut prendre un choix possible)",Bannière,,ok,A faire
-Une force irrésistible attire l'ennemi vers cette étendard.,2,,,,Équipement,Bannière de provocation,"(UNITE A VOUS) Quand l'unité équipée est assignée en attaque, vous pouvez prendre une unité dans la Citadelle de votre adversaire et la mettre en défense dans le lieu où vous venez d'assigner l'unité équipée.",Bannière,"Fragile, Rapide",ok,A faire
+,2,,,,Équipement,Bannière de Peur,"(UNITE A VOUS) Action: En combat, choisissez une unité adverse, son contrôleur décide de la renvoyer vers sa zone Citadelle ou de lui infliger 2 dommages. (Max1) (il faut prendre un choix possible)",Bannière,,ok,A faire
+,2,,,,Équipement,Bannière de provocation,"(UNITE A VOUS) Quand l'unité équipée est assignée en attaque, vous pouvez prendre une unité dans la Citadelle de votre adversaire et la mettre en défense dans le lieu où vous venez d'assigner l'unité équipée.",Bannière,"Fragile, Rapide",ok,A faire
 ,0,,,,Équipement,Bannière des esprits,"(UNITE A VOUS) // Action: En combat, toutes les unités adverses dans le combat perdent le mot-clé ETHERE jusqu'à la fin du combat.",Bannière,Rapide,ok,A faire
 ,1,,,,Équipement,Bannière des Prêtres,"(UNITE) // A la fin de la phase de Dette, l'unité équipée se soigne de 2 dommages.",Bannière,Rapide,ok,A faire
 ,1,,,,Équipement,Bannière du champion,"(UNITE A VOUS) Action: En combat, choisissez deux unités non-ETHERE dans ce combat, une unité adverse et une des vôtres. Chaque unité choisie inflige à l’autre unité des dommages égaux à sa force. (Max1) (les mots-clés sont résolus)",Bannière,Fragile,ok,A faire
 ,0,,,,Équipement,Bannière du Roi,"(UNITE A VOUS) En combat, vos unités ne peuvent pas quitter le combat où la ~Bannière du Roi~ est présente. (elles peuvent être tuées ou défaussées)",Bannière,Rapide,ok,A faire
-,0,,,,Bâtiment,Banque,Action: Payez X# pour mettre X compteurs intérêt (Max 6 compteurs) sur la banque. (Max1) Action: Défaussez tous les compteurs intérêt sur la ~Banque~ pour gagner 1OR par compteurs défaussés. (Max1),Temple,,ok / C'est un peut fort (max4 gold ?),A faire
 ,2,0,2,,Unité,Banshee,"Action: En combat, quand la ~Banshee~ est en défense, infligez 1 dommage à la ~Banshee~ pour renvoyer une unité du combat actuel vers la Citadelle de son propriétaire. (Max1)",Spectral,,ok,A faire
 ,0,,,,Équipement,Barricades,(LIEU $QG uniquement) // Le lieu équipé a +2PV,Fortification,,ok,A faire
 ,4,,,,Plan,Bases saines,"A l'instant: Chaque joueur choisit des cartes en jeu qu'il contrôle pour un total de 8OR ou moins, toutes les cartes non choisies sont défaussées.",Condition,,ok,A faire
@@ -92,7 +99,6 @@ Une force irrésistible attire l'ennemi vers cette étendard.,2,,,,Équipement,B
 Il y a deux petits yeux jaunes à la surface de l'eau. Je me demande ce que c'est ?,,,4,,Lieu,Bayou,,"Marais, Forêt",,ok,A faire
 Notre bélier va gronder,1,,,Oui,Bâtiment,Bélier,"Action: En combat, quand vous êtes attaquant, donnez +1FOR à la résolution du combat. (Max 1 par combat)",Amélioration,,ok,A faire
 ,6,,,,Plan,Belle saison,Le coût des cartes Condition est de +1OR,Condition,,ok,A faire
-,2,3,2,,Unité,Bête de somme,L'unité ~Bête de somme~ peut avoir jusqu’à deux équipements sur elle.,Infanterie,,,A faire
 C'est quoi ce grand X au sol ?,0,,,,Bâtiment,Bibliothèque,Action: Piochez une carte puis mettez une carte de votre main sous votre deck. (Max1),Archive,,ok,A faire
 ,2,,,,Équipement,Blessures Infectées,"(UNITE) A la fin de la phase de Combat, le contrôleur de l'unité équipée doit défausser 2 cartes de son deck.","Malédiction, Condition",Fragile,ok,A faire
 Ce soir quand on rentre c'est pain et fromage fondu.,2,,,,Événement,Blizzard,"En combat, à la résolution du combat toutes les unités ont -3FOR pour ce combat.",Condition,,ok,A faire
@@ -412,10 +418,7 @@ J'ai vu la charge de l'Alliance Nak Zar Armée Cavalerie.,2,2,3,Oui,Unité,Le gu
 Je n'ai plus d'encre.,2,,,,Équipement,Le Marteau du Tonnerre,(UNITE) // L'unité équipée gagne Magicien et +3FOR,Arme,"Rapide, Fragile",ok,A faire
 ,5,3,3,Oui,Unité,Le Nain,"Après que ~Le Nain~ arrive en jeu, vous pouvez chercher dans votre deck ou votre défausse l'unité ~L'Elfe~ et la mettre en jeu gratuitement.",Ancien,Pas d'équipement,ok,A faire
 ,4,3,4,Oui,Unité,Le Rebelle,"Action: En combat, prenez une unité adverse et placez-la contre vous dans le combat impliquant ~Le Rebelle~ (en défense si vous attaquez et en attaque si vous défendez). (Max1)",Rebelle,,ok,A faire
-,3,2,2,,Unité,Le représailleur,"Après la résolution du combat et après que les unités survivantes soient retournées à leur Citadelle, si ~le représallieur~ a subi des dommages, vous pouvez infliger 1 dommage au lieu où le combat a été résolu. (Max1)",Troll,Pas d'équipement,Ce dommage ne peut pas ravager le lieu ?,A faire
-,3,4,2,,Unité,Le sang efforcseur,~Le sang efforcseur~ ne peut pas subir ou avoir de dommages qui lui sont infligés par des unités coûtant 2OR ou moins.,Orc,,Moche.,A faire
 Personne ne passe !,3,2,3,Oui,Unité,Le seigneur de platine,"Action: Défaussez une carte de votre deck ou de votre main pour infliger 1 dommage à une unité, mais vous ne pouvez pas tuer d’unité avec cette action. (Max2)","Impôt, Etat, Magicien",,ok,A faire
-,0,,,Oui,Bâtiment,Le trône déchu,"A la fin du tour, mettez un compteur chaos sur cette carte. Action: en phase d'Organisation, défaussez 2 compteurs chaos pour chercher dans votre deck une carte Déchu de coût 3OR ou moins et mettez-la en jeu gratuitement.","Malédiction, Déchu",,Bof ?,A faire
 ,,,4,,Lieu,Les havres turquoises,,"Colline, Lac",,ok,A faire
 ,2,2,3,,Unité,Les jumeaux,"En combat, l'unité ~Les jumeaux~ compte comme 2 Vampire présents dans le lieu et ceci jusqu'à la fin du combat.","Vampire, Apprenti",,ok,A faire
 ,4,,,,Plan,Les légendes montrent l'exemple,Action: Donnez +1FOR ou +1PV à une unité unique (@) jusqu'à la fin du tour. (Max2),Tactique,,ok,A faire
@@ -430,6 +433,10 @@ Personne ne passe !,3,2,3,Oui,Unité,Le seigneur de platine,"Action: Défaussez 
 ,3,x,5,,Unité,Loup-garou,X FOR est égal au nombre de dommages sur le ~Loup-garou~.,"Créature, Magicien",Pas d'équipement,ok,A faire
 ,2,x,4,,Unité,Louveteau-garou,X FOR est égal au nombre de dommages sur le ~Louveteau-garou~.,Créature,Pas d'équipement,ok,A faire
 ,1,1,1,,Unité,Luciole,,"Air, Esprit","Ethéré, Rapide",ok,A faire
+,0,,,,Bâtiment,Banque,Action: Payez X# pour mettre X compteurs intérêt (Max 4 compteurs) sur la banque. (Max1) Action: Défaussez tous les compteurs intérêt sur la ~Banque~ pour gagner 1OR par compteurs défaussés. (Max1),Temple,Rapide,,A faire
+,,,3,,Lieu,Navire amiral,"Dans ce lieu, les unités Pirates ont +1PV.","QG, Lac",,,A faire
+,4,,,,Plan,Rien ne va plus !,"L'effet ""A l'instant:..."" du plan de votre adversaire ne peut pas être résolu.",Malédiction,,,A faire
+,2,3,2,,Unité,Bête de somme,L'unité ~Bête de somme~ peut avoir jusqu’à deux équipements sur elle.,Infanterie,,,A faire
 ,0,,,Oui,Bâtiment,Magic pool,"Quand vous jouez un Gobelin, vous pouvez piocher une carte. (Max2)","Temple, Secret",Rapide,,A faire
 ,4,1,4,,Unité,Magicien,Action: Votre prochaine carte Sort vous coût -1OR. (Max2),"Magicien, Noble",,,A faire
 Séb le Kutuliste m'observe,1,0,3,,Unité,Magicienne du Sang,Défaussez une carte de votre main pour donner +1FOR à la ~Magicienne du Sang~. (Max2),"Magicien, Déchu",,,A faire
@@ -462,8 +469,6 @@ Y a pas d'hélice.,2,,,,Équipement,Mur d'os,"(LIEU) Une fois par tour, ignorez 
 Quelle triste nuit !,0,0,1,Oui,Unité,Nain Cupide,Le Nain cupide a +1FOR pour chaque # que votre adversaire a en sa faveur sur l'échelle de l'OR (Max +3FOR). Le Nain cupide ne peut pas subir de dommages dû aux dettes.,Déchu,Pas d'équipement,,A faire
 ,1,1,1,,Unité,Nain des Forêts,"Tant que cette unité est dans un lieu Forêt, elle a +1FOR et +1PV",Mineur,,,A faire
 ,1,1,1,,Unité,Nain des Montagne,"Tant que cette unité est dans un lieu Montagne, elle a +1FOR +1PV",Mineur,,,A faire
-,1,,,,Bâtiment,Nature sauvage,"A la fin de la phase d'Organisation, mettez 1 compteur graine sur cette carte. Action: Si cette carte a 2 compteurs graine ou plus, défaussez-la pour cherchez dans votre deck une carte Nature et mettez la en jeu gratuitement.",Nature,,de coût 3 ou moin ?,A faire
-,,,3,,Lieu,Navire amiral,"Pour être assignées dans ce lieu, les unités Cavalier doivent subir 1 dommage.","QG, Lac",,On ajoute Infanterie,A faire
 Je suis plus fort que B'Tooloo,5,5,5,Oui,Unité,Noob Chigourat,"En combat, vos autres unités uniques (@) ont +1FOR dans ce combat.","Pirate, Ancien",,,A faire
 ,2,,,,Plan,Nuit étoilée,A l'instant: Cherchez dans votre deck une carte Dolmen révélez-la et prenez-la en main. En combat vos unités Esprit ont +1FOR jusqu'à la fin du combat.,Royaume,,,A faire
 Le soleil se lève tôt !,,,4,,Lieu,Oasis,Toutes vos unités Cavalier ont +1FOR en combat dans ce lieu,"QG, Désert",,,A faire
@@ -478,17 +483,14 @@ Vous avez les mains glacée ma chère.,1,0,4,Oui,Unité,Oncle Dave,"En combat, ~
 ,2,3,2,,Unité,Orc troupaille,,"Orc, Infanterie","Faiblesse, Précis",,A faire
 ,4,4,4,,Unité,Orc zélé,"Action: En combat,  vous pouvez défausser l'~Orc zélé~ pour infliger X dommages à une unité adverse dans le combat, X étant la valeur FOR de l'~Orc zélé~",Orc,,,A faire
 B'Tooloo m'a apris ce sort.,2,,,,Événement,Orcan horror,"Infligez 2 dommages à une unité, ou 4 dommage si vous défaussez en plus 3 cartes de votre deck.",Sort,,,A faire
-,1,,,,Équipement,Orcaniser les défenses,"(UNITE) // En défense, l'unité équipée a +1FOR par attaquants que l'adversaire contrôle dans le combat.",Tactique,Rapide,j'ai mis tactique et plus Ordre,A faire
 Oust !,1,,,,Événement,Orcanisons-nous!,"Renvoyez en main une unité de coût X # ou moins, X est égal au nombre d'unités Orc que vous contrôlez. Le coût de l'unité renvoyée en main ne peut pas être plus élévé que 2OR.",Manoeuvre,,,A faire
 ,3,4,2,,Unité,Orcnitologue,"En combat, vous pouvez ignorer le premier dommage subi par l'~Orcnitologue~. (Pendant le déroulement du combat ou lors de la résolution du combat, 1 seul dommage au total)",Orc,,,A faire
 ,3,5,1,,Unité,Orcnitorynque,,"Déchu, Orc",Pugnace,,A faire
 ,3,2,4,,Unité,Orctopédiste,Les dommages POISON subi par l'~Orctopédiste~ sont considérés comme normaux,Orc,Poison,,A faire
-,0,,,,Équipement,Ordre de pillage,(UNITE A VOUS) // L'unité équipée a +1FOR pour chaque lieu adverse ravagé.,Tactique,"Rapide, Fragile",j'ai mis tactique et plus Ordre,A faire
 ,5,,,,Plan,Ordres contradictoires,"A l'instant: Choisissez un trait, toutes les cartes possédant ce trait coûtent +1OR jusqu'à la fin du tour.",Stratégie,,,A faire
 ,0,,,,Bâtiment,Oubliette,Action: Payez un 1OR pour vider la boîte de texte imprimée d'une unité de coût de 2OR ou moins jusqu'à la fin de la phase. (Max2),"Construction, Secret",,,A faire
 ,4,5,5,,Unité,Ours polaire putréfié,,Créature,"Faiblesse, Pugnace",,A faire
 ,3,,,,Plan,Pâle copie,"Action: Choisissez une unité. Payez X-1OR pour remplacer jusqu'à la fin du tour, la valeur de FOR et les PV d'une de vos unités par les valeurs imprimées correspondantes de l'unité choisie. X est égal au coût de l'unité choisie. (Max1)",Secret,,,A faire
-,3,,,,Plan,Panique !,A l'instant: Votre adversaire doit choisir une unité qu'il contrôle de coût 3OR ou moins et la tuer. Puis vous devez choisir une unité de coût 3OR ou moins que vous contrôlez et la tuer.,Malédiction,,Discuter si c'est sa propre unité ou celle de son adversaire,A faire
 J'ai connu un petit être bleu avec un bonnet blanc qui disait toujours : J'aime pas les surprises !,2,,,,Événement,Pas de surprise,"Jusqu'à la fin du tour, les joueurs ne peuvent plus jouer de carte événement.",Secret,,,A faire
 ,1,2,2,,Unité,Patrouille orc,,Orc,Faiblesse,,A faire
 ,0,,,,Bâtiment,Pâturage,"A la fin de la phase d'Organisation, mettez un compteur miel sur cette carte. Action: Défaussez 2 compteurs miel pour soigner jusqu'à 4 dommages parmi vos unités.",Nature,Rapide,,A faire
@@ -553,7 +555,6 @@ C'est la base Echo,0,,,,Bâtiment,Repère des insurgés,Action: Payez 1OR pour c
 ,1,,,,Bâtiment,Réserves Cachées,"Quand des cartes de votre deck sont défaussées, prenez-les en main. A la fin du tour, si vous avez moins de 7 carte en main, refaite votre main à 7 cartes, puis mettez les cartes en main en surplus de 5 hors de la partie.",Construction,,,A faire
 ,2X,,,,Événement,Résurrection,"Mettez en jeu, dans votre Citadelle ou dans un lieu où il y a un combat encore non résolu, une unité depuis votre défausse. Payez 2X, X est égal au coût de l'unité mise en jeu.",Dolmen,,,A faire
 ,0,,,,Événement,Retardé,Retirez tous les compteurs d'une carte qui en a au moins un.,Secret,,,A faire
-,5,,,,Plan,Rien ne va plus !,"L'effet ""A l'instant:..."" du plan de votre adversaire ne peut pas être résolu.",Malédiction,,Trop fort ?,A faire
 ,0,,,,Bâtiment,Rituel d'amélioration,Action: Payer 1OR pour donnez à une unité Créature le mot-clé PRECIS jusqu'à la fin de la phase.,"Amélioration, Rituel",,,A faire
 ,0,,,Oui,Bâtiment,Rituel de force,"Action: En combat, payez 1OR pour donner à X unités Mort-Vivant +1FOR (Max 3 unités). X est égal au nombre de Mort-Vivant que vous contrôlez dans le combat. (Max1)","Amélioration, Rituel",,,A faire
 ,,,4,,Lieu,Rivière souterraine,,Souterrain,,,A faire
@@ -577,7 +578,6 @@ Groink ! Jai failli me faire manger par un gros bonhomme avec des tresses.,2,3,2
 ,4,4,4,Oui,Unité,Short Gold,Quand ~Short Gold~ est dans un lieu Lac il a +1FOR et +1PV. Quand ~Short Gold~ est dans un lieu Désert il a -1FOR et -1PV,"Pirate, Magicien",,,A faire
 ,,,3,,Lieu,Silo à grain,"Dans ce lieu, il ne peut y avoir que 2 unités assignées en attaque et une seule en défense. L'unité en défense a +1PV et gagne MORTEL. (Si il y a plus d'unités que permis, il faut immédiatement que le contrôleur retoune les unités en trop à sa Citadelle)","QG, Plaine",,,A faire
 ,1,1,1,,Unité,Sneakygoby,,Gobelin,"Poison, Rapide",,A faire
-,0,,,,Bâtiment,Soins de combat,Action: Mettez 3 cartes de votre défausse hors de la partie pour soigner 1 dommage à une unité. (Max2),Rituel,,4 cartes ? (max1) ?,A faire
 ,1,,,,Événement,Soins Majeur,Soignez 2 dommages sur une unité ou 4 dommages si l'unité est Noble ou Officier.,Sort,,,A faire
 ,0,,,,Événement,Soins Mineur,Soignez 2 dommages sur une unité.,Sort,,,A faire
 ,2,,,,Plan,Sois un homme mon fils !,"A l'instant: Cherchez dans votre deck une unité Temple, révélez-la et prenez-la en main. En combat, vos unités ETHERE ont +1FOR jusqu'à la fin du combat.",Royaume,,,A faire
@@ -604,7 +604,6 @@ J'y vais Scotty,3,,,,Événement,Téléportation,"En phase de combat, choisissez
 ,3,,,,Bâtiment,Temple d'invincibilité,"Au début d'une phase choisissez une unité. Jusqu'à la fin de cette phase, l'unité choisie ne peut pas subir le dernier point dommage qui la tuerait. (Max1) (Elle peut subir des dommages, mais le dernier point de dommage léthal est ingoré) ",Temple,,,A faire
 ,,,3,,Lieu,Temple de l'Aube,Les unités ETHERE ne peuvent pas être assignées dans ce lieu.,"QG, Temple",,,A faire
 ,2,,,Oui,Bâtiment,Temple des Dieux,Action: Choisissez une carte Résistant dans votre défausse et prenez-la en main. (Max1),"Construction, Temple",,,A faire
-"Quelle horreur, il y a eu des sacrifice ici !",0,,,,Bâtiment,Temple sinistre,"A la fin de la phase d'Organisation, mettez un compteur pierre sur cette carte. Puis, s'il y a au moins 2 compteurs pierre sur cette carte, vous pouvez défausser tous les compteurs pour mettre en jeu un équipement gratuitement depuis votre deck.",Malédiction,,A tester voir si pas trop fort,A faire
 ,1,,,Oui,Bâtiment,Temple Vaudou,"Quand une unité adverse arrive en jeu, infligez lui 1 dommage et mettez un compteur vaudou sur ce bâtiment. A l'instant où ce bâtiment a 3 compteurs ou plus, défaussez-le.",Temple,,,A faire
 ,,,2,,Lieu,Tente de commandement,Une carte Fortification jouée sur ce lieu vous coute -1OR. Vos cartes Manoeuvre jouées en combat dans ce lieu vous coutent -1OR,"QG, Colline",,,A faire
 ,0,,,Oui,Bâtiment,Terrain miné,La première unité jouée par l'adversaire à chaque tour subi 1 dommage.,"Malédiction, Construction",,,A faire
@@ -639,18 +638,18 @@ J'adore quand un plan se déroule sans accroc,3,,,,Plan,Tout se passe comme pré
 "Sur les jambes, c'est là où c'est le plus douloureux",2,,,,Événement,Tu as les mains froides,Infligez 2 dommages à une unité ou 1 dommage à deux unités différentes.,"Secret, Magicien",,,A faire
 ,1,,,,Événement,Tuez les Morts Vivants,"Défaussez une unité Mort-Vivant, Spectral, Esprit ou ETHERE de coût 2OR ou moins.","Sort, Magicien",,,A faire
 ,,,3,,Lieu,Tunnel sous la Montagne,"En combat dans ce lieu, vos unités Mineur ont +1FOR jusqu'à la fin du combat.","Montagne, Souterrain",,,A faire
-,0,,,,Événement,Un peu plus,"En combat, infligez 1 dommage à un lieu non-ravagé du combat actuel. Ce dommage ne peut pas ravager ce lieu.",Rituel,,,A faire
-Il faut qu'on revoie certains départements. Il y en a beaucoup d'inutile.,1,,,,Bâtiment,Université,"A la fin de la phase de Dette, vous pouvez soigner jusqu'à deux unités Erudit, de 1 dommage.",Temple,,,A faire
-,2,,,,Plan,Usure,"Action: Payez 1OR pour vider la boîte de texte imprimée, à l'exception des traits, d'un bâtiment ou d'une unité jusqu'à la fin du tour. (Max2)",Stratégie,,,A faire
+,0,,,,Événement,Un peu plus,"En combat, infligez 1 dommage au lieu non-ravagé du combat actuel. Ce dommage ne peut pas ravager ce lieu.",Rituel,,,A faire
+Il faut qu'on revoie certains départements. Il y en a beaucoup d'inutile.,1,,,,Bâtiment,Université,"A la fin de la phase de Dette, vous pouvez soigner de 1 dommage jusqu'à deux unités Erudit.",Temple,,,A faire
+,2,,,,Plan,Usure,"Action: Payez 1OR pour vider la boîte de texte imprimé, d'un bâtiment ou d'une unité jusqu'à la fin du tour. (sauf les traits) (Max2)",Stratégie,,,A faire
 "Quand on me doit de l'or, je me fais toujours payer",1,3,3,,Unité,Usurier,"A la fin de la phase de Combat, défaussez la première carte de votre deck.","Impôt, Déchu",Pas d'équipement,,A faire
 ,,1,3,,Lieu,Vallée des Morts,,Désert,,,A faire
 ,3,2,3,,Unité,Vampire en chasse,Le ~Vampire en chasse~ peut être joué depuis la défausse comme s'il était dans votre main.,Vampire,,,A faire
 "Il ne craint qu'une chose, c'est le chasseur de vampires avec son fouet.",2,2,3,,Unité,Vampire impétueux,"En combat, le ~Vampire impétueux~ a +1PV jusqu'à la fin du combat pour chaque autre Vampire que vous contrôlez dans le combat présent.","Vampire, Apprenti",,,A faire
-,1,,,,Événement,Vengeance acide,"En combat, chaque fois que l'un de Gobelin que vous contrôlez est tué ou défaussé dans le combat actuel, l'adversaire doit défausser 2 cartes de son deck. (Max 4 cartes)",Sort,,,A faire
+,1,,,,Événement,Vengeance acide,"En combat, chaque fois qu'une unité Gobelin que vous contrôlez est tuée ou défaussée dans le combat actuel, l'adversaire doit défausser 2 cartes de son deck. (Max 4 cartes)",Sort,,,A faire
 ,2,2,3,,Unité,Vétéran,,"Résistant, Elite",,,A faire
-Dans le doute j'attaque,2,2,2,Oui,Unité,Vincent l'apprenti,~Vincent l'apprenti~ en attaque a +2FOR. En défense il a -2FOR,"Compagnon, Temple",,,A faire
-,1,,,,Plan,Visite à la cour,"A l'instant: Cherchez dans votre deck une carte Noble ou Seigneur dans votre deck, révélez-la et prenez-la en main. Vos cartes Armure et Arme coûtent -1OR",Royaume,,,A faire
-,3,,,,Plan,Visite au laboratoire,"A l'instant: Votre adversaire peut chercher dans son deck une carte Alchimie. Puis, vous pouvez chercher dans votre deck une carte Alchimie. Les joueurs révèlent leur carte et la prennent en main.",Royaume,,,A faire
+Dans le doute j'attaque,2,2,2,Oui,Unité,Vincent l'apprenti,"Quand ~Vincent l'apprenti~ est en attaque, il a +2FOR. Quand il est en défense, il a -2FOR","Compagnon, Temple",,,A faire
+,1,,,,Plan,Visite à la cour,A l'instant: Cherchez dans votre deck une carte Noble ou Seigneur. Révélez-la et prenez-la en main. Vos cartes Armure et Arme coûtent -1OR,Royaume,,,A faire
+,3,,,,Plan,Visite au laboratoire,A l'instant: Votre adversaire et vous pouvez chercher dans vos decks respectifs une carte Alchimie. Les joueurs révèlent leur carte et la prennent en main.,Royaume,,,A faire
 ,1,,,,Plan,Visite des écuries,A l'instant : Cherchez dans votre deck une unité Cavalier. Révélez-la et prenez-la en main. Toutes vos unités Cavalier ont +1FOR jusqu'à la fin du tour.,Royaume,,,A faire
 On est Dyslexique !,1,0,1,,Unité,Voblin goleur,"Action: Payez 2OR, l'adversaire défausse une carte au hasard de sa main. (Max1)",Gobelin,,,A faire
 ,1,,,,Événement,Volée de flèches,"En combat, ajoutez 2 dommages normaux lors de la résolution du combat si une carte Jet est présente à l'instant où vous jouez cette carte.",Manoeuvre,,,A faire
@@ -658,6 +657,6 @@ On est Dyslexique !,1,0,1,,Unité,Voblin goleur,"Action: Payez 2OR, l'adversaire
 ,X,,,,Événement,Vortex,Payez X# et prenez le contrôle d'un bâtiment en jeu et mettez-le dans votre Citadelle. A la fin du tour le propriétaire du bâtiment reprend le contrôle de son bâtiment.,Rituel,,,A faire
 "En avant les amis, la 7e Souris blindée est déjà au combat.",3,2,2,Oui,Unité,Waly Défense Fortifiée (WDF),En défense ~Waly Défense Fortifiée (WDF)~  a +2PV jusqu'à la fin du combat et gagne PUGNACE jusqu'à la fin de la phase.,"Temple, Ordre, Elite",Mortel,,A faire
 ,3,1,3,,Unité,Witch,"Action: En combat, retirez 1 dommage à une de vos unités dans le combat, puis mettez ce dommage sur une unité ennemie aussi dans le même combat. (Max1)",Magicien,Pugnace,,A faire
-"Le taxateur me cherche, il ne me trouvera jamais dans ce temple. Personne vient chez B'Tooloo",2,2,2,Oui,Unité,Yacine disciple de l’Anarchie,Action: Payez 2OR pour prendre le jeton initiative. (Max1),"Temple, Impôt, Etat",,,A faire
+"Le taxateur me cherche, il ne me trouvera jamais dans ce temple. Personne vient chez B'Tooloo",2,2,2,Oui,Unité,Yacine disciple de l’Anarchie,Action: Payez 2OR pour prendre l'initiative. (Max1),"Temple, Impôt, Etat",,,A faire
 ,1,0,2,,Unité,Zombie,"En combat, le ~Zombie~ a +1FOR jusqu'à la fin du combat pour chaque Mort-Vivant que vous contrôlez dans le combat. (max +3FOR)","Horde, Mort-Vivant",,,A faire
-,1,,,,Plan,Zone Offensive Compliquée (ZOC),"A l'instant: Cherchez dans votre deck une carte Piège ou Fortification de coût 2OR ou moins, vous pouvez la mettre en jeu gratuitement. Si vous avez mis une carte en jeu avec cet effet, défaussez une carte de votre main ou de votre deck. ",Royaume,,,A faire
+,1,,,,Plan,Zone Offensive Compliquée (ZOC),A l'instant: Cherchez dans votre deck et prendre en main une carte Piège ou Fortification de coût 2OR ou moins. Vous pouvez défaussez une de votre deck pour la mettre en jeu gratuitement.,Royaume,,,A faire
