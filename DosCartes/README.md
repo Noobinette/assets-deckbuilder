@@ -43,4 +43,5 @@ Regénérer les logos et les fonds 01–05 : `python3 DosCartes/scripts/separer_
 Regénérer les deux fonds 06 : `python3 DosCartes/scripts/preparer_livre_brun.py`  
 Regénérer l’échelle de l’or (fond + piste, 5 mm hors trim) : `python3 DosCartes/scripts/preparer_echelle_or.py`  
 Extraire la piste d’or seule (fond transparent) : `python3 DosCartes/scripts/preparer_echelle_piste.py`  
-Regénérer le 03e V3 (ombre pixel) : `python3 DosCartes/scripts/preparer_logo_03e_v3.py`
+Regénérer le 03e V3 (ombre pixel) : `python3 DosCartes/scripts/preparer_logo_03e_v3.py`  
+Jaquette griffon ciel en fond perdu 820×1120 : `python3 DosCartes/scripts/preparer_griffon_ciel.py` → `griffon_ciel_fondperdu.png`

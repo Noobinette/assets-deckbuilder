@@ -443,6 +443,11 @@ def write_apercu(logos: list, fonds: list, mixes: list[Path]) -> None:
         f"<figcaption>{p.stem.replace('_', ' ')}</figcaption></figure>"
         for p in mixes
     )
+    extra = ""
+    if (OUT / "griffon_ciel_fondperdu.png").exists():
+        extra = """  <h2>Griffon ciel — fond perdu 820×1120</h2>
+  <div class="grid"><figure><img src="griffon_ciel_fondperdu.png" alt="Griffon ciel fond perdu"><figcaption>Griffon au-dessus des nuages — 820×1120<br><code>griffon_ciel_fondperdu.png</code></figcaption></figure></div>
+"""
     (OUT / "apercu.html").write_text(
         f"""<!DOCTYPE html>
 <html lang="fr">
@@ -482,7 +487,7 @@ def write_apercu(logos: list, fonds: list, mixes: list[Path]) -> None:
   <div class="grid">{fond_livre_html}</div>
   <h2>Exemples logo + fond</h2>
   <div class="grid">{mix_html}</div>
-</body>
+{extra}</body>
 </html>
 """,
         encoding="utf-8",
