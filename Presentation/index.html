@@ -428,13 +428,53 @@
     function inlineEmbeddedImages() {
       var imgs = document.querySelectorAll("#fiche img");
       var restored = [];
+      var missing = [];
       imgs.forEach(function (img) {
         var key = imageKey(img);
         var data = window.EMBEDDED_IMAGES && window.EMBEDDED_IMAGES[key];
-        restored.push({ img: img, src: img.getAttribute("src") });
-        if (data) img.setAttribute("src", data);
+        restored.push({ img: img, src: img.getAttribute("src"), css: img.style.cssText });
+        if (!data && key) missing.push(key);
+      });
+      if (missing.length) {
+        throw new Error(
+          "Image pas embarquée : " + missing.join(", ") +
+          ".\nPlace-la dans Presentation/img/ puis lance embed-images.sh"
+        );
+      }
+      restored.forEach(function (item) {
+        var key = imageKey(item.img);
+        item.img.setAttribute("src", window.EMBEDDED_IMAGES[key]);
       });
       return restored;
+    }
+
+    function loadImg(src) {
+      return new Promise(function (resolve, reject) {
+        var im = new Image();
+        im.onload = function () { resolve(im); };
+        im.onerror = function () { reject(new Error("chargement image")); };
+        im.src = src;
+      });
+    }
+
+    // html2canvas gère mal transform: rotate() — on pré-tourne le bitmap.
+    async function bakeLandscapeCards() {
+      var nodes = document.querySelectorAll("#fiche .card-shot.landscape img");
+      for (var i = 0; i < nodes.length; i++) {
+        var img = nodes[i];
+        var im = await loadImg(img.src);
+        var c = document.createElement("canvas");
+        c.width = im.naturalHeight;
+        c.height = im.naturalWidth;
+        var ctx = c.getContext("2d");
+        ctx.translate(c.width, 0);
+        ctx.rotate(Math.PI / 2);
+        ctx.drawImage(im, 0, 0);
+        img.src = c.toDataURL("image/png");
+        img.style.transform = "none";
+        img.style.width = "48mm";
+        img.style.height = "35.5mm";
+      }
     }
 
     document.getElementById('print-btn').addEventListener('click', function () {
@@ -459,6 +499,8 @@
         restored = inlineEmbeddedImages();
         if (document.fonts && document.fonts.ready) await document.fonts.ready;
         await waitImages();
+        await bakeLandscapeCards();
+        await waitImages();
         var canvas = await html2canvas(document.getElementById('fiche'), {
           scale: 2,
           backgroundColor: '#fffaf0',
@@ -476,6 +518,9 @@
               frame.style.outline = 'none';
               frame.style.boxShadow = 'inset 0 0 0 3.2mm #2a1814';
             }
+            doc.querySelectorAll('.card-shot.landscape img').forEach(function (img) {
+              img.style.transform = 'none';
+            });
           }
         });
         if (opts.preview) {
@@ -501,7 +546,10 @@
       } catch (err) {
         alert('Impossible de générer le PNG : ' + (err && err.message ? err.message : err));
       } finally {
-        restored.forEach(function (item) { item.img.setAttribute('src', item.src); });
+        restored.forEach(function (item) {
+          item.img.setAttribute('src', item.src);
+          item.img.style.cssText = item.css || '';
+        });
         if (!opts.preview) {
           btn.disabled = false;
           btn.textContent = label;
