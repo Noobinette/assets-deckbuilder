@@ -442,15 +442,16 @@ def write_apercu(logos: list, fonds: list, mixes: list[Path]) -> None:
     Logos extraits des dos Best (<code>01</code>, <code>03</code>, <code>03b</code>,
     <code>03e</code>, <code>07</code>, <code>09</code>, <code>42</code>) :
     tout ce qui n’est pas le logo est transparent. Fonds cuir plat 180°-symétriques
-    (<code>01</code>–<code>05</code>) et fonds <strong>style livre</strong> cuir brun
-    (<code>06</code> ras 750×1050, <code>06_fondperdu</code> 820×1120 avec 3&nbsp;mm de noir).
+    (<code>01</code>–<code>05</code>) et fond <strong>06</strong> à cadres géométriques
+    (dos plat, plus de tranche de livre : <code>06</code> ras 750×1050,
+    <code>06_fondperdu</code> 820×1120 avec 3&nbsp;mm de motif, pas de noir).
     N’importe quel logo se pose sur n’importe quel fond.
   </p>
   <h2>Logos (PNG transparent)</h2>
   <div class="grid wide">{logo_html}</div>
   <h2>Fonds cuir plat (750×1050, sans logo)</h2>
   <div class="grid">{fond_cuir_html}</div>
-  <h2>Fonds style livre (tranche + cadre géométrique)</h2>
+  <h2>Fond 06 — dos plat, cadres géométriques</h2>
   <div class="grid">{fond_livre_html}</div>
   <h2>Exemples logo + fond</h2>
   <div class="grid">{mix_html}</div>
@@ -565,8 +566,8 @@ def main() -> None:
         ("03_losanges_bordeaux", "Nouveau — losanges bordeaux, centre vide"),
         ("04_obsidienne", "Nouveau — obsidienne, grain cuir"),
         ("05_emeraude", "Nouveau — émeraude sombre"),
-        ("06_livre_brun", "Livre — cuir brun, ras le livre"),
-        ("06_livre_brun_fondperdu", "Livre — cuir brun, fond perdu 820×1120"),
+        ("06_livre_brun", "Cadres cuir brun — dos plat 750×1050"),
+        ("06_livre_brun_fondperdu", "Cadres cuir brun — fond perdu 820×1120"),
     ]
     fonds_meta = [(n, c) for n, c in fonds_meta if (FONDS / f"{n}.png").exists()]
     for name, _ in fonds_meta:
@@ -624,28 +625,6 @@ def main() -> None:
         paste_logo_on_fond(Image.open(fp), lg, 0.72).save(p, "PNG", optimize=True)
         mixes.append(p)
 
-    # Alternatives : centre sur le plat, en ignorant la reliure (tranche gauche).
-    spine = 52
-    bleed = 35
-    plat_boxes = {
-        "06_livre_brun": (spine, 0, CARD_W, CARD_H),
-        "06_livre_brun_fondperdu": (bleed + spine, bleed, bleed + CARD_W, bleed + CARD_H),
-    }
-    for fond_name, mix_name, lg in (
-        ("06_livre_brun", "mix_03e_plat_livre_brun", logo_03e),
-        ("06_livre_brun_fondperdu", "mix_03e_plat_livre_fondperdu", logo_03e),
-        ("06_livre_brun", "mix_03e_90_plat_livre_brun", logo_03e_90),
-        ("06_livre_brun_fondperdu", "mix_03e_90_plat_livre_fondperdu", logo_03e_90),
-    ):
-        fp = FONDS / f"{fond_name}.png"
-        if not fp.exists():
-            continue
-        p = exemples / f"{mix_name}.png"
-        paste_logo_in_rect(Image.open(fp), lg, plat_boxes[fond_name], 0.72).save(
-            p, "PNG", optimize=True
-        )
-        mixes.append(p)
-
     write_apercu(logos, fonds_meta, mixes)
     make_planche(
         [(FONDS / f"{n}.png", c.split("—")[0].strip()) for n, c in fonds_meta],
@@ -656,7 +635,7 @@ def main() -> None:
         """# DosCartes — logos et fonds séparés
 
 Tout logo se pose sur tout fond. PNG 8 bits, fonds 750×1050
-(sauf le fond perdu livre : 820×1120).
+(sauf le fond perdu 06 : 820×1120).
 
 ## Logos (`logos/`)
 
@@ -676,7 +655,7 @@ Les `*_apercu.png` sont les mêmes logos sur damier (contrôle du alpha).
 
 ## Fonds (`fonds/`)
 
-Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre cuir brun (`06`).
+Deux familles : cuir plat 180°-symétrique (`01`–`05`) et dos plat à cadres géométriques (`06`).
 
 | Fichier | Origine |
 |---|---|
@@ -685,16 +664,16 @@ Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre cuir br
 | `03_losanges_bordeaux.png` | nouveau |
 | `04_obsidienne.png` | nouveau |
 | `05_emeraude.png` | nouveau |
-| `06_livre_brun.png` | grimoire cuir brun, ras le livre |
-| `06_livre_brun_fondperdu.png` | même livre + 3 mm (35 px) de noir de chaque côté, 820×1120 |
+| `06_livre_brun.png` | cadres cuir brun, dos plat (plus de tranche) |
+| `06_livre_brun_fondperdu.png` | même motif + 3 mm (35 px) de cadre continu, 820×1120 |
 
-Quatre dos livre + logo 03e (`exemples/`) : droit et 90° antihoraire, ras et fond perdu.
-Alternatives `*_plat_*` : même logo, centré sur le plat (reliure ignorée).
+Quatre dos 06 + logo 03e (`exemples/`) : droit et 90° antihoraire, ras et fond perdu.
 
 Ouvrir `apercu.html` pour tout voir, y compris des exemples logo + fond.
 
 Regénérer les logos et les fonds 01–05 : `python3 DosCartes/scripts/separer_logos_fonds.py`  
-Regénérer les deux fonds livre : `python3 DosCartes/scripts/preparer_livre_brun.py`
+Regénérer les deux fonds 06 : `python3 DosCartes/scripts/preparer_livre_brun.py`  
+Regénérer l’échelle de l’or (racine du dépôt) : `python3 DosCartes/scripts/preparer_echelle_or.py`
 """,
         encoding="utf-8",
     )

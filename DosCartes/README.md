@@ -1,7 +1,7 @@
 # DosCartes — logos et fonds séparés
 
 Tout logo se pose sur tout fond. PNG 8 bits, fonds 750×1050
-(sauf le fond perdu livre : 820×1120).
+(sauf le fond perdu 06 : 820×1120).
 
 ## Logos (`logos/`)
 
@@ -21,7 +21,7 @@ Les `*_apercu.png` sont les mêmes logos sur damier (contrôle du alpha).
 
 ## Fonds (`fonds/`)
 
-Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre cuir brun (`06`).
+Deux familles : cuir plat 180°-symétrique (`01`–`05`) et dos plat à cadres géométriques (`06`).
 
 | Fichier | Origine |
 |---|---|
@@ -30,13 +30,13 @@ Deux familles : cuir plat 180°-symétrique (`01`–`05`) et style livre cuir br
 | `03_losanges_bordeaux.png` | nouveau |
 | `04_obsidienne.png` | nouveau |
 | `05_emeraude.png` | nouveau |
-| `06_livre_brun.png` | grimoire cuir brun, ras le livre |
-| `06_livre_brun_fondperdu.png` | même livre + 3 mm (35 px) de noir de chaque côté, 820×1120 |
+| `06_livre_brun.png` | cadres cuir brun, dos plat (plus de tranche) |
+| `06_livre_brun_fondperdu.png` | même motif + 3 mm (35 px) de cadre continu, 820×1120 |
 
-Quatre dos livre + logo 03e (`exemples/`) : droit et 90° antihoraire, ras et fond perdu.
-Alternatives `*_plat_*` : même logo, centré sur le plat (reliure ignorée).
+Quatre dos 06 + logo 03e (`exemples/`) : droit et 90° antihoraire, ras et fond perdu.
 
 Ouvrir `apercu.html` pour tout voir, y compris des exemples logo + fond.
 
 Regénérer les logos et les fonds 01–05 : `python3 DosCartes/scripts/separer_logos_fonds.py`  
-Regénérer les deux fonds livre : `python3 DosCartes/scripts/preparer_livre_brun.py`
+Regénérer les deux fonds 06 : `python3 DosCartes/scripts/preparer_livre_brun.py`  
+Regénérer l’échelle de l’or (racine du dépôt) : `python3 DosCartes/scripts/preparer_echelle_or.py`
