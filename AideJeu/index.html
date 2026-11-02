@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pixel of Glory — aides de jeu, format poker</title>
+  <style>
+    @font-face { font-family: Cinzel; src: url("../Presentation/fonts/Cinzel.ttf") format("truetype"); font-weight: 600 800; font-display: swap; }
+    @font-face { font-family: "Source Sans 3"; src: url("../Presentation/fonts/SourceSans3.ttf") format("truetype"); font-weight: 400 700; font-display: swap; }
+    @font-face { font-family: "Pixelify Sans"; src: url("../Presentation/fonts/PixelifySans.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+
+    :root {
+      --ink: #1c1410;
+      --ink-soft: #4a3c32;
+      --parchment: #f7f0e0;
+      --gold: #c9a227;
+      --gold-bright: #f0d78c;
+      --crimson: #9b2335;
+      --green: #246b42;
+      --green-deep: #1c5333;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: #120d0b; color: #f3e6c8; }
+    body {
+      font-family: "Source Sans 3", sans-serif;
+      line-height: 1.4;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      background: #1a1210;
+      border-bottom: 1px solid rgba(201, 162, 39, 0.35);
+      font-size: 14px;
+    }
+    .toolbar button {
+      font: inherit;
+      cursor: pointer;
+      border: 1px solid var(--gold);
+      background: transparent;
+      color: var(--gold-bright);
+      padding: 6px 12px;
+      border-radius: 4px;
+    }
+    .toolbar button:hover { background: rgba(201, 162, 39, 0.15); }
+    .toolbar span { color: #b9a88a; }
+
+    .intro {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 28px 22px 8px;
+    }
+    .intro h1 {
+      font-family: Cinzel, serif;
+      font-weight: 700;
+      font-size: 28px;
+      margin: 0 0 8px;
+      color: #fff8e8;
+    }
+    .intro .kicker {
+      font-family: "Pixelify Sans", monospace;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+      font-size: 13px;
+      margin: 0 0 10px;
+    }
+    .intro p { margin: 0 0 10px; color: #e6d7bc; font-size: 16px; }
+    .intro strong { color: #fff; }
+
+    .desk {
+      display: grid;
+      grid-template-columns: repeat(2, max-content);
+      gap: 28px 36px;
+      justify-content: center;
+      padding: 22px 18px 64px;
+    }
+    figure { margin: 0; }
+    figcaption {
+      width: calc(63.5mm * 1.72);
+      margin-top: 10px;
+      font-size: 14.5px;
+      color: #e6d7bc;
+    }
+    figcaption b { color: #fff8e8; }
+    figcaption .tag {
+      display: inline-block;
+      margin-bottom: 3px;
+      font-family: "Pixelify Sans", monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: var(--gold-bright);
+    }
+
+    .zoom { zoom: 1.72; }
+
+    /* ---------- carte poker 63,5 × 88,9 mm ---------- */
+    .card {
+      width: 63.5mm;
+      height: 88.9mm;
+      position: relative;
+      overflow: hidden;
+      background: #1a120e;
+      color: var(--ink);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+    }
+    .card .bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+    .card.foret .bg { object-position: center 18%; }
+    .card.or .bg { object-position: center top; }
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 1.35mm;
+      border: 0.28mm solid rgba(232, 197, 71, 0.88);
+      border-radius: 1.15mm;
+      box-shadow: inset 0 0 0 0.45mm rgba(42, 24, 16, 0.28);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .mast {
+      position: absolute;
+      z-index: 2;
+      top: 2.15mm;
+      left: 3.1mm;
+      right: 3.1mm;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      color: #fff8e8;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.85), 0 0 6px rgba(0, 0, 0, 0.55);
+    }
+    .brand {
+      margin: 0;
+      font-family: "Pixelify Sans", monospace;
+      font-size: 6.4pt;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+    }
+    .mast h2 {
+      margin: 0;
+      font-family: Cinzel, serif;
+      font-size: 11.5pt;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+    .letter {
+      font-family: Cinzel, serif;
+      font-size: 9pt;
+      color: var(--gold-bright);
+      border: 0.25mm solid rgba(240, 215, 140, 0.8);
+      width: 4.4mm;
+      height: 4.4mm;
+      display: grid;
+      place-items: center;
+      border-radius: 0.7mm;
+      background: rgba(20, 12, 10, 0.35);
+      text-shadow: none;
+    }
+
+    .sheet {
+      position: absolute;
+      z-index: 1;
+      left: 2.15mm;
+      right: 2.15mm;
+      top: 12.6mm;
+      bottom: 2.15mm;
+      padding: 1.35mm 1.55mm 1.15mm;
+      display: flex;
+      flex-direction: column;
+      background:
+        linear-gradient(180deg, rgba(255, 250, 240, 0.82) 0mm, rgba(247, 240, 224, 0.95) 3.2mm, rgba(244, 236, 216, 0.97) 100%);
+      border-radius: 1mm;
+    }
+    .card.citadelle .sheet,
+    .card.foret .sheet {
+      background:
+        linear-gradient(180deg, rgba(255, 250, 240, 0.90) 0mm, rgba(247, 240, 224, 0.97) 2.4mm, rgba(246, 239, 220, 0.985) 100%);
+    }
+    .card.citadelle .sheet,
+    .card.foret .sheet,
+    .card.or .sheet {
+      top: 11.6mm;
+      padding: 1.05mm 1.4mm 0.65mm;
+    }
+
+    .ph {
+      display: grid;
+      grid-template-columns: 3.5mm 1fr;
+      gap: 0.85mm;
+      align-items: start;
+      padding: 0.55mm 0.85mm 0.6mm 0.7mm;
+      border-radius: 0.7mm;
+      margin: 0 0 0.55mm;
+    }
+    .card.citadelle .ph,
+    .card.or .ph {
+      gap: 0.7mm;
+      padding: 0.38mm 0.7mm 0.4mm 0.6mm;
+      margin-bottom: 0.36mm;
+    }
+    .card.foret .ph {
+      gap: 0.65mm;
+      padding: 0.28mm 0.65mm 0.3mm 0.55mm;
+      margin-bottom: 0.28mm;
+    }
+    .ph.stop {
+      background: linear-gradient(90deg, rgba(155, 35, 53, 0.22), rgba(155, 35, 53, 0.10));
+      box-shadow: inset 0.55mm 0 0 var(--crimson);
+    }
+    .ph.go {
+      background: linear-gradient(90deg, rgba(36, 107, 66, 0.18), rgba(36, 107, 66, 0.08));
+      box-shadow: inset 0.55mm 0 0 var(--green);
+    }
+    .n {
+      width: 3.5mm;
+      height: 3.5mm;
+      margin-top: 0.15mm;
+      border-radius: 0.55mm;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 7pt;
+      line-height: 1;
+      color: white;
+      background: var(--green);
+    }
+    .ph.stop .n { background: var(--crimson); }
+    .ph .txt { min-width: 0; }
+    .ph .name {
+      font-weight: 700;
+      font-size: 6.35pt;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      line-height: 1.05;
+    }
+    .ph.stop .name { color: #6e1524; }
+    .ph.go .name { color: var(--green-deep); }
+    .badge {
+      font-weight: 700;
+      font-style: normal;
+      font-size: 5.15pt;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-left: 0.7mm;
+    }
+    .ph p {
+      margin: 0.12mm 0 0;
+      font-size: 6.05pt;
+      line-height: 1.16;
+      color: var(--ink);
+    }
+    .card.citadelle .ph p,
+    .card.or .ph p { font-size: 5.8pt; line-height: 1.12; }
+    .card.precise .ph p { font-size: 5.45pt; line-height: 1.12; }
+
+    .card, .ph, .sheet, .rappel, .n, .bg {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .kw-h {
+      margin: 0.35mm 0 0.55mm;
+      font-family: Cinzel, serif;
+      font-size: 7pt;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6a5010;
+      line-height: 1;
+    }
+    .kws {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.42mm 1.35mm;
+    }
+    .card.foret .kws { gap: 0.28mm 1.2mm; }
+    .card.or .kws { gap: 0.22mm 1.2mm; }
+    .kws li { min-width: 0; }
+    .kws b {
+      display: flex;
+      align-items: center;
+      gap: 0.7mm;
+      font-size: 5.7pt;
+      letter-spacing: 0.035em;
+      text-transform: uppercase;
+      line-height: 1.05;
+      color: #2a2118;
+    }
+    .kws b i {
+      width: 1.45mm;
+      height: 1.45mm;
+      border-radius: 0.3mm;
+      display: block;
+      flex: none;
+      font-style: normal;
+    }
+    .kws span {
+      display: block;
+      margin: 0.12mm 0 0 2.15mm;
+      font-size: 5.45pt;
+      line-height: 1.14;
+      color: var(--ink-soft);
+    }
+    .card.or .kws span { font-size: 5.2pt; }
+    .card.foret .kws b { font-size: 5.35pt; }
+    .card.foret .kws span { font-size: 5.05pt; line-height: 1.1; }
+    .card.or .kw-h { margin-top: 0.15mm; margin-bottom: 0.35mm; }
+
+    .poison i { background: #4f7c32; }
+    .mortel i { background: #7a1c2c; }
+    .pugnace i { background: #6a3d1a; }
+    .ethere i { background: #3e8ea0; }
+    .precis i { background: #c45c12; }
+    .faiblesse i { background: #8a4a62; }
+    .fragile i { background: #7a5c8a; }
+    .rapide i { background: #2d6a9a; }
+
+    .rappel {
+      margin-top: 0.45mm;
+      padding: 0.5mm 0.9mm 0.55mm 1.05mm;
+      background: rgba(138, 90, 24, 0.10);
+      box-shadow: inset 0.5mm 0 0 #8a7018;
+      border-radius: 0.6mm;
+    }
+    .rappel b {
+      display: block;
+      font-size: 5.1pt;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6a5010;
+      line-height: 1;
+      margin-bottom: 0.3mm;
+    }
+    .rappel p {
+      margin: 0;
+      font-size: 5.45pt;
+      line-height: 1.16;
+      color: var(--ink);
+    }
+
+    html.solo .toolbar,
+    html.solo .intro,
+    html.solo figcaption { display: none !important; }
+    html.solo body { background: transparent; }
+    html.solo .desk { display: block; padding: 0; margin: 0; }
+    html.solo .zoom { zoom: 1; }
+    html.solo .card { box-shadow: none; }
+
+    @media print {
+      .toolbar, .intro, figcaption { display: none !important; }
+      body { background: white; }
+      .desk {
+        display: grid;
+        grid-template-columns: 63.5mm 63.5mm;
+        gap: 8mm 10mm;
+        padding: 8mm;
+        justify-content: center;
+      }
+      .zoom { zoom: 1; }
+      .card { box-shadow: none; break-inside: avoid; }
+      @page { size: A4 portrait; margin: 8mm; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button type="button" onclick="window.print()">Imprimer les 4 cartes (A4)</button>
+    <span>Format poker 63,5 × 88,9 mm. L’écran est agrandi, l’impression est à taille réelle.</span>
+  </div>
+
+  <header class="intro">
+    <p class="kicker">Pixel of Glory · aide de jeu</p>
+    <h1>Quatre façons de dire le tour</h1>
+    <p>Même carte, quatre formulations. La phase 1 est en rouge&nbsp;: aucune action. Les quatre autres sont en vert. Le fond change, et reste en marge pour ne pas manger le texte.</p>
+    <p><strong>B</strong> est celle que je mettrais sur la table. <strong>A</strong> garde vos mots. <strong>C</strong> ajoute les cas qui coincent. <strong>D</strong> reprend B et le rappel que j’ajouterais.</p>
+  </header>
+
+  <main class="desk">
+    <figure>
+      <div class="zoom">
+        <article class="card phare" id="carte-a">
+          <img class="bg" src="fonds/fond-phare.jpg" alt="">
+          <header class="mast">
+            <div>
+              <p class="brand">Pixel of Glory</p>
+              <h2>Le tour</h2>
+            </div>
+            <span class="letter">A</span>
+          </header>
+          <div class="sheet">
+            <div class="ph stop">
+              <span class="n">1</span>
+              <div class="txt">
+                <div class="name">Plan <i class="badge">sans action</i></div>
+                <p>Choix, puis révélation. La plus haute initiative choisit le premier. Égalité&nbsp;: celui qui ne l’avait pas.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">2</span>
+              <div class="txt">
+                <div class="name">Organisation</div>
+                <p>4 actions, chacun son tour. Double passe&nbsp;: fin de phase.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">3</span>
+              <div class="txt">
+                <div class="name">Assignation</div>
+                <p>Attaque ou défense, chacun son tour. Double passe&nbsp;: fin de phase.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">4</span>
+              <div class="txt">
+                <div class="name">Combat</div>
+                <p>Résolu un lieu à la fois. Le premier joueur choisit l’ordre.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">5</span>
+              <div class="txt">
+                <div class="name">Dette</div>
+                <p>Dégâts 1 à 3&nbsp;: vous choisissez. 4 à 6&nbsp;: l’adversaire.</p>
+              </div>
+            </div>
+            <h3 class="kw-h">Mots-clés</h3>
+            <ul class="kws">
+              <li class="poison"><b><i></i>Poison</b><span>Double ses dégâts en fin de combat.</span></li>
+              <li class="mortel"><b><i></i>Mortel</b><span>Défausse la cible.</span></li>
+              <li class="pugnace"><b><i></i>Pugnace</b><span>Ne peut pas mourir pendant le combat.</span></li>
+              <li class="ethere"><b><i></i>Éthéré</b><span>Magicien et dette seulement. Une défausse le retire.</span></li>
+              <li class="precis"><b><i></i>Précis</b><span>Vous répartissez ces dégâts.</span></li>
+              <li class="faiblesse"><b><i></i>Faiblesse</b><span>−1/−1 aux alliés du même combat.</span></li>
+              <li class="fragile"><b><i></i>Fragile</b><span>Défausse, au lieu de revenir en main.</span></li>
+              <li class="rapide"><b><i></i>Rapide</b><span>Ne compte pas comme une action.</span></li>
+            </ul>
+          </div>
+        </article>
+      </div>
+      <figcaption>
+        <span class="tag">A · Sèche · phare</span><br>
+        <b>Vos phrases, resserrées.</b> La plus rapide à lire. Elle garde «&nbsp;4 actions&nbsp;», «&nbsp;double les dégâts&nbsp;» et «&nbsp;alliés&nbsp;».
+      </figcaption>
+    </figure>
+
+    <figure>
+      <div class="zoom">
+        <article class="card citadelle" id="carte-b">
+          <img class="bg" src="fonds/fond-citadelle.jpg" alt="">
+          <header class="mast">
+            <div>
+              <p class="brand">Pixel of Glory</p>
+              <h2>Le tour</h2>
+            </div>
+            <span class="letter">B</span>
+          </header>
+          <div class="sheet">
+            <div class="ph stop">
+              <span class="n">1</span>
+              <div class="txt">
+                <div class="name">Plan <i class="badge">sans action</i></div>
+                <p>Chacun choisit, puis on révèle. La plus haute initiative désigne le premier. Égalité&nbsp;: celui sans le jeton.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">2</span>
+              <div class="txt">
+                <div class="name">Organisation</div>
+                <p>Jusqu’à 4 cartes, chacun son tour. Rapide ne compte pas. Deux passes de suite&nbsp;: fin.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">3</span>
+              <div class="txt">
+                <div class="name">Assignation</div>
+                <p>Unités en attaque ou en défense, chacun son tour. Deux passes de suite&nbsp;: fin.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">4</span>
+              <div class="txt">
+                <div class="name">Combat</div>
+                <p>Le premier choisit le lieu. On peut encore agir, deux passes, puis les dégâts.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">5</span>
+              <div class="txt">
+                <div class="name">Dette</div>
+                <p>Les 3 premiers dégâts&nbsp;: l’endetté. Le surplus, de 4 à 6&nbsp;: l’adversaire.</p>
+              </div>
+            </div>
+            <h3 class="kw-h">Mots-clés</h3>
+            <ul class="kws">
+              <li class="poison"><b><i></i>Poison</b><span>Ses dégâts frappent encore le survivant.</span></li>
+              <li class="mortel"><b><i></i>Mortel</b><span>Le survivant touché est défaussé.</span></li>
+              <li class="pugnace"><b><i></i>Pugnace</b><span>Reste en jeu jusqu’à la fin de la phase, même à 0&nbsp;PV.</span></li>
+              <li class="ethere"><b><i></i>Éthéré</b><span>Seuls Magicien et dette blessent. Une défausse le retire.</span></li>
+              <li class="precis"><b><i></i>Précis</b><span>Vous placez ces dégâts, avant les autres.</span></li>
+              <li class="faiblesse"><b><i></i>Faiblesse</b><span>−1/−1 aux autres unités du combat.</span></li>
+              <li class="fragile"><b><i></i>Fragile</b><span>Part à la défausse, pas en main.</span></li>
+              <li class="rapide"><b><i></i>Rapide</b><span>Hors des 4 cartes d’organisation.</span></li>
+            </ul>
+          </div>
+        </article>
+      </div>
+      <figcaption>
+        <span class="tag">B · Claire · citadelle</span><br>
+        <b>La formulation que je garderais.</b> Même rythme, et les trois ambiguïtés levées&nbsp;: 4 cartes (pas 4 actions), Poison ne double que ses propres dégâts, Faiblesse touche les autres unités du combat.
+      </figcaption>
+    </figure>
+
+    <figure>
+      <div class="zoom">
+        <article class="card foret precise" id="carte-c">
+          <img class="bg" src="fonds/fond-foret.jpg" alt="">
+          <header class="mast">
+            <div>
+              <p class="brand">Pixel of Glory</p>
+              <h2>Le tour</h2>
+            </div>
+            <span class="letter">C</span>
+          </header>
+          <div class="sheet">
+            <div class="ph stop">
+              <span class="n">1</span>
+              <div class="txt">
+                <div class="name">Plan <i class="badge">sans action</i></div>
+                <p>Cachés, puis révélés. La plus haute initiative choisit le jeton. Égalité&nbsp;: celui qui ne l’a pas. 1er tour&nbsp;: au sort.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">2</span>
+              <div class="txt">
+                <div class="name">Organisation</div>
+                <p>Le jeton commence. 4 cartes hors Rapide. Deux passes de suite&nbsp;: fin.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">3</span>
+              <div class="txt">
+                <div class="name">Assignation</div>
+                <p>Depuis la citadelle&nbsp;: lieu adverse (attaque) ou lieu à vous (défense). Deux passes&nbsp;: fin.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">4</span>
+              <div class="txt">
+                <div class="name">Combat</div>
+                <p>Le jeton choisit le lieu. Actions, deux passes, puis calcul. On n’y revient pas.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">5</span>
+              <div class="txt">
+                <div class="name">Dette</div>
+                <p>Jusqu’à 3, vous placez tout. Au-delà, l’adversaire d’abord, puis vos 3. Or à 0, main à 7.</p>
+              </div>
+            </div>
+            <h3 class="kw-h">Mots-clés</h3>
+            <ul class="kws">
+              <li class="poison"><b><i></i>Poison</b><span>+1 dégât par Poison, sur le survivant.</span></li>
+              <li class="mortel"><b><i></i>Mortel</b><span>Tue le survivant touché. Immédiat en combat.</span></li>
+              <li class="pugnace"><b><i></i>Pugnace</b><span>Même tuée, elle ne part qu’en fin de phase.</span></li>
+              <li class="ethere"><b><i></i>Éthéré</b><span>Ni Poison ni Mortel. Magicien et dette. Défausse&nbsp;: retiré.</span></li>
+              <li class="precis"><b><i></i>Précis</b><span>Vous d’abord. Le reste&nbsp;: l’adversaire.</span></li>
+              <li class="faiblesse"><b><i></i>Faiblesse</b><span>−1/−1 aux autres unités présentes.</span></li>
+              <li class="fragile"><b><i></i>Fragile</b><span>Défausse, plutôt que retour en main.</span></li>
+              <li class="rapide"><b><i></i>Rapide</b><span>Ne compte pas dans les 4 cartes.</span></li>
+            </ul>
+          </div>
+        </article>
+      </div>
+      <figcaption>
+        <span class="tag">C · Précise · forêt</span><br>
+        <b>Les bords du règlement.</b> Tirage au sort au premier tour, ordre réel de la dette, échelle remise à 0 et main à 7. Plus serrée, à garder sous la main plutôt qu’à lire d’un coup d’œil.
+      </figcaption>
+    </figure>
+
+    <figure>
+      <div class="zoom">
+        <article class="card or table" id="carte-d">
+          <img class="bg" src="fonds/fond-or.jpg" alt="">
+          <header class="mast">
+            <div>
+              <p class="brand">Pixel of Glory</p>
+              <h2>Le tour</h2>
+            </div>
+            <span class="letter">D</span>
+          </header>
+          <div class="sheet">
+            <div class="ph stop">
+              <span class="n">1</span>
+              <div class="txt">
+                <div class="name">Plan <i class="badge">sans action</i></div>
+                <p>Chacun choisit, puis on révèle. La plus haute initiative désigne le premier. Égalité&nbsp;: celui sans le jeton.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">2</span>
+              <div class="txt">
+                <div class="name">Organisation</div>
+                <p>Jusqu’à 4 cartes, chacun son tour. Rapide ne compte pas. Deux passes de suite&nbsp;: fin.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">3</span>
+              <div class="txt">
+                <div class="name">Assignation</div>
+                <p>Unités en attaque ou en défense, chacun son tour. Deux passes de suite&nbsp;: fin.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">4</span>
+              <div class="txt">
+                <div class="name">Combat</div>
+                <p>Le premier choisit le lieu. On peut encore agir, deux passes, puis les dégâts.</p>
+              </div>
+            </div>
+            <div class="ph go">
+              <span class="n">5</span>
+              <div class="txt">
+                <div class="name">Dette</div>
+                <p>Les 3 premiers dégâts&nbsp;: l’endetté. Le surplus, de 4 à 6&nbsp;: l’adversaire.</p>
+              </div>
+            </div>
+            <h3 class="kw-h">Mots-clés</h3>
+            <ul class="kws">
+              <li class="poison"><b><i></i>Poison</b><span>Ses dégâts reviennent sur le survivant.</span></li>
+              <li class="mortel"><b><i></i>Mortel</b><span>Défausse le survivant touché.</span></li>
+              <li class="pugnace"><b><i></i>Pugnace</b><span>Ne part qu’à la fin de la phase.</span></li>
+              <li class="ethere"><b><i></i>Éthéré</b><span>Magicien et dette. Défausse&nbsp;: retiré.</span></li>
+              <li class="precis"><b><i></i>Précis</b><span>Vous placez ces dégâts d’abord.</span></li>
+              <li class="faiblesse"><b><i></i>Faiblesse</b><span>−1/−1 aux autres du combat.</span></li>
+              <li class="fragile"><b><i></i>Fragile</b><span>Défausse, pas retour en main.</span></li>
+              <li class="rapide"><b><i></i>Rapide</b><span>Hors quota des 4 cartes.</span></li>
+            </ul>
+            <div class="rappel">
+              <b>Rappel</b>
+              <p>Pas de combat dans un lieu vide en début de phase. Hors Précis, l’adversaire place les dégâts — Magicien d’abord sur Éthéré.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+      <figcaption>
+        <span class="tag">D · Table · or</span><br>
+        <b>La B, plus le rappel.</b> Deux oublis qui reviennent à chaque partie&nbsp;: on ne crée pas un combat dans un lieu vide, et hors Précis c’est l’adversaire qui répartit.
+      </figcaption>
+    </figure>
+  </main>
+  <script>
+    (function () {
+      var only = new URLSearchParams(location.search).get("only");
+      if (!only) return;
+      document.documentElement.classList.add("solo");
+      document.querySelectorAll("figure").forEach(function (f) {
+        if (!f.querySelector("#carte-" + only)) f.remove();
+      });
+    })();
+  </script>
+</body>
+</html>
