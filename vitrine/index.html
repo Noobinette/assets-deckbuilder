@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<!--
+  Vitrine de pixelofglory.com — à part du deckbuilder.
+  Sur Infomaniak, envoyer le contenu de ce dossier à la racine :
+  index.html, img/ et telechargements/.
+  Pour le livret illustré et l'aide de jeu, envoyer aussi les dossiers
+  regles/ et AideJeu/ à côté de index.html.
+  Vidéos YouTube : liste VIDEOS, tout en bas de ce fichier.
+-->
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pixel of Glory — Duel de cartes</title>
+  <meta name="description" content="Pixel of Glory est un duel de cartes fantasy en pixel art. Deux citadelles, un champ de bataille, une seule gloire. 2 joueurs, 30 à 45 minutes.">
+  <meta name="theme-color" content="#120d0b">
+  <meta property="og:title" content="Pixel of Glory — Duel de cartes">
+  <meta property="og:description" content="Deux citadelles. Un champ de bataille. Une seule gloire.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:image" content="img/jaquette.jpg">
+  <link rel="icon" href="img/logo.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Pixelify+Sans:wght@500;700&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1410;
+      --ink-soft: #4a3c32;
+      --parchment: #f6eedc;
+      --parchment-2: #efe4c9;
+      --paper: #fffaf0;
+      --gold: #c9a227;
+      --gold-bright: #e8c547;
+      --gold-dim: #8a7018;
+      --crimson: #9b2335;
+      --night: #120d0b;
+      --night-2: #1c1410;
+      --cream: #f3e6c8;
+      --purple: #6b3fa0;
+      --teal: #1f6f6f;
+      --copper: #b56a2b;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--cream);
+      font-family: "Source Serif 4", Georgia, serif;
+      background:
+        radial-gradient(1000px 520px at 100% -10%, rgba(155, 35, 53, 0.28), transparent 55%),
+        radial-gradient(820px 480px at -10% 0%, rgba(201, 162, 39, 0.16), transparent 50%),
+        var(--night);
+      line-height: 1.5;
+    }
+    img { max-width: 100%; display: block; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    :focus-visible {
+      outline: 2px solid var(--gold-bright);
+      outline-offset: 3px;
+    }
+    .sr {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 8px 18px;
+      background: linear-gradient(180deg, rgba(22, 14, 12, 0.97), rgba(18, 13, 11, 0.94));
+      border-bottom: 1px solid rgba(201, 162, 39, 0.45);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: inherit;
+      text-decoration: none;
+      min-width: 0;
+    }
+    .brand img { height: 52px; width: auto; }
+    .brand-words { display: flex; flex-direction: column; min-width: 0; }
+    .brand-words strong {
+      font-family: Cinzel, serif;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      font-size: 14px;
+      color: #fff8e8;
+    }
+    .brand-words span {
+      font-family: "Pixelify Sans", sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+    }
+
+    .tabs {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+      padding: 4px;
+    }
+    .tabs button {
+      font-family: "Source Sans 3", sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--cream);
+      background: transparent;
+      border: 1px solid rgba(201, 162, 39, 0.4);
+      border-radius: 999px;
+      padding: 8px 14px;
+      cursor: pointer;
+    }
+    .tabs button:hover { background: rgba(201, 162, 39, 0.12); }
+    .tabs button[aria-selected="true"] {
+      background: linear-gradient(180deg, #f0d56a, #c9a227);
+      color: #2a1814;
+      border-color: #e8c547;
+    }
+    .tabs .n {
+      font-family: "Pixelify Sans", sans-serif;
+      font-weight: 500;
+      margin-right: 4px;
+    }
+
+    main { max-width: 1120px; margin: 0 auto; padding: 28px 18px 64px; }
+    .panel[hidden] { display: none; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(220px, 340px) 1fr;
+      gap: 34px;
+      align-items: center;
+    }
+    .cover {
+      margin: 0;
+      filter: drop-shadow(0 22px 36px rgba(0, 0, 0, 0.55));
+    }
+    .cover img { width: 100%; height: auto; border-radius: 4px; }
+    .kicker {
+      margin: 0 0 8px;
+      font-family: "Pixelify Sans", sans-serif;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+      font-size: 15px;
+    }
+    h1 { margin: 0 0 8px; }
+    h1 img { width: min(100%, 420px); height: auto; }
+    .lead {
+      margin: 0 0 14px;
+      font-family: Cinzel, serif;
+      font-weight: 600;
+      font-size: clamp(18px, 2.4vw, 26px);
+      line-height: 1.35;
+      color: #fff8e8;
+    }
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; padding: 0; list-style: none; }
+    .pills li {
+      font-family: "Source Sans 3", sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      background: #2a1814;
+      color: var(--cream);
+      border: 1px solid rgba(201, 162, 39, 0.45);
+      border-radius: 4px;
+      padding: 5px 10px;
+    }
+    .pitch { margin: 0; font-size: 18px; color: #e6d3b4; max-width: 62ch; }
+
+    .sheet {
+      margin-top: 34px;
+      color: var(--ink);
+      background:
+        radial-gradient(120% 50% at 50% -20%, rgba(232, 197, 71, 0.16), transparent 55%),
+        linear-gradient(180deg, var(--paper), var(--parchment) 42%, var(--parchment-2));
+      border-radius: 8px;
+      padding: 22px 22px 18px;
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.35),
+        inset 0 0 0 7px #2a1814,
+        inset 0 0 0 8px rgba(201, 162, 39, 0.85);
+    }
+    .sheet h2 {
+      margin: 0;
+      font-family: Cinzel, serif;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 22px;
+      color: var(--crimson);
+    }
+    .sheet .intro {
+      margin: 10px 0 0;
+      font-size: 17.5px;
+    }
+    .orn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .orn::before, .orn::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(90deg, transparent, rgba(138, 112, 24, 0.7), transparent);
+    }
+    .orn i {
+      width: 8px;
+      height: 8px;
+      background: var(--gold-dim);
+      transform: rotate(45deg);
+    }
+
+    .reasons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .reasons article {
+      background: rgba(255, 250, 240, 0.72);
+      border: 1px solid rgba(201, 162, 39, 0.45);
+      border-radius: 8px;
+      padding: 12px 12px 10px;
+    }
+    .reasons h3 {
+      margin: 0 0 6px;
+      font-family: "Source Sans 3", sans-serif;
+      font-size: 16px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--crimson);
+    }
+    .reasons p { margin: 0; font-size: 15.5px; }
+
+    .phases {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .phases li {
+      background: #2a1814;
+      color: var(--cream);
+      border-radius: 8px;
+      padding: 10px 10px 12px;
+      min-height: 100%;
+    }
+    .phases .num {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-family: "Pixelify Sans", sans-serif;
+      color: white;
+      margin-bottom: 6px;
+    }
+    .phases b {
+      display: block;
+      font-family: "Source Sans 3", sans-serif;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .phases span { display: block; font-size: 13.5px; color: #e6d3b4; font-family: "Source Sans 3", sans-serif; }
+    .p1 { background: var(--purple); }
+    .p2 { background: var(--gold-dim); }
+    .p3 { background: var(--teal); }
+    .p4 { background: var(--crimson); }
+    .p5 { background: var(--copper); }
+
+    .win {
+      margin-top: 14px;
+      background: #3a1520;
+      color: #fff4e4;
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .win b {
+      display: block;
+      font-family: "Pixelify Sans", sans-serif;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .win p { margin: 0; }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      align-items: end;
+    }
+    .gallery figure { margin: 0; }
+    .gallery img {
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+      box-shadow: 0 10px 22px rgba(42, 24, 20, 0.28);
+    }
+    .gallery.dark img { box-shadow: 0 14px 28px rgba(0, 0, 0, 0.45); }
+    .gallery figcaption {
+      margin-top: 6px;
+      text-align: center;
+      font-family: "Pixelify Sans", sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+    .sheet .gallery figcaption { color: var(--gold-dim); }
+    .on-dark { margin-top: 28px; }
+    .on-dark h2 {
+      margin: 0 0 6px;
+      font-family: Cinzel, serif;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-size: 20px;
+      color: var(--gold-bright);
+    }
+    .on-dark .note { margin: 0 0 14px; color: #e6d3b4; }
+    .on-dark .gallery figcaption { color: var(--gold-bright); }
+    .plan-shot {
+      width: min(460px, 100%);
+      margin: 16px auto 0;
+    }
+    .plan-shot figcaption {
+      margin-top: 6px;
+      text-align: center;
+      font-family: "Pixelify Sans", sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+    }
+
+    .downloads {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .downloads a {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-decoration: none;
+      color: var(--ink);
+      background: rgba(255, 250, 240, 0.8);
+      border: 1px solid rgba(201, 162, 39, 0.55);
+      border-radius: 8px;
+      padding: 14px 14px 12px;
+      min-height: 100%;
+    }
+    .downloads a:hover { background: #fff; border-color: var(--gold-dim); }
+    .downloads .kind {
+      font-family: "Pixelify Sans", sans-serif;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: var(--crimson);
+    }
+    .downloads strong {
+      font-family: Cinzel, serif;
+      font-size: 18px;
+    }
+    .downloads span { font-size: 14.5px; color: var(--ink-soft); }
+
+    .panel-head { max-width: 68ch; margin-bottom: 18px; }
+    .panel-head h2 {
+      margin: 0 0 6px;
+      font-family: Cinzel, serif;
+      font-size: clamp(28px, 4vw, 40px);
+      color: #fff8e8;
+    }
+    .panel-head p { margin: 0; font-size: 18px; color: #e6d3b4; }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .player {
+      background: #0c0908;
+      border: 1px solid rgba(201, 162, 39, 0.55);
+      box-shadow: inset 0 0 0 4px #2a1814, 0 16px 36px rgba(0, 0, 0, 0.35);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .ratio { position: relative; padding-top: 56.25%; background: #000; }
+    .ratio iframe, .ratio .empty {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .empty {
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 24px;
+      background:
+        linear-gradient(180deg, rgba(18, 13, 11, 0.2), rgba(18, 13, 11, 0.72)),
+        url("img/jaquette.jpg") center 30% / cover no-repeat;
+    }
+    .empty p { margin: 8px 0 0; max-width: 36ch; color: #fff8e8; font-size: 18px; }
+    .play {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--gold-bright);
+      background: rgba(18, 13, 11, 0.55);
+      color: var(--gold-bright);
+      font-size: 28px;
+      padding-left: 4px;
+    }
+    .playlist { display: flex; flex-direction: column; gap: 8px; }
+    .playlist button {
+      text-align: left;
+      cursor: pointer;
+      color: var(--cream);
+      background: rgba(42, 24, 20, 0.72);
+      border: 1px solid rgba(201, 162, 39, 0.35);
+      border-radius: 8px;
+      padding: 12px 12px;
+      font: inherit;
+    }
+    .playlist button[aria-current="true"] {
+      border-color: var(--gold-bright);
+      background: rgba(201, 162, 39, 0.16);
+    }
+    .playlist b { display: block; font-family: "Source Sans 3", sans-serif; }
+    .playlist span { display: block; color: #cbbba0; font-size: 14px; }
+
+    .rules-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 8px 0 16px;
+    }
+    .rules-tools a, .ghost {
+      font-family: "Source Sans 3", sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--gold-bright);
+      text-decoration: none;
+      border: 1px solid rgba(201, 162, 39, 0.55);
+      border-radius: 999px;
+      padding: 7px 12px;
+      background: transparent;
+    }
+    .rules-tools a:hover { background: rgba(201, 162, 39, 0.14); }
+
+    .rule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .rule-grid article, .step-list {
+      background: rgba(255, 250, 240, 0.72);
+      border: 1px solid rgba(201, 162, 39, 0.4);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .rule-grid h3, .sheet h3 {
+      margin: 0 0 6px;
+      font-family: "Source Sans 3", sans-serif;
+      font-size: 16px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--crimson);
+    }
+    .rule-grid p, .step-list li { font-size: 15.5px; }
+    .step-list { margin: 0; }
+    .step-list ol { margin: 8px 0 0; padding-left: 1.2em; }
+    .step-list li { margin: 4px 0; }
+    .phase-block { display: grid; gap: 8px; }
+    .phase-block article {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: start;
+      background: rgba(255, 250, 240, 0.72);
+      border-radius: 8px;
+      padding: 10px 12px;
+      border: 1px solid rgba(201, 162, 39, 0.35);
+    }
+    .phase-block .badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-family: "Pixelify Sans", sans-serif;
+    }
+    .phase-block h3 { margin: 0 0 2px; text-transform: none; letter-spacing: 0; font-size: 17px; color: var(--ink); }
+    .phase-block p { margin: 0; }
+
+    .booklet { margin-top: 22px; }
+    .booklet h2 {
+      font-family: Cinzel, serif;
+      color: var(--gold-bright);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 20px;
+      margin: 0 0 8px;
+    }
+    .booklet iframe {
+      width: 100%;
+      height: min(82vh, 920px);
+      border: 1px solid rgba(201, 162, 39, 0.55);
+      border-radius: 8px;
+      background: var(--night);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+    }
+
+    footer.colophon {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 18px 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 22px;
+      color: #b9a88a;
+      font-family: "Source Sans 3", sans-serif;
+      font-size: 14px;
+    }
+    footer.colophon b { color: var(--cream); font-weight: 700; }
+
+    @media (max-width: 860px) {
+      .hero, .reasons, .phases, .downloads, .rule-grid, .video-grid { grid-template-columns: 1fr; }
+      .gallery { grid-template-columns: repeat(2, 1fr); }
+      .phases { grid-template-columns: 1fr; }
+      .top { flex-wrap: wrap; padding: 8px 12px; }
+      .tabs { width: 100%; margin-left: 0; overflow-x: auto; }
+      .tabs button { white-space: nowrap; }
+      .brand-words strong { font-size: 13px; }
+      .hero h1 { display: none; }
+      h1 img { width: min(100%, 320px); }
+    }
+  </style>
+</head>
+<body>
+  <a class="sr" href="#contenu">Aller au contenu</a>
+  <header class="top">
+    <a class="brand" href="#presentation" data-tab="presentation">
+      <span class="brand-words">
+        <strong>PIXEL OF GLORY</strong>
+        <span>Duel de cartes</span>
+      </span>
+    </a>
+    <nav class="tabs" aria-label="Sections">
+      <button type="button" id="tab-presentation" data-tab="presentation" aria-controls="panel-presentation">
+        <span class="n">1</span> Présentation
+      </button>
+      <button type="button" id="tab-video" data-tab="video" aria-controls="panel-video">
+        <span class="n">2</span> En vidéo
+      </button>
+      <button type="button" id="tab-regles" data-tab="regles" aria-controls="panel-regles">
+        <span class="n">3</span> Règles
+      </button>
+    </nav>
+  </header>
+
+  <main id="contenu">
+    <section class="panel" id="panel-presentation" role="tabpanel" aria-labelledby="tab-presentation">
+      <div class="hero">
+        <figure class="cover">
+          <img src="img/jaquette.jpg" alt="Un griffon survole une citadelle au soleil couchant. Le titre Pixel of Glory est inscrit en or.">
+        </figure>
+        <div>
+          <p class="kicker">Duel de cartes</p>
+          <h1><img src="img/logo.png" alt="Pixel of Glory"></h1>
+          <p class="lead">Deux citadelles. Un champ de bataille. Une seule gloire.</p>
+          <ul class="pills">
+            <li>2 joueurs</li>
+            <li>30–45 min</li>
+            <li>Construction de deck</li>
+            <li>Plus de 650 cartes</li>
+          </ul>
+          <p class="pitch">Un duel de cartes fantasy en pixel art. Chacun prépare son armée, puis on s’affronte jusqu’à vider le deck adverse.</p>
+        </div>
+      </div>
+
+      <section class="sheet" aria-labelledby="trente">
+        <h2 id="trente">En trente secondes</h2>
+        <p class="intro">Chacun arrive avec un deck de 40 cartes, 7 plans et 3 lieux. Il n’y a pas de mana&nbsp;: toute carte peut être jouée, mais dépenser de l’or pousse la fortune vers l’adversaire — et la dette se paie en dégâts. Chaque tour, un plan donne l’initiative et un pouvoir. On joue, on assigne les troupes, on résout les combats. On gagne en ravageant les lieux adverses, jusqu’à ce que son deck soit vide.</p>
+        <div class="orn" aria-hidden="true"><i></i></div>
+        <div class="reasons">
+          <article>
+            <h3>Pas de mana</h3>
+            <p>Vous pouvez jouer n’importe quelle carte. Celui qui dépense le plus d’or prend des dégâts en retour.</p>
+          </article>
+          <article>
+            <h3>Les plans</h3>
+            <p>En plus du deck, chaque joueur a 7 plans. Chaque tour, l’un d’eux donne l’initiative et une capacité.</p>
+          </article>
+          <article>
+            <h3>Pas de temps mort</h3>
+            <p>Les actions alternent. Le joueur qui a l’initiative joue en premier, puis on se répond.</p>
+          </article>
+        </div>
+        <div class="orn" aria-hidden="true"><i></i></div>
+        <ol class="phases">
+          <li><span class="num p1">1</span><b>Plan</b><span>On révèle un plan. Il donne un pouvoir et l’initiative.</span></li>
+          <li><span class="num p2">2</span><b>Cartes</b><span>Unités, bâtiments, équipements, événements.</span></li>
+          <li><span class="num p3">3</span><b>Troupes</b><span>On attaque ou on défend les lieux.</span></li>
+          <li><span class="num p4">4</span><b>Combat</b><span>On résout les batailles, lieu par lieu.</span></li>
+          <li><span class="num p5">5</span><b>Dette</b><span>On paie l’or, puis on refait sa main.</span></li>
+        </ol>
+        <div class="win">
+          <b>Comment on gagne</b>
+          <p>Dès que le deck adverse est vide. On y arrive surtout en ravageant ses lieux.</p>
+        </div>
+      </section>
+
+      <section class="on-dark" aria-labelledby="cartes-titre">
+        <h2 id="cartes-titre">Six types de cartes</h2>
+        <p class="note">L’armée se construit avant la partie, comme un duel de cartes classique. Les plans et les lieux sont à part.</p>
+        <div class="gallery dark">
+          <figure>
+            <img src="img/carte-griffon.jpg" alt="Carte unité Griffon, coût 5, force 4, 6 points de vie.">
+            <figcaption>Unité</figcaption>
+          </figure>
+          <figure>
+            <img src="img/carte-phare.jpg" alt="Carte bâtiment Phare.">
+            <figcaption>Bâtiment</figcaption>
+          </figure>
+          <figure>
+            <img src="img/carte-epee.jpg" alt="Carte équipement Épée magique.">
+            <figcaption>Équipement</figcaption>
+          </figure>
+          <figure>
+            <img src="img/carte-eclair.jpg" alt="Carte événement Éclair.">
+            <figcaption>Événement</figcaption>
+          </figure>
+          <figure>
+            <img src="img/carte-lieu.jpg" alt="Carte lieu Addyessa.">
+            <figcaption>Lieu</figcaption>
+          </figure>
+        </div>
+        <figure class="plan-shot">
+          <img src="img/carte-plan.jpg" alt="Carte plan Baume au cœur.">
+          <figcaption>Plan</figcaption>
+        </figure>
+      </section>
+
+      <section class="sheet" aria-labelledby="dl-titre">
+        <h2 id="dl-titre">À emporter</h2>
+        <p class="intro">La feuille que l’on tend avant une partie, le livret, et l’aide de jeu à garder sous la main.</p>
+        <div class="orn" aria-hidden="true"><i></i></div>
+        <div class="downloads">
+          <a href="telechargements/Pixel-of-Glory-fiche-A5.pdf" download>
+            <span class="kind">PDF</span>
+            <strong>Fiche A5</strong>
+            <span>La présentation en une page, à imprimer.</span>
+          </a>
+          <a id="lien-livret" href="../regles/index.html">
+            <span class="kind">Livret</span>
+            <strong>Règles v0.10</strong>
+            <span>Le livret illustré. Le bouton Imprimer / PDF en fait un fichier.</span>
+          </a>
+          <a id="lien-aide" href="../AideJeu/index.html">
+            <span class="kind">Table</span>
+            <strong>Aide de jeu</strong>
+            <span>Le recto verso à poser à côté du plateau.</span>
+          </a>
+        </div>
+      </section>
+    </section>
+
+    <section class="panel" id="panel-video" role="tabpanel" aria-labelledby="tab-video" hidden>
+      <div class="panel-head">
+        <p class="kicker">En vidéo</p>
+        <h2>Voir le jeu</h2>
+        <p>Une partie filmée montre le rythme mieux qu’une page de règles.</p>
+      </div>
+      <div id="video-stage"></div>
+    </section>
+
+    <section class="panel" id="panel-regles" role="tabpanel" aria-labelledby="tab-regles" hidden>
+      <div class="panel-head">
+        <p class="kicker">Règles · version 0.10</p>
+        <h2>Pour jouer</h2>
+        <p>L’essentiel pour s’asseoir à la table. Le livret illustré, avec chaque précision, s’ouvre en dessous.</p>
+      </div>
+      <div class="rules-tools">
+        <a id="lien-livret-2" href="../regles/index.html">Ouvrir le livret</a>
+        <a href="telechargements/Pixel-of-Glory-fiche-A5.pdf" download>Télécharger la fiche A5</a>
+        <a id="lien-aide-2" href="../AideJeu/index.html">Aide de jeu</a>
+      </div>
+
+      <section class="sheet">
+        <h2>Avant de jouer</h2>
+        <div class="orn" aria-hidden="true"><i></i></div>
+        <div class="rule-grid">
+          <article>
+            <h3>Deck de jeu</h3>
+            <p>Exactement 40 cartes. Au plus 2 exemplaires d’une même carte.</p>
+          </article>
+          <article>
+            <h3>Plans et lieux</h3>
+            <p>7 plans différents. 1 quartier général et 2 autres lieux, de titres distincts.</p>
+          </article>
+        </div>
+        <div class="orn" aria-hidden="true"><i></i></div>
+        <div class="step-list">
+          <h3>Mise en place</h3>
+          <ol>
+            <li>Chaque joueur place ses 3 lieux devant lui.</li>
+            <li>L’échelle de l’or est sur le côté, le pion sur la case zéro.</li>
+            <li>On mélange son deck de jeu. Le deck de plans est à part.</li>
+            <li>Chacun pioche 7 cartes.</li>
+            <li>Mulligan possible&nbsp;: jusqu’à 4 cartes mises de côté, on repioche autant, puis on les remélange dans le deck.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="sheet">
+        <h2>Un tour, cinq phases</h2>
+        <div class="orn" aria-hidden="true"><i></i></div>
+        <div class="phase-block">
+          <article>
+            <span class="badge p1">1</span>
+            <div>
+              <h3>Planification</h3>
+              <p>Chaque joueur choisit un plan et le pose face cachée. On révèle en même temps. La plus haute initiative décide qui prend le jeton. Les effets «&nbsp;À l’instant&nbsp;» se résolvent, dans l’ordre choisi par ce joueur.</p>
+            </div>
+          </article>
+          <article>
+            <span class="badge p2">2</span>
+            <div>
+              <h3>Organisation</h3>
+              <p>On joue des unités, des bâtiments, des équipements et des événements, chacun son tour. Quatre cartes non-RAPIDE au maximum. Deux passes consécutives terminent la phase.</p>
+            </div>
+          </article>
+          <article>
+            <span class="badge p3">3</span>
+            <div>
+              <h3>Assignation</h3>
+              <p>Depuis la citadelle, une unité part en attaque sur un lieu adverse, ou en défense sur un lieu à soi. On peut encore jouer des événements. Deux passes terminent la phase.</p>
+            </div>
+          </article>
+          <article>
+            <span class="badge p4">4</span>
+            <div>
+              <h3>Combat</h3>
+              <p>Il y a combat là où une unité est déjà présente au début de la phase. Le joueur à l’initiative choisit l’ordre des lieux. On compare les forces et on répartit les dommages. Un lieu sans points de vie restants est ravagé. Sur un lieu déjà ravagé, les dommages qui restent font défausser le deck — la main d’abord, si c’est le quartier général.</p>
+            </div>
+          </article>
+          <article>
+            <span class="badge p5">5</span>
+            <div>
+              <h3>Dette</h3>
+              <p>Celui qui n’a pas le pion d’or de son côté est endetté. Les dommages suivent la case de l’échelle (au-delà de 3, le livret précise qui les inflige). L’échelle revient ensuite à zéro. On peut défausser, puis chacun complète sa main à 7 cartes.</p>
+            </div>
+          </article>
+        </div>
+        <div class="win">
+          <b>L’or, en une phrase</b>
+          <p>Payer un coût déplace le pion vers l’adversaire. Il ne dépasse jamais 6&nbsp;: l’excédent devient des dommages. Avoir l’or de son côté, c’est être le créancier.</p>
+        </div>
+        <div class="win" style="background:#1c3a28">
+          <b>Victoire</b>
+          <p>La partie s’arrête dès qu’un deck de jeu est vide&nbsp;: l’autre joueur gagne. Si les deux se vident en même temps, on départage par le plus de cartes en main, puis le moins de lieux ravagés, puis le jeton initiative.</p>
+        </div>
+      </section>
+
+      <section class="booklet" id="livret" hidden>
+        <h2>Livret illustré</h2>
+        <iframe id="regles-frame" title="Livret de règles Pixel of Glory, version 0.10"></iframe>
+      </section>
+    </section>
+  </main>
+
+  <footer class="colophon">
+    <div><b>Auteurs</b> · Jean Necib et David Blanc</div>
+    <div><b>Règles</b> · version 0.10</div>
+    <div><b>Site</b> · pixelofglory.com</div>
+  </footer>
+
+  <script>
+    /* ============================================================
+       Vidéos YouTube
+       ------------------------------------------------------------
+       Décommentez un bloc et collez l'identifiant :
+       l'adresse https://www.youtube.com/watch?v=abcdefghijk
+       donne id: "abcdefghijk"
+       Copiez le bloc pour chaque nouvelle vidéo.
+       ============================================================ */
+    var VIDEOS = [
+      // { id: "abcdefghijk", titre: "Le jeu en 30 secondes", texte: "Deux citadelles, un champ de bataille." },
+      // { id: "abcdefghijk", titre: "Une partie commentée", texte: "De la pioche à la citadelle vide." },
+    ];
+
+    var tabs = Array.prototype.slice.call(document.querySelectorAll(".tabs button"));
+    var panels = {
+      presentation: document.getElementById("panel-presentation"),
+      video: document.getElementById("panel-video"),
+      regles: document.getElementById("panel-regles")
+    };
+
+    function show(name) {
+      if (!panels[name]) name = "presentation";
+      Object.keys(panels).forEach(function (key) {
+        var on = key === name;
+        panels[key].hidden = !on;
+        var btn = document.getElementById("tab-" + key);
+        btn.setAttribute("aria-selected", on ? "true" : "false");
+        btn.tabIndex = on ? 0 : -1;
+      });
+      if (location.hash !== "#" + name) {
+        history.replaceState(null, "", "#" + name);
+      }
+      if (name === "video") renderVideos();
+      if (name === "regles") loadRegles();
+    }
+
+    tabs.forEach(function (btn) {
+      btn.addEventListener("click", function () { show(btn.getAttribute("data-tab")); });
+    });
+    document.querySelectorAll("[data-tab]").forEach(function (el) {
+      if (el.tagName === "BUTTON") return;
+      el.addEventListener("click", function (event) {
+        if (el.getAttribute("data-tab")) {
+          event.preventDefault();
+          show(el.getAttribute("data-tab"));
+        }
+      });
+    });
+    window.addEventListener("hashchange", function () {
+      show((location.hash || "#presentation").slice(1));
+    });
+
+    var videosReady = false;
+    var currentVideo = 0;
+    function renderVideos() {
+      var stage = document.getElementById("video-stage");
+      var list = VIDEOS.filter(function (v) { return v && v.id && v.id.indexOf("abcdefghijk") === -1; });
+      if (!list.length) {
+        stage.innerHTML =
+          '<div class="player"><div class="ratio"><div class="empty">' +
+          '<div><div class="play" aria-hidden="true">▶</div>' +
+          '<p>Les parties filmées seront ici.</p></div></div></div></div>';
+        videosReady = true;
+        return;
+      }
+      if (videosReady && stage.querySelector("iframe")) return;
+      currentVideo = Math.min(currentVideo, list.length - 1);
+      var video = list[currentVideo];
+      var playlist = "";
+      if (list.length > 1) {
+        playlist = '<div class="playlist">' + list.map(function (item, i) {
+          return '<button type="button" data-i="' + i + '"' + (i === currentVideo ? ' aria-current="true"' : "") + '>' +
+            '<b>' + escapeHtml(item.titre || "Vidéo") + '</b>' +
+            (item.texte ? '<span>' + escapeHtml(item.texte) + '</span>' : "") +
+            '</button>';
+        }).join("") + '</div>';
+      }
+      stage.innerHTML =
+        '<div class="video-grid"><div class="player"><div class="ratio">' +
+        '<iframe src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(video.id) + '?rel=0" ' +
+        'title="' + escapeHtml(video.titre || "Vidéo Pixel of Glory") + '" ' +
+        'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>' +
+        '</div></div>' + playlist + '</div>';
+      stage.querySelectorAll(".playlist button").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          currentVideo = Number(btn.getAttribute("data-i"));
+          videosReady = false;
+          renderVideos();
+        });
+      });
+      videosReady = true;
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, function (ch) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch];
+      });
+    }
+
+    var reglesReady = false;
+    function firstReachable(urls) {
+      var i = 0;
+      function next() {
+        if (i >= urls.length) return Promise.resolve("");
+        var url = urls[i++];
+        return fetch(url, { method: "GET" }).then(function (res) {
+          if (res.ok) return url;
+          return next();
+        }).catch(function () { return next(); });
+      }
+      return next();
+    }
+
+    function loadRegles() {
+      if (reglesReady) return;
+      reglesReady = true;
+      var regles = ["regles/index.html", "../regles/index.html"];
+      var aides = ["AideJeu/index.html", "../AideJeu/index.html"];
+      firstReachable(regles).then(function (url) {
+        ["lien-livret", "lien-livret-2"].forEach(function (id) {
+          if (url) document.getElementById(id).href = url;
+        });
+        if (!url) return;
+        var box = document.getElementById("livret");
+        box.hidden = false;
+        document.getElementById("regles-frame").src = url;
+      });
+      firstReachable(aides).then(function (url) {
+        if (!url) return;
+        ["lien-aide", "lien-aide-2"].forEach(function (id) {
+          document.getElementById(id).href = url;
+        });
+      });
+    }
+
+    show((location.hash || "#presentation").replace("#", "") || "presentation");
+  </script>
+</body>
+</html>
