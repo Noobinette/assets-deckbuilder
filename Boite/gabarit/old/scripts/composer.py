@@ -421,10 +421,6 @@ def paint_net(gabarit: Image.Image, masks, arts: dict, stone, logo, logo_ligne) 
         canvas.alpha_composite(Image.fromarray(tarr), (sx0, sy0))
         print("  painted", name, bbox, f"{pw}x{ph}")
 
-    lines = gabarit.resize((W, H), Image.Resampling.NEAREST)
-    larr = np.array(lines)
-    larr[larr[:, :, 3] > 20, 3] = 255
-    canvas.alpha_composite(Image.fromarray(larr))
     return canvas.convert("RGB")
 
 
@@ -470,10 +466,6 @@ def main() -> None:
     print("compose cover + back…")
     cover_b = compose_cover(scene1, logo, dw, dh)
     back_e = lift(cover(e_chevalier, bw, bh, bias_y=0.50))
-
-    parch = chroma_magenta(Image.open(ART / "parchemin-overlay-chroma-v2.jpg"))
-    parch_hi = parch.resize((int(round(CM_W / 2.54 * 300)), int(round(CM_W / 2.54 * 300 * 9 / 16))), Image.Resampling.LANCZOS)
-    save_png(parch_hi, OUT / "parchemin.png")
 
     print("masks…")
     masks = interior_masks(gabarit)
