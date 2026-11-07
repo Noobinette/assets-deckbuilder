@@ -2,40 +2,27 @@
 
 Ouvrir [`apercu.html`](apercu.html).
 
-## Corrections d’orientation
+## Impression / résolution
 
-Sur le filet, tournés de **180°** : A (rabat), C (oreilles du couvercle), E (dessous), F (rabats latéraux extérieurs), H (avant). G (côtés intérieurs) et D (dos) restent dans le même sens.
+L’ancienne version était trop petite (~2000 px, ~17 cm à 300 dpi).
 
-Léger éclaircissement sur toutes les faces.
+| Fichier | Pixels | À 300 dpi | À 150 dpi |
+|---|---|---|---|
+| `print/exemple_net.jpg` | 10240 × 9990 | **87 × 85 cm** (filet entier) | 173 × 169 cm |
+| `print/dessus.jpg` (B) | 4070 × 2790 | 34,5 × 23,6 cm | **69 × 47 cm** |
+| `print/dessous.jpg` (E) | 4210 × 2770 | 35,6 × 23,5 cm | **71 × 47 cm** |
+| `sources/print_70x35/*.jpg` | 8268 × 4134 | **70 × 35 cm** | 140 × 70 cm |
 
-## Zones noires à gauche / droite de D et H
+Les JPEG sont tagués **300 dpi**. Pour un dessus d’environ 70 cm de large, imprimer `print/dessus.jpg` à 150 dpi (grand format, distance de lecture normale).
 
-Ce sont des **rabats du carton** (pas des faces visibles). Elles étaient vides par oubli. Remplies de pierre, **sans logo**.
+## Faces
 
-## Deux traitements pour A, D, H
+- **B / dessus** : bataille, logo Pixel of Glory, pastilles **DAVID** (mage) et **JEAN** (chevalier)
+- **E / dos** : victoire du chevalier + parchemin big-box années 90, texte de jaquette
+- Côtés : logo. A / D / H : variante combat ou pierre
 
-Plus de personnages coupés sur les bandes.
+## Texte du parchemin (dos)
 
-| Variante | A (rabat) | D (dos) | H (avant) | Fichier |
-|---|---|---|---|---|
-| **Combat** (défaut) | L’incantation | Le choc | Après le coup | `exemple_net_combat.jpg` |
-| **Pierre** | Pierre + wordmark | Pierre + wordmark | Pierre + wordmark | `exemple_net_pierre.jpg` |
-
-## Dessous (E)
-
-Tournées de 180° sur le filet. Défaut : victoire du chevalier.
-
-| Fichier | Sujet |
-|---|---|
-| `faces/dessous.jpg` | Victoire du chevalier (nécromancien à terre) |
-| `faces/dessous_victoire_necromancien.jpg` | Victoire du nécromancien (chevalier à genoux) |
-| `faces/dessous_lendemain.jpg` | Personne : robe, épée, bouclier |
-| `faces/dessous_vide.jpg` | Cour vide |
-
-Sources 16:9 dans `sources/dessous_variantes/`.
-
-## Calques paysage + parchemin
-
-`sources/paysage_01.jpg` … `05.jpg` et `sources/parchemin.png`. Recadrage 70×35 cm : `sources/print_70x35/`.
+Orthographe corrigée : *configuration **minimale***. Clin d’œil big-box 16-bit (filet or, « Édition Big Box »).
 
 Relancer : `python3 Boite/gabarit/scripts/composer.py`

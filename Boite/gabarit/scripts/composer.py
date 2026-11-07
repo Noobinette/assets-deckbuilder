@@ -6,13 +6,17 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageEnhance, ImageFilter
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
+
+Image.MAX_IMAGE_PIXELS = None
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT = ROOT / "Boite" / "gabarit"
 FACES = OUT / "faces"
 SOURCES = OUT / "sources"
 WEB = OUT / "web"
+PRINT = OUT / "print"
+FONTS = ROOT / "Presentation" / "fonts"
 
 GABARIT = Path(
     "/home/ubuntu/.cursor/projects/agent-repos-assets-deckbuilder/assets/"
@@ -22,10 +26,11 @@ ART = Path("/opt/cursor/artifacts/assets")
 LOGO = ROOT / "DosCartes" / "logos" / "03e_titre_trois_lignesV3.png"
 LOGO_LIGNE = ROOT / "Agarder" / "logos" / "propositions" / "01_or_ligne.jpg"
 
-SCALE = 5
-DPI_PRINT = 150
+# Gabarit 1024 px. SCALE 10 → dessus ~4070 px ≈ 69 cm à 150 dpi / 34,5 cm à 300 dpi.
+SCALE = 10
+DPI_PRINT = 300
 CM_W = 70
-LIFT = 1.10  # léger éclaircissement
+LIFT = 1.10
 
 PANELS = {
     "rabat_couvercle": (303, 16, 720, 145),
@@ -45,7 +50,6 @@ PANELS = {
     "flap_avant_d": (723, 862, 824, 982),
 }
 
-# A, C, E, F, H : 180° sur le filet. G et D inchangés.
 ROT180 = {
     "rabat_couvercle",
     "oreille_gauche",
@@ -57,6 +61,13 @@ ROT180 = {
     "flap_avant_g",
     "flap_avant_d",
 }
+
+GOLD = (232, 196, 106, 255)
+GOLD_DK = (120, 82, 28, 255)
+INK = (62, 38, 18, 255)
+INK_SOFT = (86, 54, 28, 255)
+CREAM = (245, 228, 186, 255)
+PLAQUE = (18, 14, 22, 210)
 
 
 def cover(im: Image.Image, w: int, h: int, bias_y: float = 0.45) -> Image.Image:
@@ -91,10 +102,8 @@ def chroma_magenta(im: Image.Image) -> Image.Image:
 def logo_from_black(path: Path) -> Image.Image:
     im = Image.open(path).convert("RGBA")
     arr = np.array(im)
-    rgb = arr[:, :, :3].astype(np.int16)
-    lum = rgb.sum(axis=2)
-    alpha = np.clip((lum - 18) * 4, 0, 255).astype(np.uint8)
-    arr[:, :, 3] = alpha
+    lum = arr[:, :, :3].astype(np.int16).sum(axis=2)
+    arr[:, :, 3] = np.clip((lum - 18) * 4, 0, 255).astype(np.uint8)
     out = Image.fromarray(arr)
     bbox = out.getbbox()
     return out.crop(bbox) if bbox else out
@@ -104,11 +113,8 @@ def logo_from_white(path: Path) -> Image.Image:
     im = Image.open(path).convert("RGBA")
     arr = np.array(im)
     rgb = arr[:, :, :3].astype(np.float32)
-    dist = np.sqrt(
-        (rgb[:, :, 0] - 255) ** 2 + (rgb[:, :, 1] - 255) ** 2 + (rgb[:, :, 2] - 255) ** 2
-    )
-    alpha = np.clip((dist - 28) / 24, 0, 1)
-    arr[:, :, 3] = (alpha * 255).astype(np.uint8)
+    dist = np.sqrt((rgb[:, :, 0] - 255) ** 2 + (rgb[:, :, 1] - 255) ** 2 + (rgb[:, :, 2] - 255) ** 2)
+    arr[:, :, 3] = (np.clip((dist - 28) / 24, 0, 1) * 255).astype(np.uint8)
     out = Image.fromarray(arr)
     bbox = out.getbbox()
     return out.crop(bbox) if bbox else out
@@ -118,8 +124,7 @@ def fit_logo(logo: Image.Image, box_w: int, box_h: int, margin: float = 0.14) ->
     max_w, max_h = int(box_w * (1 - 2 * margin)), int(box_h * (1 - 2 * margin))
     lw, lh = logo.size
     scale = min(max_w / lw, max_h / lh)
-    nw, nh = max(1, int(lw * scale)), max(1, int(lh * scale))
-    return logo.resize((nw, nh), Image.Resampling.LANCZOS)
+    return logo.resize((max(1, int(lw * scale)), max(1, int(lh * scale))), Image.Resampling.LANCZOS)
 
 
 def paste_centered(dst: Image.Image, src: Image.Image, box: tuple[int, int, int, int]) -> None:
@@ -127,6 +132,132 @@ def paste_centered(dst: Image.Image, src: Image.Image, box: tuple[int, int, int,
     w, h = x1 - x0, y1 - y0
     sw, sh = src.size
     dst.alpha_composite(src, (x0 + (w - sw) // 2, y0 + (h - sh) // 2))
+
+
+def font(name: str, size: int) -> ImageFont.FreeTypeFont:
+    return ImageFont.truetype(str(FONTS / name), size)
+
+
+def text_size(draw: ImageDraw.ImageDraw, text: str, fnt: ImageFont.FreeTypeFont) -> tuple[int, int]:
+    x0, y0, x1, y1 = draw.textbbox((0, 0), text, font=fnt)
+    return x1 - x0, y1 - y0
+
+
+def draw_outlined(draw: ImageDraw.ImageDraw, xy, text, fnt, fill, outline, width: int = 2) -> None:
+    x, y = xy
+    for dx in range(-width, width + 1):
+        for dy in range(-width, width + 1):
+            if dx or dy:
+                draw.text((x + dx, y + dy), text, font=fnt, fill=outline)
+    draw.text((x, y), text, font=fnt, fill=fill)
+
+
+def wrap_words(draw, text: str, fnt, max_w: int) -> list[str]:
+    words = text.split()
+    lines, cur = [], ""
+    for w in words:
+        t = (cur + " " + w).strip()
+        if draw.textlength(t, font=fnt) <= max_w:
+            cur = t
+        else:
+            if cur:
+                lines.append(cur)
+            cur = w
+    if cur:
+        lines.append(cur)
+    return lines
+
+
+def nameplate(text: str, panel_h: int) -> Image.Image:
+    fnt = font("PixelifySans.ttf", max(32, int(panel_h * 0.042)))
+    dummy = Image.new("RGBA", (8, 8))
+    d = ImageDraw.Draw(dummy)
+    tw, th = text_size(d, text, fnt)
+    pad_x, pad_y = int(th * 0.7), int(th * 0.28)
+    w, h = tw + pad_x * 2, th + pad_y * 2
+    im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    dr = ImageDraw.Draw(im)
+    dr.rounded_rectangle((0, 0, w - 1, h - 1), radius=max(4, th // 4), fill=PLAQUE, outline=GOLD, width=max(3, th // 10))
+    x0, y0, _, _ = dr.textbbox((0, 0), text, font=fnt)
+    draw_outlined(dr, (pad_x - x0, pad_y - y0), text, fnt, GOLD, GOLD_DK, width=max(2, th // 12))
+    return im
+
+
+def compose_cover(scene: Image.Image, logo: Image.Image, w: int, h: int) -> Image.Image:
+    """Dessus (B) : bataille + logo + DAVID / JEAN."""
+    tile = lift(cover(scene, w, h, bias_y=0.42))
+    lg = fit_logo(logo, int(w * 0.42), int(h * 0.28), margin=0.0)
+    tile.alpha_composite(lg, ((w - lg.size[0]) // 2, int(h * 0.035)))
+    david = nameplate("DAVID", h)
+    jean = nameplate("JEAN", h)
+    tile.alpha_composite(david, (int(w * 0.22) - david.size[0] // 2, int(h * 0.82)))
+    tile.alpha_composite(jean, (int(w * 0.80) - jean.size[0] // 2, int(h * 0.81)))
+    return tile
+
+
+def compose_back(scene: Image.Image, parch: Image.Image, w: int, h: int) -> Image.Image:
+    """Dos / dessous (E) : illustration + parchemin 90s + texte."""
+    tile = lift(cover(scene, w, h, bias_y=0.50))
+    pw, ph = int(w * 0.93), int(h * 0.86)
+    panel = parch.resize((pw, ph), Image.Resampling.LANCZOS)
+    # intérieur du cadre : assez loin des enrouleurs et des coins or
+    ix0, iy0 = int(pw * 0.20), int(ph * 0.28)
+    ix1, iy1 = int(pw * 0.80), int(ph * 0.76)
+    inner_w = ix1 - ix0
+    dr = ImageDraw.Draw(panel)
+    s = max(1.0, pw / 1100)
+    f_head = font("Cinzel.ttf", max(16, int(22 * s)))
+    f_stat = font("Cinzel.ttf", max(16, int(22 * s)))
+    f_body = font("SourceSerif4.ttf", max(16, int(20 * s)))
+    f_feat = font("Cinzel.ttf", max(17, int(22 * s)))
+    f_tiny = font("PixelifySans.ttf", max(12, int(14 * s)))
+
+    y = iy0
+    line1 = "CONFIGURATION MINIMALE   ·   2 joueurs"
+    line2 = "DURÉE   ·   30 à 45 minutes"
+    w1, h1 = text_size(dr, line1, f_head)
+    w2, h2 = text_size(dr, line2, f_stat)
+    dr.text((ix0 + (inner_w - w1) // 2, y), line1, font=f_head, fill=GOLD_DK)
+    y += h1 + int(4 * s)
+    dr.text((ix0 + (inner_w - w2) // 2, y), line2, font=f_stat, fill=INK)
+    y += h2 + int(10 * s)
+    dr.line((ix0 + int(8 * s), y, ix1 - int(8 * s), y), fill=GOLD_DK, width=max(1, int(s)))
+    y += int(12 * s)
+
+    paragraphs = [
+        "Affrontez votre adversaire dans un duel de cartes fantasy intense et hautement stratégique ! Construisez votre deck, élaborez vos plans de bataille et menez vos troupes à l'assaut des citadelles ennemies.",
+        "Ici, pas de mana : chaque carte peut être jouée, mais tout a un coût. Saurez-vous gérer votre or sans en payer le prix fort ? Utilisez vos plans pour dicter l'initiative, déploiez des créatures mythiques et gérez la dette pour épuiser le deck de votre rival avant qu'il ne détruise vos terres.",
+        "Le combat pour la gloire commence maintenant !",
+    ]
+    lh = text_size(dr, "Ag", f_body)[1] + int(5 * s)
+    for i, para in enumerate(paragraphs):
+        lines = wrap_words(dr, para, f_body, inner_w)
+        for line in lines:
+            if y + lh > iy1 - int(52 * s):
+                break
+            color = GOLD_DK if i == 2 else INK
+            dr.text((ix0, y), line, font=f_body, fill=color)
+            y += lh
+        y += int(8 * s)
+
+    feat = "PLUS DE 650 CARTES DIFFÉRENTES"
+    fw, fh = text_size(dr, feat, f_feat)
+    fy = min(iy1 - fh - int(22 * s), y + int(6 * s))
+    bx0 = ix0 + (inner_w - fw) // 2 - int(14 * s)
+    by0 = fy - int(5 * s)
+    dr.rounded_rectangle(
+        (bx0, by0, bx0 + fw + int(28 * s), by0 + fh + int(12 * s)),
+        radius=int(5 * s),
+        outline=GOLD_DK,
+        width=max(2, int(s)),
+    )
+    dr.text((ix0 + (inner_w - fw) // 2, fy), feat, font=f_feat, fill=GOLD_DK)
+    easter = "ÉDITION BIG BOX  ·  16-BIT FANTASY"
+    ew, _ = text_size(dr, easter, f_tiny)
+    dr.text((ix0 + (inner_w - ew) // 2, by0 + fh + int(14 * s)), easter, font=f_tiny, fill=INK_SOFT)
+
+    tile.alpha_composite(panel, ((w - pw) // 2, (h - ph) // 2))
+    return tile
 
 
 def bande_logo(bg: Image.Image, logo_ligne: Image.Image, w: int, h: int, bias_y: float = 0.5) -> Image.Image:
@@ -159,7 +290,6 @@ def interior_masks(gabarit: Image.Image) -> list[tuple[tuple[int, int, int, int]
                 ext[ny, nx] = True
                 stack.append((ny, nx))
     interior = ~ext & ~walls2
-
     vis = np.zeros_like(interior)
     ys, xs = np.where(interior)
     out = []
@@ -193,8 +323,7 @@ def interior_masks(gabarit: Image.Image) -> list[tuple[tuple[int, int, int, int]
 
 def which_panel(bbox: tuple[int, int, int, int]) -> str | None:
     x0b, y0b, x1b, y1b = bbox
-    ww, hh = x1b - x0b, y1b - y0b
-    if ww > 450 or hh > 400:
+    if (x1b - x0b) > 450 or (y1b - y0b) > 400:
         return None
     cx = (x0b + x1b) / 2
     cy = (y0b + y1b) / 2
@@ -234,6 +363,7 @@ def paint_net(gabarit: Image.Image, masks, arts: dict, stone, logo, logo_ligne) 
     gw, gh = gabarit.size
     W, H = gw * SCALE, gh * SCALE
     canvas = Image.new("RGBA", (W, H), (10, 10, 14, 255))
+    odd = 21 if SCALE >= 8 else 11
     for bbox, mask in masks:
         name = which_panel(bbox)
         if not name:
@@ -243,9 +373,13 @@ def paint_net(gabarit: Image.Image, masks, arts: dict, stone, logo, logo_ligne) 
         sx0, sy0 = x0 * SCALE, y0 * SCALE
 
         if name == "dessus":
-            tile = lift(cover(arts["dessus"], pw, ph, bias_y=0.42))
+            tile = arts["dessus"]
+            if tile.size != (pw, ph):
+                tile = tile.resize((pw, ph), Image.Resampling.LANCZOS)
         elif name == "dessous":
-            tile = lift(cover(arts["dessous"], pw, ph, bias_y=0.50))
+            tile = arts["dessous"]
+            if tile.size != (pw, ph):
+                tile = tile.resize((pw, ph), Image.Resampling.LANCZOS)
         elif name == "rabat_couvercle":
             tile = arts["rabat"](pw, ph)
         elif name == "dos":
@@ -271,17 +405,19 @@ def paint_net(gabarit: Image.Image, masks, arts: dict, stone, logo, logo_ligne) 
 
         if name in ROT180:
             tile = tile.rotate(180)
+        if tile.size != (pw, ph):
+            tile = tile.resize((pw, ph), Image.Resampling.LANCZOS)
 
-        m = Image.fromarray(mask).resize((W, H), Image.Resampling.NEAREST)
-        m = m.crop((sx0, sy0, sx0 + pw, sy0 + ph)).convert("L").filter(ImageFilter.MaxFilter(11))
-        layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        layer.paste(tile, (sx0, sy0), tile)
-        la = np.array(layer)
-        ma = np.zeros((H, W), dtype=np.uint8)
-        ma[sy0 : sy0 + ph, sx0 : sx0 + pw] = np.array(m)
-        la[:, :, 3] = (la[:, :, 3].astype(np.float32) * (ma.astype(np.float32) / 255.0)).astype(np.uint8)
-        canvas.alpha_composite(Image.fromarray(la))
-        print("  painted", name, bbox)
+        mlocal = (
+            Image.fromarray(mask)
+            .crop((x0, y0, x1 + 1, y1 + 1))
+            .resize((pw, ph), Image.Resampling.NEAREST)
+            .filter(ImageFilter.MaxFilter(odd))
+        )
+        tarr = np.array(tile.convert("RGBA"))
+        tarr[:, :, 3] = (tarr[:, :, 3].astype(np.float32) * np.array(mlocal).astype(np.float32) / 255.0).astype(np.uint8)
+        canvas.alpha_composite(Image.fromarray(tarr), (sx0, sy0))
+        print("  painted", name, bbox, f"{pw}x{ph}")
 
     lines = gabarit.resize((W, H), Image.Resampling.NEAREST)
     larr = np.array(lines)
@@ -290,10 +426,10 @@ def paint_net(gabarit: Image.Image, masks, arts: dict, stone, logo, logo_ligne) 
     return canvas.convert("RGB")
 
 
-def mockup(scene, dessous, front, stone, logo, logo_ligne) -> Image.Image:
+def mockup(top: Image.Image, bot: Image.Image, front: Image.Image, stone, logo) -> Image.Image:
     pad, tw = 36, 980
-    top = lift(cover(scene, tw, int(tw * 280 / 410), bias_y=0.42))
-    bot = lift(cover(dessous, tw, int(tw * 278 / 422), bias_y=0.50))
+    top = top.resize((tw, int(tw * top.size[1] / top.size[0])), Image.Resampling.LANCZOS)
+    bot = bot.resize((tw, int(tw * bot.size[1] / bot.size[0])), Image.Resampling.LANCZOS)
     front_h = max(88, int(tw * 128 / 416))
     front = front.resize((tw, front_h), Image.Resampling.LANCZOS)
     sw = int(tw * 263 / 410)
@@ -311,7 +447,7 @@ def mockup(scene, dessous, front, stone, logo, logo_ligne) -> Image.Image:
 
 
 def main() -> None:
-    for d in (OUT, FACES, SOURCES, WEB, SOURCES / "dessous_variantes", WEB / "dessous", WEB / "bandes"):
+    for d in (OUT, FACES, SOURCES, WEB, PRINT, SOURCES / "dessous_variantes", WEB / "dessous", WEB / "bandes"):
         d.mkdir(parents=True, exist_ok=True)
 
     gabarit = Image.open(GABARIT).convert("RGBA")
@@ -324,42 +460,38 @@ def main() -> None:
     bande_magie = Image.open(ART / "bande-magie.jpg")
     bande_choc = Image.open(ART / "bande-choc.jpg")
     bande_apres = Image.open(ART / "bande-apres.jpg")
+    parch_90s = chroma_magenta(Image.open(ART / "parchemin-90s-box.jpg"))
 
     logo = logo_from_black(LOGO)
     logo_ligne = logo_from_white(LOGO_LIGNE)
 
-    print_w = int(round(CM_W / 2.54 * DPI_PRINT))
-    print_h = int(round(print_w * 9 / 16))
-
-    def export_scene(im: Image.Image, name: str, folder: Path) -> None:
-        save_jpeg(im.resize((print_w, print_h), Image.Resampling.LANCZOS), folder / f"{name}.jpg")
-        save_jpeg(im.resize((1920, 1080), Image.Resampling.LANCZOS), WEB / "dessous" / f"{name}.jpg" if folder == SOURCES / "dessous_variantes" else WEB / f"{name}.jpg", quality=86)
-
-    for key, im in (
-        ("vide", vide),
-        ("victoire_chevalier", e_chevalier),
-        ("victoire_necromancien", e_necro),
-        ("lendemain", e_lendemain),
-    ):
-        save_jpeg(im.resize((print_w, print_h), Image.Resampling.LANCZOS), SOURCES / "dessous_variantes" / f"{key}.jpg")
-        save_jpeg(im.resize((1920, 1080), Image.Resampling.LANCZOS), WEB / "dessous" / f"{key}.jpg", quality=86)
-
-    for key, im in (("magie", bande_magie), ("choc", bande_choc), ("apres", bande_apres)):
-        save_jpeg(im.resize((print_w, print_h), Image.Resampling.LANCZOS), SOURCES / f"bande_{key}.jpg")
-        save_jpeg(im.resize((1920, 1080), Image.Resampling.LANCZOS), WEB / "bandes" / f"{key}.jpg", quality=86)
-
-    save_jpeg(vide.resize((print_w, print_h), Image.Resampling.LANCZOS), SOURCES / "dessous_chateau.jpg")
-
-    # faces vues à l'endroit
     dx0, dy0, dx1, dy1 = PANELS["dessus"]
-    save_jpeg(lift(cover(scene1, (dx1 - dx0) * SCALE, (dy1 - dy0) * SCALE, 0.42)), FACES / "dessus.jpg")
     bx0, by0, bx1, by1 = PANELS["dessous"]
+    dw, dh = (dx1 - dx0) * SCALE, (dy1 - dy0) * SCALE
     bw, bh = (bx1 - bx0) * SCALE, (by1 - by0) * SCALE
-    save_jpeg(lift(cover(e_chevalier, bw, bh, 0.50)), FACES / "dessous.jpg")
-    save_jpeg(lift(cover(e_chevalier, bw, bh, 0.50)), FACES / "dessous_victoire_chevalier.jpg")
-    save_jpeg(lift(cover(e_necro, bw, bh, 0.50)), FACES / "dessous_victoire_necromancien.jpg")
-    save_jpeg(lift(cover(e_lendemain, bw, bh, 0.50)), FACES / "dessous_lendemain.jpg")
-    save_jpeg(lift(cover(vide, bw, bh, 0.55)), FACES / "dessous_vide.jpg")
+
+    print("compose cover + back…")
+    cover_b = compose_cover(scene1, logo, dw, dh)
+    back_e = compose_back(e_chevalier, parch_90s, bw, bh)
+    save_jpeg(cover_b, FACES / "dessus.jpg")
+    save_jpeg(back_e, FACES / "dessous.jpg")
+    save_jpeg(cover_b, PRINT / "dessus.jpg")
+    save_jpeg(back_e, PRINT / "dessous.jpg")
+    save_png(parch_90s.resize((1920, 1080), Image.Resampling.LANCZOS), SOURCES / "parchemin_90s.png")
+    save_png(parch_90s.resize((1920, 1080), Image.Resampling.LANCZOS), WEB / "parchemin_90s.png")
+
+    # 70×35 cm à 300 dpi pour les calques paysage
+    print_w = int(round(CM_W / 2.54 * 300))
+    print_h_21 = print_w // 2
+    crop_dir = SOURCES / "print_70x35"
+    for i in range(1, 6):
+        src_path = SOURCES / f"paysage_0{i}.jpg"
+        if not src_path.exists():
+            continue
+        src = Image.open(src_path)
+        big = src.resize((print_w, int(print_w * src.size[1] / src.size[0])), Image.Resampling.LANCZOS)
+        y = max(0, (big.size[1] - print_h_21) // 2)
+        save_jpeg(big.crop((0, y, print_w, y + print_h_21)), crop_dir / f"paysage_0{i}_70x35.jpg", dpi=300)
 
     ax0, ay0, ax1, ay1 = PANELS["avant"]
     aw, ah = (ax1 - ax0) * SCALE, (ay1 - ay0) * SCALE
@@ -377,24 +509,19 @@ def main() -> None:
     paste_centered(cote_hi, fit_logo(logo, 1600, 840, 0.08), (0, 0, 1600, 840))
     save_jpeg(cote_hi, FACES / "cote_debout.jpg")
 
-    dxw, dxh = (PANELS["dos"][2] - PANELS["dos"][0]) * SCALE, (PANELS["dos"][3] - PANELS["dos"][1]) * SCALE
-    save_jpeg(pierre_logo(stone, logo_ligne, dxw, dxh), FACES / "bande_pierre.jpg")
-    save_jpeg(bande_logo(bande_magie, logo_ligne, dxw, dxh, 0.45), FACES / "bande_magie.jpg")
-    save_jpeg(bande_logo(bande_choc, logo_ligne, dxw, dxh, 0.48), FACES / "bande_choc.jpg")
-
     print("masks…")
     masks = interior_masks(gabarit)
 
     arts_pierre = {
-        "dessus": scene1,
-        "dessous": e_chevalier,
+        "dessus": cover_b,
+        "dessous": back_e,
         "rabat": lambda w, h: pierre_logo(stone, logo_ligne, w, h),
         "dos": lambda w, h: pierre_logo(stone, logo_ligne, w, h),
         "avant": lambda w, h: pierre_logo(stone, logo_ligne, w, h),
     }
     arts_combat = {
-        "dessus": scene1,
-        "dessous": e_chevalier,
+        "dessus": cover_b,
+        "dessous": back_e,
         "rabat": lambda w, h: bande_logo(bande_magie, logo_ligne, w, h, 0.42),
         "dos": lambda w, h: bande_logo(bande_choc, logo_ligne, w, h, 0.48),
         "avant": lambda w, h: bande_logo(bande_apres, logo_ligne, w, h, 0.62),
@@ -402,25 +529,30 @@ def main() -> None:
 
     print("net pierre…")
     net_p = paint_net(gabarit, masks, arts_pierre, stone, logo, logo_ligne)
-    save_jpeg(net_p, OUT / "exemple_net_pierre.jpg", quality=88)
-    save_jpeg(net_p.resize((1280, 1248), Image.Resampling.LANCZOS), WEB / "exemple_net_pierre.jpg", quality=85)
+    save_jpeg(net_p, OUT / "exemple_net_pierre.jpg", quality=86)
+    save_jpeg(net_p.resize((1280, 1248), Image.Resampling.LANCZOS), WEB / "exemple_net_pierre.jpg", quality=85, dpi=72)
 
     print("net combat…")
     net_c = paint_net(gabarit, masks, arts_combat, stone, logo, logo_ligne)
-    save_jpeg(net_c, OUT / "exemple_net_combat.jpg", quality=88)
-    save_jpeg(net_c, OUT / "exemple_net.jpg", quality=88)
-    save_jpeg(net_c.resize((1280, 1248), Image.Resampling.LANCZOS), WEB / "exemple_net_combat.jpg", quality=85)
-    save_jpeg(net_c.resize((1280, 1248), Image.Resampling.LANCZOS), WEB / "exemple_net.jpg", quality=85)
+    save_jpeg(net_c, OUT / "exemple_net_combat.jpg", quality=86)
+    save_jpeg(net_c, OUT / "exemple_net.jpg", quality=86)
+    save_jpeg(net_c, PRINT / "exemple_net.jpg", quality=86)
+    save_jpeg(net_c.resize((1280, 1248), Image.Resampling.LANCZOS), WEB / "exemple_net_combat.jpg", quality=85, dpi=72)
+    save_jpeg(net_c.resize((1280, 1248), Image.Resampling.LANCZOS), WEB / "exemple_net.jpg", quality=85, dpi=72)
 
-    mock_c = mockup(scene1, e_chevalier, face_avant_combat, stone, logo, logo_ligne)
-    mock_p = mockup(scene1, e_chevalier, face_avant_pierre, stone, logo, logo_ligne)
+    mock_c = mockup(cover_b, back_e, face_avant_combat, stone, logo)
+    mock_p = mockup(cover_b, back_e, face_avant_pierre, stone, logo)
     save_jpeg(mock_c, OUT / "exemple_mockup.jpg", quality=88)
     save_jpeg(mock_p, OUT / "exemple_mockup_pierre.jpg", quality=88)
-    save_jpeg(mock_c.resize((1200, int(1200 * mock_c.size[1] / mock_c.size[0])), Image.Resampling.LANCZOS), WEB / "exemple_mockup.jpg", quality=85)
-    save_jpeg(mock_p.resize((1200, int(1200 * mock_p.size[1] / mock_p.size[0])), Image.Resampling.LANCZOS), WEB / "exemple_mockup_pierre.jpg", quality=85)
+    save_jpeg(mock_c.resize((1200, int(1200 * mock_c.size[1] / mock_c.size[0])), Image.Resampling.LANCZOS), WEB / "exemple_mockup.jpg", quality=85, dpi=72)
+    save_jpeg(mock_p.resize((1200, int(1200 * mock_p.size[1] / mock_p.size[0])), Image.Resampling.LANCZOS), WEB / "exemple_mockup_pierre.jpg", quality=85, dpi=72)
+
+    save_jpeg(cover_b.resize((960, int(960 * dh / dw)), Image.Resampling.LANCZOS), WEB / "dessus.jpg", quality=85, dpi=72)
+    save_jpeg(back_e.resize((960, int(960 * bh / bw)), Image.Resampling.LANCZOS), WEB / "dessous.jpg", quality=85, dpi=72)
 
     gabarit.convert("RGBA").save(OUT / "gabarit_source.png")
     print("done", OUT)
+    print("dessus", cover_b.size, "dessous", back_e.size, "net", net_c.size)
 
 
 if __name__ == "__main__":
