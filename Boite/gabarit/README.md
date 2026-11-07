@@ -1,51 +1,41 @@
 # Boîte — gabarit paysage
 
-Exemple d’habillage du gabarit (filet de découpe) : **dessus** et **dessous** différents, **logo Pixel of Glory** sur les côtés. Les 5 paysages et le parchemin restent des calques séparés, à superposer.
-
 Ouvrir [`apercu.html`](apercu.html).
 
-## Exemple sur le gabarit
+## Corrections d’orientation
 
-| Fichier | Rôle |
+Sur le filet, tournés de **180°** : A (rabat), C (oreilles du couvercle), E (dessous), F (rabats latéraux extérieurs), H (avant). G (côtés intérieurs) et D (dos) restent dans le même sens.
+
+Léger éclaircissement sur toutes les faces.
+
+## Zones noires à gauche / droite de D et H
+
+Ce sont des **rabats du carton** (pas des faces visibles). Elles étaient vides par oubli. Remplies de pierre, **sans logo**.
+
+## Deux traitements pour A, D, H
+
+Plus de personnages coupés sur les bandes.
+
+| Variante | A (rabat) | D (dos) | H (avant) | Fichier |
+|---|---|---|---|---|
+| **Combat** (défaut) | L’incantation | Le choc | Après le coup | `exemple_net_combat.jpg` |
+| **Pierre** | Pierre + wordmark | Pierre + wordmark | Pierre + wordmark | `exemple_net_pierre.jpg` |
+
+## Dessous (E)
+
+Tournées de 180° sur le filet. Défaut : victoire du chevalier.
+
+| Fichier | Sujet |
 |---|---|
-| `exemple_net.jpg` | Filet complet, visuels + traits de découpe |
-| `exemple_mockup.jpg` | Faces vues une fois la boîte montée |
-| `gabarit_source.png` | Gabarit d’origine (traits seuls) |
+| `faces/dessous.jpg` | Victoire du chevalier (nécromancien à terre) |
+| `faces/dessous_victoire_necromancien.jpg` | Victoire du nécromancien (chevalier à genoux) |
+| `faces/dessous_lendemain.jpg` | Personne : robe, épée, bouclier |
+| `faces/dessous_vide.jpg` | Cour vide |
 
-### Faces
+Sources 16:9 dans `sources/dessous_variantes/`.
 
-| Face | Image | Contenu |
-|---|---|---|
-| **Dessus** (couvercle) | `faces/dessus.jpg` | Bataille nécromancien / chevalier, **sans logo** |
-| **Dessous** (fond) | `faces/dessous.jpg` | Même cour, château vide, **sans logo** |
-| **Côtés** | `faces/cote_gauche.jpg`, `cote_droit.jpg` | Pierre + logo empilé (orientation filet) |
-| **Côté débout** | `faces/cote_debout.jpg` | Même logo, vu une fois la boîte posée |
-| **Avant / rabat** | `faces/avant.jpg` | Bande pierre + wordmark or |
+## Calques paysage + parchemin
 
-Les côtés du filet ont le logo tourné à 90° : une fois le carton plié, les lettres se lisent à l’endroit.
-
-## 5 paysages + parchemin (calques)
-
-Style de l’illustration fournie, **sans titre**, format paysage.
-
-| Fichier | Usage |
-|---|---|
-| `sources/paysage_01.jpg` … `05.jpg` | 70 cm de large, 16:9, 150 dpi (~70 × 39,4 cm) |
-| `sources/parchemin.png` | Même taille, **fond transparent**, zone d’écriture vide |
-| `sources/print_70x35/` | Recadrage 2:1, 70 × 35 cm à 150 dpi |
-
-Superposition : le paysage en dessous, le PNG du parchemin au-dessus, le texte par-dessus le parchemin.
-
-`web/` contient des copies 1920×1080 pour l’aperçu.
-
-## Variantes
-
-1. Composition proche de l’originale  
-2. Plus de château, plus de squelettes  
-3. Cape du chevalier au vent, vortex plus large  
-4. Colonne au premier plan  
-5. Cour plus ouverte, portail centré  
-
-Le dessous de boîte (`sources/dessous_chateau.jpg`) reprend le lieu **sans** les personnages.
+`sources/paysage_01.jpg` … `05.jpg` et `sources/parchemin.png`. Recadrage 70×35 cm : `sources/print_70x35/`.
 
 Relancer : `python3 Boite/gabarit/scripts/composer.py`

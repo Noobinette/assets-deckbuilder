@@ -6,7 +6,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageFilter, ImageEnhance
+from PIL import Image, ImageEnhance, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT = ROOT / "Boite" / "gabarit"
@@ -22,23 +22,40 @@ ART = Path("/opt/cursor/artifacts/assets")
 LOGO = ROOT / "DosCartes" / "logos" / "03e_titre_trois_lignesV3.png"
 LOGO_LIGNE = ROOT / "Agarder" / "logos" / "propositions" / "01_or_ligne.jpg"
 
-SCALE = 5  # gabarit 1024×999 → 5120×4995
+SCALE = 5
 DPI_PRINT = 150
 CM_W = 70
+LIFT = 1.10  # léger éclaircissement
 
-# Panneaux utiles (coords gabarit 1024×999), d'après flood-fill.
 PANELS = {
     "rabat_couvercle": (303, 16, 720, 145),
     "dessus": (308, 150, 715, 429),
     "oreille_gauche": (176, 160, 303, 418),
     "oreille_droite": (720, 160, 847, 418),
     "dos": (303, 433, 720, 569),
+    "flap_dos_g": (197, 441, 299, 562),
+    "flap_dos_d": (724, 441, 826, 562),
     "dessous": (301, 574, 722, 851),
     "cote_int_g": (160, 581, 296, 843),
     "cote_int_d": (727, 581, 863, 843),
     "cote_ext_g": (16, 583, 148, 841),
     "cote_ext_d": (875, 583, 1007, 841),
     "avant": (304, 855, 719, 982),
+    "flap_avant_g": (199, 862, 301, 982),
+    "flap_avant_d": (723, 862, 824, 982),
+}
+
+# A, C, E, F, H : 180° sur le filet. G et D inchangés.
+ROT180 = {
+    "rabat_couvercle",
+    "oreille_gauche",
+    "oreille_droite",
+    "dessous",
+    "cote_ext_g",
+    "cote_ext_d",
+    "avant",
+    "flap_avant_g",
+    "flap_avant_d",
 }
 
 
@@ -51,6 +68,10 @@ def cover(im: Image.Image, w: int, h: int, bias_y: float = 0.45) -> Image.Image:
     y = int(round((nh - h) * bias_y))
     y = max(0, min(nh - h, y))
     return im.crop((x, y, x + w, y + h)).convert("RGBA")
+
+
+def lift(im: Image.Image, factor: float = LIFT) -> Image.Image:
+    return ImageEnhance.Brightness(im.convert("RGBA")).enhance(factor)
 
 
 def chroma_magenta(im: Image.Image) -> Image.Image:
@@ -105,17 +126,23 @@ def paste_centered(dst: Image.Image, src: Image.Image, box: tuple[int, int, int,
     x0, y0, x1, y1 = box
     w, h = x1 - x0, y1 - y0
     sw, sh = src.size
-    x = x0 + (w - sw) // 2
-    y = y0 + (h - sh) // 2
-    dst.alpha_composite(src, (x, y))
+    dst.alpha_composite(src, (x0 + (w - sw) // 2, y0 + (h - sh) // 2))
+
+
+def bande_logo(bg: Image.Image, logo_ligne: Image.Image, w: int, h: int, bias_y: float = 0.5) -> Image.Image:
+    tile = lift(cover(bg, w, h, bias_y=bias_y))
+    paste_centered(tile, fit_logo(logo_ligne, w, h, margin=0.12), (0, 0, w, h))
+    return tile
+
+
+def pierre_logo(stone: Image.Image, logo_ligne: Image.Image, w: int, h: int) -> Image.Image:
+    return bande_logo(stone.rotate(90, expand=True), logo_ligne, w, h, 0.5)
 
 
 def interior_masks(gabarit: Image.Image) -> list[tuple[tuple[int, int, int, int], np.ndarray]]:
-    """Masques des zones intérieures (panneaux) du gabarit source."""
     arr = np.array(gabarit.convert("RGBA"))
     walls = arr[:, :, 3] > 20
     h, w = walls.shape
-    # légère dilatation pour fermer les traits
     walls2 = walls.copy()
     walls2[1:, :] |= walls[:-1, :]
     walls2[:-1, :] |= walls[1:, :]
@@ -147,14 +174,8 @@ def interior_masks(gabarit: Image.Image) -> list[tuple[tuple[int, int, int, int]
         while q:
             cy, cx = q.pop()
             pix.append((cy, cx))
-            if cx < minx:
-                minx = cx
-            if cx > maxx:
-                maxx = cx
-            if cy < miny:
-                miny = cy
-            if cy > maxy:
-                maxy = cy
+            minx, maxx = min(minx, cx), max(maxx, cx)
+            miny, maxy = min(miny, cy), max(maxy, cy)
             for ny, nx in ((cy - 1, cx), (cy + 1, cx), (cy, cx - 1), (cy, cx + 1)):
                 if 0 <= ny < h and 0 <= nx < w and interior[ny, nx] and not vis[ny, nx]:
                     vis[ny, nx] = True
@@ -181,7 +202,7 @@ def which_panel(bbox: tuple[int, int, int, int]) -> str | None:
         return "rabat_couvercle"
     best, best_d = None, 1e9
     for name, (x0, y0, x1, y1) in PANELS.items():
-        if x0 - 36 <= cx <= x1 + 36 and y0 - 36 <= cy <= y1 + 36:
+        if x0 - 20 <= cx <= x1 + 20 and y0 - 20 <= cy <= y1 + 20:
             d = abs(cx - (x0 + x1) / 2) + abs(cy - (y0 + y1) / 2)
             if d < best_d:
                 best, best_d = name, d
@@ -189,16 +210,10 @@ def which_panel(bbox: tuple[int, int, int, int]) -> str | None:
 
 
 def side_panel(stone: Image.Image, logo: Image.Image, w: int, h: int, rotate: str) -> Image.Image:
-    """Panneau latéral : pierre + logo, rotation pour lecture une fois plié."""
-    base = cover(stone, w, h, bias_y=0.5)
-    # logo à l'endroit dans l'espace « debout » (haut du carton = bord extérieur)
-    standing_w, standing_h = h, w  # après pliage : hauteur boîte × profondeur
-    # On dessine d'abord comme si le panneau était vu debout, puis on rabat dans le filet.
-    upright = cover(stone, standing_w, standing_h, bias_y=0.5)
-    lg = fit_logo(logo, standing_w, standing_h, margin=0.08)
-    paste_centered(upright, lg, (0, 0, standing_w, standing_h))
+    standing_w, standing_h = h, w
+    upright = lift(cover(stone, standing_w, standing_h, bias_y=0.5))
+    paste_centered(upright, fit_logo(logo, standing_w, standing_h, margin=0.08), (0, 0, standing_w, standing_h))
     if rotate == "left":
-        # bord extérieur à gauche dans le filet → haut du logo vers la gauche
         return upright.rotate(90, expand=True).resize((w, h), Image.Resampling.LANCZOS)
     if rotate == "right":
         return upright.rotate(-90, expand=True).resize((w, h), Image.Resampling.LANCZOS)
@@ -207,8 +222,7 @@ def side_panel(stone: Image.Image, logo: Image.Image, w: int, h: int, rotate: st
 
 def save_jpeg(im: Image.Image, path: Path, quality: int = 90, dpi: int = DPI_PRINT) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    rgb = im.convert("RGB")
-    rgb.save(path, "JPEG", quality=quality, subsampling=0, optimize=True, dpi=(dpi, dpi))
+    im.convert("RGB").save(path, "JPEG", quality=quality, subsampling=0, optimize=True, dpi=(dpi, dpi))
 
 
 def save_png(im: Image.Image, path: Path, dpi: int = DPI_PRINT) -> None:
@@ -216,93 +230,10 @@ def save_png(im: Image.Image, path: Path, dpi: int = DPI_PRINT) -> None:
     im.save(path, "PNG", optimize=True, dpi=(dpi, dpi))
 
 
-def main() -> None:
-    for d in (OUT, FACES, SOURCES, WEB):
-        d.mkdir(parents=True, exist_ok=True)
-
-    gabarit = Image.open(GABARIT).convert("RGBA")
+def paint_net(gabarit: Image.Image, masks, arts: dict, stone, logo, logo_ligne) -> Image.Image:
     gw, gh = gabarit.size
-
-    scene1 = Image.open(ART / "necromancer-knight-landscape-01.jpg")
-    scene2 = Image.open(ART / "necromancer-knight-landscape-02.jpg")
-    scene3 = Image.open(ART / "necromancer-knight-landscape-03.jpg")
-    scene4 = Image.open(ART / "necromancer-knight-landscape-04.jpg")
-    scene5 = Image.open(ART / "necromancer-knight-landscape-05.jpg")
-    dessous_src = Image.open(ART / "box-bottom-castle-night.jpg")
-    stone = Image.open(ART / "box-side-stone.jpg")
-    parch_raw = Image.open(ART / "parchemin-overlay-chroma-v2.jpg")
-
-    scenes = [scene1, scene2, scene3, scene4, scene5]
-
-    # --- sources paysage 70 cm de large, 16:9, 150 dpi ---
-    print_w = int(round(CM_W / 2.54 * DPI_PRINT))
-    print_h = int(round(print_w * 9 / 16))
-    for i, sc in enumerate(scenes, 1):
-        out = sc.resize((print_w, print_h), Image.Resampling.LANCZOS)
-        save_jpeg(out, SOURCES / f"paysage_0{i}.jpg")
-        save_jpeg(out.resize((1920, 1080), Image.Resampling.LANCZOS), WEB / f"paysage_0{i}.jpg", quality=86)
-
-    parch = chroma_magenta(parch_raw)
-    parch_print = parch.resize((print_w, print_h), Image.Resampling.LANCZOS)
-    save_png(parch_print, SOURCES / "parchemin.png")
-    save_png(parch.resize((1920, 1080), Image.Resampling.LANCZOS), WEB / "parchemin.png")
-
-    # overlays aperçu
-    for i in range(1, 6):
-        base = Image.open(WEB / f"paysage_0{i}.jpg").convert("RGBA")
-        ov = Image.open(WEB / "parchemin.png")
-        comp = Image.alpha_composite(base, ov)
-        save_jpeg(comp, WEB / f"overlay_0{i}.jpg", quality=86)
-
-    save_jpeg(dessous_src.resize((print_w, print_h), Image.Resampling.LANCZOS), SOURCES / "dessous_chateau.jpg")
-    save_jpeg(stone, SOURCES / "cote_pierre.jpg")
-
-    logo = logo_from_black(LOGO)
-    logo_ligne = logo_from_white(LOGO_LIGNE)
-
-    # --- faces détourées ---
-    dx0, dy0, dx1, dy1 = PANELS["dessus"]
-    face_dessus = cover(scene1, (dx1 - dx0) * SCALE, (dy1 - dy0) * SCALE, bias_y=0.42)
-    save_jpeg(face_dessus, FACES / "dessus.jpg")
-
-    bx0, by0, bx1, by1 = PANELS["dessous"]
-    face_dessous = cover(dessous_src, (bx1 - bx0) * SCALE, (by1 - by0) * SCALE, bias_y=0.55)
-    save_jpeg(face_dessous, FACES / "dessous.jpg")
-
-    cx0, cy0, cx1, cy1 = PANELS["cote_int_g"]
-    cw, ch = (cx1 - cx0) * SCALE, (cy1 - cy0) * SCALE
-    face_g = side_panel(stone, logo, cw, ch, "left")
-    face_d = side_panel(stone, logo, cw, ch, "right")
-    save_jpeg(face_g, FACES / "cote_gauche.jpg")
-    save_jpeg(face_d, FACES / "cote_droit.jpg")
-
-    ax0, ay0, ax1, ay1 = PANELS["avant"]
-    aw, ah = (ax1 - ax0) * SCALE, (ay1 - ay0) * SCALE
-    face_avant = cover(stone.rotate(90, expand=True), aw, ah, bias_y=0.5)
-    lg_h = fit_logo(logo_ligne, aw, ah, margin=0.10)
-    paste_centered(face_avant, lg_h, (0, 0, aw, ah))
-    save_jpeg(face_avant, FACES / "avant.jpg")
-
-    # --- filet haute résol ---
     W, H = gw * SCALE, gh * SCALE
-    canvas = Image.new("RGBA", (W, H), (8, 8, 12, 255))
-    print("masks…")
-    masks = interior_masks(gabarit)
-
-    art_for = {
-        "dessus": scene1,
-        "dessous": dessous_src,
-        "rabat_couvercle": scene1,
-        "dos": scene1,
-        "avant": None,
-        "oreille_gauche": None,
-        "oreille_droite": None,
-        "cote_int_g": None,
-        "cote_int_d": None,
-        "cote_ext_g": None,
-        "cote_ext_d": None,
-    }
-
+    canvas = Image.new("RGBA", (W, H), (10, 10, 14, 255))
     for bbox, mask in masks:
         name = which_panel(bbox)
         if not name:
@@ -312,74 +243,63 @@ def main() -> None:
         sx0, sy0 = x0 * SCALE, y0 * SCALE
 
         if name == "dessus":
-            tile = cover(scene1, pw, ph, bias_y=0.42)
+            tile = lift(cover(arts["dessus"], pw, ph, bias_y=0.42))
         elif name == "dessous":
-            tile = cover(dessous_src, pw, ph, bias_y=0.55)
+            tile = lift(cover(arts["dessous"], pw, ph, bias_y=0.50))
         elif name == "rabat_couvercle":
-            # bande ciel / lune + logo horizontal
-            tile = cover(scene1, pw, ph, bias_y=0.12)
-            dim = ImageEnhance.Brightness(tile).enhance(0.72)
-            tile = dim
-            lg_h = fit_logo(logo_ligne, pw, ph, margin=0.12)
-            paste_centered(tile, lg_h, (0, 0, pw, ph))
+            tile = arts["rabat"](pw, ph)
         elif name == "dos":
-            tile = cover(scene1, pw, ph, bias_y=0.78)
-            tile = ImageEnhance.Brightness(tile).enhance(0.8)
-            lg_h = fit_logo(logo_ligne, pw, ph, margin=0.14)
-            paste_centered(tile, lg_h, (0, 0, pw, ph))
+            tile = arts["dos"](pw, ph)
         elif name == "avant":
-            tile = cover(stone.rotate(90, expand=True), pw, ph)
-            lg_h = fit_logo(logo_ligne, pw, ph, margin=0.10)
-            paste_centered(tile, lg_h, (0, 0, pw, ph))
-        elif name in ("oreille_gauche", "cote_int_g", "cote_ext_g"):
+            tile = arts["avant"](pw, ph)
+        elif name in ("flap_dos_g", "flap_dos_d", "flap_avant_g", "flap_avant_d"):
+            tile = lift(cover(stone.rotate(90, expand=True), pw, ph, 0.5))
+        elif name == "oreille_gauche":
             tile = side_panel(stone, logo, pw, ph, "left")
-        elif name in ("oreille_droite", "cote_int_d", "cote_ext_d"):
+        elif name == "oreille_droite":
+            tile = side_panel(stone, logo, pw, ph, "right")
+        elif name == "cote_int_g":
+            tile = side_panel(stone, logo, pw, ph, "left")
+        elif name == "cote_int_d":
+            tile = side_panel(stone, logo, pw, ph, "right")
+        elif name == "cote_ext_g":
+            tile = side_panel(stone, logo, pw, ph, "left")
+        elif name == "cote_ext_d":
             tile = side_panel(stone, logo, pw, ph, "right")
         else:
             continue
 
+        if name in ROT180:
+            tile = tile.rotate(180)
+
         m = Image.fromarray(mask).resize((W, H), Image.Resampling.NEAREST)
-        m = m.crop((sx0, sy0, sx0 + pw, sy0 + ph)).convert("L")
-        # un peu de dilatation pour recouvrir le fond perdu interne
-        m = m.filter(ImageFilter.MaxFilter(11))
+        m = m.crop((sx0, sy0, sx0 + pw, sy0 + ph)).convert("L").filter(ImageFilter.MaxFilter(11))
         layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         layer.paste(tile, (sx0, sy0), tile)
-        # appliquer le masque du panneau
         la = np.array(layer)
-        ma = np.array(Image.new("L", (W, H), 0))
-        ma_crop = np.array(m)
-        ma[sy0 : sy0 + ph, sx0 : sx0 + pw] = ma_crop
+        ma = np.zeros((H, W), dtype=np.uint8)
+        ma[sy0 : sy0 + ph, sx0 : sx0 + pw] = np.array(m)
         la[:, :, 3] = (la[:, :, 3].astype(np.float32) * (ma.astype(np.float32) / 255.0)).astype(np.uint8)
         canvas.alpha_composite(Image.fromarray(la))
         print("  painted", name, bbox)
 
-    # overlay du gabarit (traits)
     lines = gabarit.resize((W, H), Image.Resampling.NEAREST)
-    # rendre les traits plus lisibles
     larr = np.array(lines)
-    vis = larr[:, :, 3] > 20
-    larr[vis, 3] = 255
-    lines = Image.fromarray(larr)
-    canvas.alpha_composite(lines)
+    larr[larr[:, :, 3] > 20, 3] = 255
+    canvas.alpha_composite(Image.fromarray(larr))
+    return canvas.convert("RGB")
 
-    net = canvas.convert("RGB")
-    save_jpeg(net, OUT / "exemple_net.jpg", quality=88, dpi=DPI_PRINT)
-    save_jpeg(net.resize((1280, 1248), Image.Resampling.LANCZOS), WEB / "exemple_net.jpg", quality=85)
 
-    # --- mockup : faces vues une fois la boîte montée ---
-    pad = 36
-    tw = 980
-    top = cover(scene1, tw, int(tw * 280 / 410), bias_y=0.42)
-    bot = cover(dessous_src, tw, int(tw * 278 / 422), bias_y=0.55)
+def mockup(scene, dessous, front, stone, logo, logo_ligne) -> Image.Image:
+    pad, tw = 36, 980
+    top = lift(cover(scene, tw, int(tw * 280 / 410), bias_y=0.42))
+    bot = lift(cover(dessous, tw, int(tw * 278 / 422), bias_y=0.50))
     front_h = max(88, int(tw * 128 / 416))
-    front = cover(stone.rotate(90, expand=True), tw, front_h)
-    paste_centered(front, fit_logo(logo_ligne, tw, front_h, 0.10), (0, 0, tw, front_h))
-    # côté debout : profondeur × hauteur, logo empilé à l'endroit
+    front = front.resize((tw, front_h), Image.Resampling.LANCZOS)
     sw = int(tw * 263 / 410)
     sh = max(110, int(tw * 137 / 410))
-    side_up = cover(stone, sw, sh, bias_y=0.5)
+    side_up = lift(cover(stone, sw, sh, bias_y=0.5))
     paste_centered(side_up, fit_logo(logo, sw, sh, 0.08), (0, 0, sw, sh))
-
     mw = pad * 3 + sw + tw
     mh = pad * 4 + top.size[1] + front_h + bot.size[1]
     mock = Image.new("RGB", (mw, mh), (18, 16, 22))
@@ -387,27 +307,117 @@ def main() -> None:
     mock.paste(top.convert("RGB"), (pad * 2 + sw, pad))
     mock.paste(front.convert("RGB"), (pad * 2 + sw, pad * 2 + top.size[1]))
     mock.paste(bot.convert("RGB"), (pad * 2 + sw, pad * 3 + top.size[1] + front_h))
-    cote_hi = cover(stone, 1600, 840, bias_y=0.5)
+    return mock
+
+
+def main() -> None:
+    for d in (OUT, FACES, SOURCES, WEB, SOURCES / "dessous_variantes", WEB / "dessous", WEB / "bandes"):
+        d.mkdir(parents=True, exist_ok=True)
+
+    gabarit = Image.open(GABARIT).convert("RGBA")
+    scene1 = Image.open(ART / "necromancer-knight-landscape-01.jpg")
+    stone = Image.open(ART / "box-side-stone.jpg")
+    vide = Image.open(ART / "box-bottom-castle-night.jpg")
+    e_chevalier = Image.open(ART / "e-victoire-chevalier.jpg")
+    e_necro = Image.open(ART / "e-victoire-necromancien.jpg")
+    e_lendemain = Image.open(ART / "e-lendemain.jpg")
+    bande_magie = Image.open(ART / "bande-magie.jpg")
+    bande_choc = Image.open(ART / "bande-choc.jpg")
+    bande_apres = Image.open(ART / "bande-apres.jpg")
+
+    logo = logo_from_black(LOGO)
+    logo_ligne = logo_from_white(LOGO_LIGNE)
+
+    print_w = int(round(CM_W / 2.54 * DPI_PRINT))
+    print_h = int(round(print_w * 9 / 16))
+
+    def export_scene(im: Image.Image, name: str, folder: Path) -> None:
+        save_jpeg(im.resize((print_w, print_h), Image.Resampling.LANCZOS), folder / f"{name}.jpg")
+        save_jpeg(im.resize((1920, 1080), Image.Resampling.LANCZOS), WEB / "dessous" / f"{name}.jpg" if folder == SOURCES / "dessous_variantes" else WEB / f"{name}.jpg", quality=86)
+
+    for key, im in (
+        ("vide", vide),
+        ("victoire_chevalier", e_chevalier),
+        ("victoire_necromancien", e_necro),
+        ("lendemain", e_lendemain),
+    ):
+        save_jpeg(im.resize((print_w, print_h), Image.Resampling.LANCZOS), SOURCES / "dessous_variantes" / f"{key}.jpg")
+        save_jpeg(im.resize((1920, 1080), Image.Resampling.LANCZOS), WEB / "dessous" / f"{key}.jpg", quality=86)
+
+    for key, im in (("magie", bande_magie), ("choc", bande_choc), ("apres", bande_apres)):
+        save_jpeg(im.resize((print_w, print_h), Image.Resampling.LANCZOS), SOURCES / f"bande_{key}.jpg")
+        save_jpeg(im.resize((1920, 1080), Image.Resampling.LANCZOS), WEB / "bandes" / f"{key}.jpg", quality=86)
+
+    save_jpeg(vide.resize((print_w, print_h), Image.Resampling.LANCZOS), SOURCES / "dessous_chateau.jpg")
+
+    # faces vues à l'endroit
+    dx0, dy0, dx1, dy1 = PANELS["dessus"]
+    save_jpeg(lift(cover(scene1, (dx1 - dx0) * SCALE, (dy1 - dy0) * SCALE, 0.42)), FACES / "dessus.jpg")
+    bx0, by0, bx1, by1 = PANELS["dessous"]
+    bw, bh = (bx1 - bx0) * SCALE, (by1 - by0) * SCALE
+    save_jpeg(lift(cover(e_chevalier, bw, bh, 0.50)), FACES / "dessous.jpg")
+    save_jpeg(lift(cover(e_chevalier, bw, bh, 0.50)), FACES / "dessous_victoire_chevalier.jpg")
+    save_jpeg(lift(cover(e_necro, bw, bh, 0.50)), FACES / "dessous_victoire_necromancien.jpg")
+    save_jpeg(lift(cover(e_lendemain, bw, bh, 0.50)), FACES / "dessous_lendemain.jpg")
+    save_jpeg(lift(cover(vide, bw, bh, 0.55)), FACES / "dessous_vide.jpg")
+
+    ax0, ay0, ax1, ay1 = PANELS["avant"]
+    aw, ah = (ax1 - ax0) * SCALE, (ay1 - ay0) * SCALE
+    face_avant_pierre = pierre_logo(stone, logo_ligne, aw, ah)
+    face_avant_combat = bande_logo(bande_apres, logo_ligne, aw, ah, 0.62)
+    save_jpeg(face_avant_pierre, FACES / "avant_pierre.jpg")
+    save_jpeg(face_avant_combat, FACES / "avant_combat.jpg")
+    save_jpeg(face_avant_combat, FACES / "avant.jpg")
+
+    cx0, cy0, cx1, cy1 = PANELS["cote_int_g"]
+    cw, ch = (cx1 - cx0) * SCALE, (cy1 - cy0) * SCALE
+    save_jpeg(side_panel(stone, logo, cw, ch, "left"), FACES / "cote_gauche.jpg")
+    save_jpeg(side_panel(stone, logo, cw, ch, "right"), FACES / "cote_droit.jpg")
+    cote_hi = lift(cover(stone, 1600, 840, 0.5))
     paste_centered(cote_hi, fit_logo(logo, 1600, 840, 0.08), (0, 0, 1600, 840))
     save_jpeg(cote_hi, FACES / "cote_debout.jpg")
 
-    save_jpeg(mock, OUT / "exemple_mockup.jpg", quality=88)
-    save_jpeg(
-        mock.resize((1200, int(1200 * mh / mw)), Image.Resampling.LANCZOS),
-        WEB / "exemple_mockup.jpg",
-        quality=85,
-    )
+    dxw, dxh = (PANELS["dos"][2] - PANELS["dos"][0]) * SCALE, (PANELS["dos"][3] - PANELS["dos"][1]) * SCALE
+    save_jpeg(pierre_logo(stone, logo_ligne, dxw, dxh), FACES / "bande_pierre.jpg")
+    save_jpeg(bande_logo(bande_magie, logo_ligne, dxw, dxh, 0.45), FACES / "bande_magie.jpg")
+    save_jpeg(bande_logo(bande_choc, logo_ligne, dxw, dxh, 0.48), FACES / "bande_choc.jpg")
 
-    # crops 70×35 cm (2:1) des 5 paysages
-    print_h_21 = print_w // 2
-    crop_dir = SOURCES / "print_70x35"
-    for i in range(1, 6):
-        src = Image.open(SOURCES / f"paysage_0{i}.jpg")
-        w, h = src.size
-        y = max(0, (h - print_h_21) // 2)
-        save_jpeg(src.crop((0, y, w, y + print_h_21)), crop_dir / f"paysage_0{i}_70x35.jpg")
-    parch21 = parch_print.crop((0, y, print_w, y + print_h_21))
-    save_png(parch21, crop_dir / "parchemin_70x35.png")
+    print("masks…")
+    masks = interior_masks(gabarit)
+
+    arts_pierre = {
+        "dessus": scene1,
+        "dessous": e_chevalier,
+        "rabat": lambda w, h: pierre_logo(stone, logo_ligne, w, h),
+        "dos": lambda w, h: pierre_logo(stone, logo_ligne, w, h),
+        "avant": lambda w, h: pierre_logo(stone, logo_ligne, w, h),
+    }
+    arts_combat = {
+        "dessus": scene1,
+        "dessous": e_chevalier,
+        "rabat": lambda w, h: bande_logo(bande_magie, logo_ligne, w, h, 0.42),
+        "dos": lambda w, h: bande_logo(bande_choc, logo_ligne, w, h, 0.48),
+        "avant": lambda w, h: bande_logo(bande_apres, logo_ligne, w, h, 0.62),
+    }
+
+    print("net pierre…")
+    net_p = paint_net(gabarit, masks, arts_pierre, stone, logo, logo_ligne)
+    save_jpeg(net_p, OUT / "exemple_net_pierre.jpg", quality=88)
+    save_jpeg(net_p.resize((1280, 1248), Image.Resampling.LANCZOS), WEB / "exemple_net_pierre.jpg", quality=85)
+
+    print("net combat…")
+    net_c = paint_net(gabarit, masks, arts_combat, stone, logo, logo_ligne)
+    save_jpeg(net_c, OUT / "exemple_net_combat.jpg", quality=88)
+    save_jpeg(net_c, OUT / "exemple_net.jpg", quality=88)
+    save_jpeg(net_c.resize((1280, 1248), Image.Resampling.LANCZOS), WEB / "exemple_net_combat.jpg", quality=85)
+    save_jpeg(net_c.resize((1280, 1248), Image.Resampling.LANCZOS), WEB / "exemple_net.jpg", quality=85)
+
+    mock_c = mockup(scene1, e_chevalier, face_avant_combat, stone, logo, logo_ligne)
+    mock_p = mockup(scene1, e_chevalier, face_avant_pierre, stone, logo, logo_ligne)
+    save_jpeg(mock_c, OUT / "exemple_mockup.jpg", quality=88)
+    save_jpeg(mock_p, OUT / "exemple_mockup_pierre.jpg", quality=88)
+    save_jpeg(mock_c.resize((1200, int(1200 * mock_c.size[1] / mock_c.size[0])), Image.Resampling.LANCZOS), WEB / "exemple_mockup.jpg", quality=85)
+    save_jpeg(mock_p.resize((1200, int(1200 * mock_p.size[1] / mock_p.size[0])), Image.Resampling.LANCZOS), WEB / "exemple_mockup_pierre.jpg", quality=85)
 
     gabarit.convert("RGBA").save(OUT / "gabarit_source.png")
     print("done", OUT)
