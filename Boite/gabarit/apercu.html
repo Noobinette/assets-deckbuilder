@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Boîte — gabarit Pixel of Glory</title>
+<style>
+  :root { background:#12141c; color:#f3e6c4; font-family:Georgia, serif; }
+  body { max-width:1400px; margin:32px auto; padding:0 20px 80px; }
+  h1, h2 { font-weight:normal; letter-spacing:.04em; }
+  p { color:#cbb98a; max-width:78ch; line-height:1.45; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; margin:16px 0 36px; }
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:16px 0 36px; }
+  figure { margin:0; background:#0e0b08; border:1px solid #5a4520; border-radius:8px; overflow:hidden; }
+  img { width:100%; height:auto; display:block; }
+  figcaption { padding:8px 10px 12px; font-size:13px; color:#e8d5a0; }
+  code { font-size:11px; color:#bba56e; }
+  .wide { grid-column:1 / -1; }
+  .stage { position:relative; background:#0e0b08; }
+  .stage img.ov { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+  button {
+    background:#3a2c14; color:#f3e6c4; border:1px solid #8a6a32;
+    padding:8px 14px; border-radius:6px; cursor:pointer; font:inherit;
+  }
+  button.active { background:#8a6a32; color:#1a140c; }
+  .toolbar { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 16px; }
+  @media (max-width:800px) { .grid-2 { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+  <h1>Pixel of Glory — gabarit de boîte</h1>
+  <p>
+    Exemple d’habillage : bataille nécromancien / chevalier sur le
+    <strong>dessus</strong>, cour du château vide sur le <strong>dessous</strong>,
+    logo Pixel of Glory sur les <strong>côtés</strong>. Cinq paysages sans titre
+    plus un parchemin transparent, à superposer pour y écrire les infos.
+  </p>
+
+  <h2>Boîte montée</h2>
+  <p>Côté (logo) · dessus · bande avant · dessous.</p>
+  <figure class="wide">
+    <img src="web/exemple_mockup.jpg" alt="Mockup des faces de la boîte">
+    <figcaption>Côté avec logo empilé, dessus illustré, rabat au nom du jeu, dessous château vide.<br><code>exemple_mockup.jpg</code></figcaption>
+  </figure>
+
+  <h2>Filet de découpe</h2>
+  <figure class="wide">
+    <img src="web/exemple_net.jpg" alt="Gabarit habillé">
+    <figcaption>Même visuels posés sur le gabarit, traits de découpe par-dessus.<br><code>exemple_net.jpg</code></figcaption>
+  </figure>
+
+  <h2>Faces</h2>
+  <div class="grid">
+    <figure>
+      <img src="faces/dessus.jpg" alt="Dessus de boîte">
+      <figcaption>Dessus — bataille<br><code>faces/dessus.jpg</code></figcaption>
+    </figure>
+    <figure>
+      <img src="faces/dessous.jpg" alt="Dessous de boîte">
+      <figcaption>Dessous — château vide<br><code>faces/dessous.jpg</code></figcaption>
+    </figure>
+    <figure>
+      <img src="faces/cote_debout.jpg" alt="Côté avec logo">
+      <figcaption>Côté (boîte posée) — logo<br><code>faces/cote_debout.jpg</code></figcaption>
+    </figure>
+    <figure>
+      <img src="faces/avant.jpg" alt="Bande avant">
+      <figcaption>Avant / rabat — wordmark or<br><code>faces/avant.jpg</code></figcaption>
+    </figure>
+  </div>
+
+  <h2>Cinq paysages sans logo</h2>
+  <p>Légères variations du même tableau. Fichiers print dans <code>sources/</code> (70 cm de large, 16:9) et recadrage 70×35 cm dans <code>sources/print_70x35/</code>.</p>
+  <div class="toolbar" id="btns"></div>
+  <figure class="wide stage" id="stage">
+    <img id="scene" src="web/paysage_01.jpg" alt="Paysage">
+    <img class="ov" id="ov" src="web/parchemin.png" alt="" hidden>
+  </figure>
+  <p>
+    <button type="button" id="tog">Afficher le parchemin</button>
+    — PNG séparé, fond transparent, même taille que le paysage.
+  </p>
+  <div class="grid">
+    <figure><img src="web/paysage_01.jpg" alt="Variante 1"><figcaption>01 — composition proche de l’originale</figcaption></figure>
+    <figure><img src="web/paysage_02.jpg" alt="Variante 2"><figcaption>02 — plus de château, plus de squelettes</figcaption></figure>
+    <figure><img src="web/paysage_03.jpg" alt="Variante 3"><figcaption>03 — cape au vent, vortex plus large</figcaption></figure>
+    <figure><img src="web/paysage_04.jpg" alt="Variante 4"><figcaption>04 — colonne au premier plan</figcaption></figure>
+    <figure><img src="web/paysage_05.jpg" alt="Variante 5"><figcaption>05 — cour ouverte, portail centré</figcaption></figure>
+    <figure>
+      <img src="web/parchemin.png" alt="Parchemin" style="background:#2a1c28">
+      <figcaption>Parchemin seul (PNG transparent)<br><code>sources/parchemin.png</code></figcaption>
+    </figure>
+  </div>
+
+<script>
+const scene = document.getElementById("scene");
+const ov = document.getElementById("ov");
+const tog = document.getElementById("tog");
+const btns = document.getElementById("btns");
+let n = 1;
+for (let i = 1; i <= 5; i++) {
+  const b = document.createElement("button");
+  b.textContent = "Variante " + i;
+  if (i === 1) b.className = "active";
+  b.onclick = () => {
+    n = i;
+    scene.src = "web/paysage_0" + i + ".jpg";
+    btns.querySelectorAll("button").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+  };
+  btns.appendChild(b);
+}
+tog.onclick = () => {
+  const on = ov.hidden;
+  ov.hidden = !on;
+  tog.textContent = on ? "Masquer le parchemin" : "Afficher le parchemin";
+  tog.classList.toggle("active", on);
+};
+</script>
+</body>
+</html>

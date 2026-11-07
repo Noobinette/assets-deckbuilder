@@ -1,5 +1,7 @@
 # Boite — propositions de jaquette
 
+Gabarit habillé (dessus / dessous / côtés) : voir [`gabarit/`](gabarit/).
+
 Pixel art old-school fantasy, format portrait **1728×2304**. Titre **PIXEL OF GLORY** intégré, cadre or.
 
 Ouvrir `apercu.html`. Planche de la série ciel : `planche.jpg`.
