@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Jetons — Pixel ou Glory</title>
+  <style>
+    :root { color-scheme: light; }
+    body {
+      margin: 0; padding: 32px 24px 64px;
+      background: #f6f1e6; color: #1c1410;
+      font: 18px/1.45 Georgia, "Iowan Old Style", Palatino, serif;
+    }
+    main { max-width: 1100px; margin: 0 auto; }
+    h1 { font-weight: 600; font-size: 32px; margin: 0 0 8px; }
+    p { margin: 0 0 28px; max-width: 62ch; }
+    h2 { font-size: 20px; font-weight: 600; margin: 36px 0 14px; }
+    .grille { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    figure { margin: 0; }
+    .disque {
+      background: #f3ecd8;
+      border-radius: 50%;
+      aspect-ratio: 1;
+      display: grid; place-items: center;
+      box-shadow: inset 0 0 0 1px rgba(80, 50, 20, 0.08);
+    }
+    img { width: 86%; height: 86%; object-fit: contain; }
+    figcaption { margin-top: 8px; font: 14px/1.3 ui-sans-serif, system-ui, sans-serif; color: #5c4a3a; }
+    code { font-family: ui-monospace, monospace; font-size: 0.92em; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Jetons — Pixel ou Glory</h1>
+    <p>PNG 2400×2400, fond transparent, calés pour le cercle central. Laisser le curseur de taille vers le centre.</p>
+
+    <h2>Couleurs du logo</h2>
+    <div class="grille">
+      <figure>
+        <div class="disque"><img src="pixel-bleu-or.png" alt="PIXEL en bleu, filet or"></div>
+        <figcaption>Pixel — <code>pixel-bleu-or.png</code></figcaption>
+      </figure>
+      <figure>
+        <div class="disque"><img src="glory-rouge-or.png" alt="GLORY en rouge, filet or"></div>
+        <figcaption>Glory — <code>glory-rouge-or.png</code></figcaption>
+      </figure>
+    </div>
+
+    <h2>Or</h2>
+    <div class="grille">
+      <figure>
+        <div class="disque"><img src="pixel-or.png" alt="PIXEL en or"></div>
+        <figcaption>Pixel — <code>pixel-or.png</code></figcaption>
+      </figure>
+      <figure>
+        <div class="disque"><img src="glory-or.png" alt="GLORY en or"></div>
+        <figcaption>Glory — <code>glory-or.png</code></figcaption>
+      </figure>
+    </div>
+
+    <h2>Bleu et rouge, sans or</h2>
+    <div class="grille">
+      <figure>
+        <div class="disque"><img src="pixel-bleu.png" alt="PIXEL en bleu"></div>
+        <figcaption>Pixel — <code>pixel-bleu.png</code></figcaption>
+      </figure>
+      <figure>
+        <div class="disque"><img src="glory-rouge.png" alt="GLORY en rouge"></div>
+        <figcaption>Glory — <code>glory-rouge.png</code></figcaption>
+      </figure>
+    </div>
+
+    <h2>Dos, couleurs échangées</h2>
+    <div class="grille">
+      <figure>
+        <div class="disque"><img src="pixel-rouge-or.png" alt="PIXEL en rouge, filet or"></div>
+        <figcaption>Pixel en rouge — <code>pixel-rouge-or.png</code></figcaption>
+      </figure>
+      <figure>
+        <div class="disque"><img src="glory-bleu-or.png" alt="GLORY en bleu, filet or"></div>
+        <figcaption>Glory en bleu — <code>glory-bleu-or.png</code></figcaption>
+      </figure>
+    </div>
+  </main>
+</body>
+</html>
