@@ -94,6 +94,15 @@ def lift(im: Image.Image, factor: float = LIFT) -> Image.Image:
 
 
 CADRE_FT_SRC = 28
+CADRE_FT = 8 * SCALE  # ~80 px à SCALE 10, proche du cadre déjà présent sur B
+
+
+def strip_cadre(im: Image.Image, ft: int = CADRE_FT_SRC) -> Image.Image:
+    """Retire le cadre d'origine des visuels pour n'en poser qu'un seul ensuite."""
+    im = im.convert("RGBA")
+    w, h = im.size
+    ft = min(ft, w // 8, h // 8)
+    return im.crop((ft, ft, w - ft, h - ft))
 
 
 def cadre_slices(cadre: Image.Image, ft_src: int = CADRE_FT_SRC) -> dict[str, Image.Image]:
@@ -141,6 +150,25 @@ def apply_cadre(tile: Image.Image, slices: dict[str, Image.Image], ft: int) -> I
     tile.paste(bl, (0, h - ft))
     tile.paste(br, (w - ft, h - ft))
     return tile
+
+
+def frame_panel(
+    scene: Image.Image,
+    w: int,
+    h: int,
+    slices: dict[str, Image.Image],
+    ft: int,
+    bias_y: float = 0.45,
+    decorate=None,
+) -> Image.Image:
+    """Scène recadrée à l'intérieur, un seul cadre bois sur les 4 bords."""
+    ft = max(8, min(int(ft), w // 6, h // 6))
+    inner = lift(cover(scene, w - 2 * ft, h - 2 * ft, bias_y=bias_y))
+    if decorate is not None:
+        inner = decorate(inner)
+    tile = Image.new("RGBA", (w, h), (28, 20, 16, 255))
+    tile.paste(inner.convert("RGBA"), (ft, ft))
+    return apply_cadre(tile, slices, ft)
 
 
 def fill_interior_black(
@@ -273,15 +301,16 @@ def nameplate(text: str, panel_h: int) -> Image.Image:
     return im
 
 
-def compose_cover(scene: Image.Image, logo: Image.Image, w: int, h: int) -> Image.Image:
-    """Dessus (B) : bataille + logo + DAVID / JEAN."""
-    tile = lift(cover(scene, w, h, bias_y=0.42))
+def decorate_cover(inner: Image.Image, logo: Image.Image) -> Image.Image:
+    """Logo + DAVID / JEAN sur la scène intérieure du dessus."""
+    tile = inner.convert("RGBA")
+    w, h = tile.size
     lg = fit_logo(logo, int(w * 0.42), int(h * 0.28), margin=0.0)
-    tile.alpha_composite(lg, ((w - lg.size[0]) // 2, int(h * 0.035)))
+    tile.alpha_composite(lg, ((w - lg.size[0]) // 2, int(h * 0.04)))
     david = nameplate("DAVID", h)
     jean = nameplate("JEAN", h)
-    tile.alpha_composite(david, (int(w * 0.22) - david.size[0] // 2, int(h * 0.82)))
-    tile.alpha_composite(jean, (int(w * 0.80) - jean.size[0] // 2, int(h * 0.81)))
+    tile.alpha_composite(david, (int(w * 0.22) - david.size[0] // 2, int(h * 0.84)))
+    tile.alpha_composite(jean, (int(w * 0.80) - jean.size[0] // 2, int(h * 0.83)))
     return tile
 
 
@@ -350,14 +379,16 @@ def compose_back(scene: Image.Image, parch: Image.Image, w: int, h: int) -> Imag
     return tile
 
 
-def bande_logo(bg: Image.Image, logo_ligne: Image.Image, w: int, h: int, bias_y: float = 0.5) -> Image.Image:
-    tile = lift(cover(bg, w, h, bias_y=bias_y))
+def decorate_bande(inner: Image.Image, logo_ligne: Image.Image) -> Image.Image:
+    tile = inner.convert("RGBA")
+    w, h = tile.size
     paste_centered(tile, fit_logo(logo_ligne, w, h, margin=0.12), (0, 0, w, h))
     return tile
 
 
 def pierre_logo(stone: Image.Image, logo_ligne: Image.Image, w: int, h: int) -> Image.Image:
-    return bande_logo(stone.rotate(90, expand=True), logo_ligne, w, h, 0.5)
+    inner = lift(cover(stone.rotate(90, expand=True), w, h, 0.5))
+    return decorate_bande(inner, logo_ligne)
 
 
 def interior_masks(gabarit: Image.Image) -> list[tuple[tuple[int, int, int, int], np.ndarray]]:
@@ -449,11 +480,13 @@ def save_png(im: Image.Image, path: Path, dpi: int = DPI_PRINT) -> None:
     im.save(path, "PNG", optimize=True, dpi=(dpi, dpi))
 
 
-def paint_net(gabarit: Image.Image, masks, arts: dict, stone, logo, logo_ligne) -> Image.Image:
+def paint_net(gabarit: Image.Image, masks, arts: dict, slices, logo, logo_ligne) -> Image.Image:
     gw, gh = gabarit.size
     W, H = gw * SCALE, gh * SCALE
     canvas = Image.new("RGBA", (W, H), (10, 10, 14, 255))
-    odd = 21 if SCALE >= 8 else 11
+    pad_g = 6
+    pad = pad_g * SCALE
+    ft0 = CADRE_FT
     for bbox, mask in masks:
         name = which_panel(bbox)
         if not name:
@@ -461,53 +494,53 @@ def paint_net(gabarit: Image.Image, masks, arts: dict, stone, logo, logo_ligne) 
         x0, y0, x1, y1 = bbox
         pw, ph = (x1 - x0 + 1) * SCALE, (y1 - y0 + 1) * SCALE
         sx0, sy0 = x0 * SCALE, y0 * SCALE
+        x0p, y0p = max(0, x0 - pad_g), max(0, y0 - pad_g)
+        x1p, y1p = min(gw - 1, x1 + pad_g), min(gh - 1, y1 + pad_g)
+        pl, pt = (x0 - x0p) * SCALE, (y0 - y0p) * SCALE
+        pr, pb = (x1p - x1) * SCALE, (y1p - y1) * SCALE
+        tw, th = pw + pl + pr, ph + pt + pb
+        ft = ft0 + pad
+
+        def make(scene, bias, deco=None):
+            return frame_panel(scene, tw, th, slices, ft, bias, deco)
 
         if name == "dessus":
-            tile = arts["dessus"]
-            if tile.size != (pw, ph):
-                tile = tile.resize((pw, ph), Image.Resampling.LANCZOS)
+            tile = make(arts["scene_b"], 0.42, lambda im: decorate_cover(im, logo))
         elif name == "dessous":
-            tile = arts["dessous"]
-            if tile.size != (pw, ph):
-                tile = tile.resize((pw, ph), Image.Resampling.LANCZOS)
+            tile = make(arts["scene_e"], 0.50)
         elif name == "rabat_couvercle":
-            tile = arts["rabat"](pw, ph)
+            tile = make(arts["scene_magie"], 0.42, lambda im: decorate_bande(im, logo_ligne))
         elif name == "dos":
-            tile = arts["dos"](pw, ph)
+            tile = make(arts["scene_choc"], 0.48, lambda im: decorate_bande(im, logo_ligne))
         elif name == "avant":
-            tile = arts["avant"](pw, ph)
+            tile = make(arts["scene_apres"], 0.62, lambda im: decorate_bande(im, logo_ligne))
         elif name in ("flap_dos_g", "flap_dos_d", "flap_avant_g", "flap_avant_d"):
-            tile = lift(cover(arts.get("cote", stone), pw, ph, 0.5))
+            tile = make(arts["scene_choc"], 0.50)
         elif name in ("oreille_gauche", "oreille_droite"):
-            tile = lift(cover(arts.get("oreille", arts.get("cote")), pw, ph, 0.42))
+            tile = make(arts["scene_magie"], 0.42)
         elif name in ("cote_int_g", "cote_int_d"):
-            tile = lift(cover(arts.get("cote"), pw, ph, 0.48))
+            tile = make(arts["scene_choc"], 0.48)
         elif name in ("cote_ext_g", "cote_ext_d"):
-            tile = lift(cover(arts.get("cote_ext", arts.get("cote")), pw, ph, 0.55))
+            tile = make(arts["scene_apres"], 0.55)
         else:
             continue
 
         if name in ROT180:
             tile = tile.rotate(180)
-        if tile.size != (pw, ph):
-            tile = tile.resize((pw, ph), Image.Resampling.LANCZOS)
+        if tile.size != (tw, th):
+            tile = tile.resize((tw, th), Image.Resampling.LANCZOS)
 
-        mlocal = (
-            Image.fromarray(mask)
-            .crop((x0, y0, x1 + 1, y1 + 1))
-            .resize((pw, ph), Image.Resampling.NEAREST)
-            .filter(ImageFilter.MaxFilter(odd))
-        )
+        msmall = Image.fromarray(mask).crop((x0p, y0p, x1p + 1, y1p + 1))
+        msmall = msmall.filter(ImageFilter.MaxFilter(pad_g * 2 + 1))
+        mlocal = msmall.resize((tw, th), Image.Resampling.NEAREST)
         tarr = np.array(tile.convert("RGBA"))
         tarr[:, :, 3] = (tarr[:, :, 3].astype(np.float32) * np.array(mlocal).astype(np.float32) / 255.0).astype(np.uint8)
-        canvas.alpha_composite(Image.fromarray(tarr), (sx0, sy0))
-        print("  painted", name, bbox, f"{pw}x{ph}")
+        canvas.alpha_composite(Image.fromarray(tarr), (sx0 - pl, sy0 - pt))
+        print("  painted", name, bbox, f"{tw}x{th}")
 
-    lines = gabarit.resize((W, H), Image.Resampling.NEAREST)
-    larr = np.array(lines)
-    larr[larr[:, :, 3] > 20, 3] = 255
-    canvas.alpha_composite(Image.fromarray(larr))
-    return canvas.convert("RGB")
+    out = canvas.convert("RGB")
+    out = fill_interior_black(out, gabarit, slices)
+    return out
 
 
 def mockup(top: Image.Image, bot: Image.Image, front: Image.Image, stone, logo) -> Image.Image:
@@ -535,7 +568,6 @@ def main() -> None:
 
     gabarit = Image.open(GABARIT).convert("RGBA")
     scene1 = Image.open(ART / "necromancer-knight-landscape-01.jpg")
-    stone = Image.open(ART / "box-side-stone.jpg")
     e_chevalier = Image.open(ART / "e-victoire-chevalier.jpg")
     bande_magie = Image.open(ART / "bande-magie.jpg")
     bande_choc = Image.open(ART / "bande-choc.jpg")
@@ -544,32 +576,22 @@ def main() -> None:
     logo = logo_from_black(LOGO)
     logo_ligne = logo_from_white(LOGO_LIGNE)
 
-    dx0, dy0, dx1, dy1 = PANELS["dessus"]
-    bx0, by0, bx1, by1 = PANELS["dessous"]
-    dw, dh = (dx1 - dx0) * SCALE, (dy1 - dy0) * SCALE
-    bw, bh = (bx1 - bx0) * SCALE, (by1 - by0) * SCALE
-
-    print("compose cover + back…")
-    cover_b = compose_cover(scene1, logo, dw, dh)
-    back_e = lift(cover(e_chevalier, bw, bh, bias_y=0.50))
+    print("compose…")
+    slices = cadre_slices(scene1)
+    arts = {
+        "scene_b": strip_cadre(scene1, 28),
+        "scene_e": strip_cadre(e_chevalier, 28),
+        "scene_magie": strip_cadre(bande_magie, 42),
+        "scene_choc": strip_cadre(bande_choc, 42),
+        "scene_apres": strip_cadre(bande_apres, 42),
+    }
 
     print("masks…")
     masks = interior_masks(gabarit)
-    arts_combat = {
-        "dessus": cover_b,
-        "dessous": back_e,
-        "rabat": lambda w, h: bande_logo(bande_magie, logo_ligne, w, h, 0.42),
-        "dos": lambda w, h: bande_logo(bande_choc, logo_ligne, w, h, 0.48),
-        "avant": lambda w, h: bande_logo(bande_apres, logo_ligne, w, h, 0.62),
-        "oreille": bande_magie,
-        "cote": bande_choc,
-        "cote_ext": bande_apres,
-    }
-
-    print("net combat…")
-    net_c = paint_net(gabarit, masks, arts_combat, stone, logo, logo_ligne)
+    print("net…")
+    net_c = paint_net(gabarit, masks, arts, slices, logo, logo_ligne)
     save_jpeg(net_c, OUT / "boite.jpg", quality=86)
-    print("done", cover_b.size, back_e.size, net_c.size)
+    print("done", net_c.size)
 
 
 if __name__ == "__main__":
