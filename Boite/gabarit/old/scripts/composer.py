@@ -449,14 +449,11 @@ def save_png(im: Image.Image, path: Path, dpi: int = DPI_PRINT) -> None:
     im.save(path, "PNG", optimize=True, dpi=(dpi, dpi))
 
 
-def paint_net(gabarit: Image.Image, masks, arts: dict, stone, logo, logo_ligne, slices) -> Image.Image:
+def paint_net(gabarit: Image.Image, masks, arts: dict, stone, logo, logo_ligne) -> Image.Image:
     gw, gh = gabarit.size
     W, H = gw * SCALE, gh * SCALE
     canvas = Image.new("RGBA", (W, H), (10, 10, 14, 255))
-    pad_g = 8
-    pad = pad_g * SCALE
-    ft = pad + 2 * SCALE
-    odd = 11
+    odd = 21 if SCALE >= 8 else 11
     for bbox, mask in masks:
         name = which_panel(bbox)
         if not name:
@@ -495,27 +492,22 @@ def paint_net(gabarit: Image.Image, masks, arts: dict, stone, logo, logo_ligne, 
         if tile.size != (pw, ph):
             tile = tile.resize((pw, ph), Image.Resampling.LANCZOS)
 
-        x0p, y0p = max(0, x0 - pad_g), max(0, y0 - pad_g)
-        x1p, y1p = min(gw - 1, x1 + pad_g), min(gh - 1, y1 + pad_g)
-        pl, pt = (x0 - x0p) * SCALE, (y0 - y0p) * SCALE
-        pr, pb = (x1p - x1) * SCALE, (y1p - y1) * SCALE
-        big = Image.new("RGBA", (pw + pl + pr, ph + pt + pb), (0, 0, 0, 0))
-        inner = tile.convert("RGBA")
-        big.paste(inner, (pl, pt))
-        big = apply_cadre(big, slices, ft)
-        big.paste(inner, (pl, pt))
-
-        msmall = Image.fromarray(mask).crop((x0p, y0p, x1p + 1, y1p + 1))
-        msmall = msmall.filter(ImageFilter.MaxFilter(pad_g * 2 + 1))
-        mlocal = msmall.resize(big.size, Image.Resampling.NEAREST).filter(ImageFilter.MaxFilter(odd))
-        tarr = np.array(big.convert("RGBA"))
+        mlocal = (
+            Image.fromarray(mask)
+            .crop((x0, y0, x1 + 1, y1 + 1))
+            .resize((pw, ph), Image.Resampling.NEAREST)
+            .filter(ImageFilter.MaxFilter(odd))
+        )
+        tarr = np.array(tile.convert("RGBA"))
         tarr[:, :, 3] = (tarr[:, :, 3].astype(np.float32) * np.array(mlocal).astype(np.float32) / 255.0).astype(np.uint8)
-        canvas.alpha_composite(Image.fromarray(tarr), (sx0 - pl, sy0 - pt))
+        canvas.alpha_composite(Image.fromarray(tarr), (sx0, sy0))
         print("  painted", name, bbox, f"{pw}x{ph}")
 
-    out = canvas.convert("RGB")
-    out = fill_interior_black(out, gabarit, slices)
-    return out
+    lines = gabarit.resize((W, H), Image.Resampling.NEAREST)
+    larr = np.array(lines)
+    larr[larr[:, :, 3] > 20, 3] = 255
+    canvas.alpha_composite(Image.fromarray(larr))
+    return canvas.convert("RGB")
 
 
 def mockup(top: Image.Image, bot: Image.Image, front: Image.Image, stone, logo) -> Image.Image:
@@ -560,7 +552,6 @@ def main() -> None:
     print("compose cover + back…")
     cover_b = compose_cover(scene1, logo, dw, dh)
     back_e = lift(cover(e_chevalier, bw, bh, bias_y=0.50))
-    slices = cadre_slices(scene1)
 
     print("masks…")
     masks = interior_masks(gabarit)
@@ -576,7 +567,7 @@ def main() -> None:
     }
 
     print("net combat…")
-    net_c = paint_net(gabarit, masks, arts_combat, stone, logo, logo_ligne, slices)
+    net_c = paint_net(gabarit, masks, arts_combat, stone, logo, logo_ligne)
     save_jpeg(net_c, OUT / "boite.jpg", quality=86)
     print("done", cover_b.size, back_e.size, net_c.size)
 
