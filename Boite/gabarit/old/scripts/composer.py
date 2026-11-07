@@ -480,13 +480,11 @@ def save_png(im: Image.Image, path: Path, dpi: int = DPI_PRINT) -> None:
     im.save(path, "PNG", optimize=True, dpi=(dpi, dpi))
 
 
-def paint_net(gabarit: Image.Image, masks, arts: dict, slices, logo, logo_ligne) -> Image.Image:
+def paint_net(gabarit: Image.Image, masks, arts: dict, logo, logo_ligne) -> Image.Image:
+    """Une seule image : visuels dans la forme, fond noir, aucun trait."""
     gw, gh = gabarit.size
     W, H = gw * SCALE, gh * SCALE
-    canvas = Image.new("RGBA", (W, H), (10, 10, 14, 255))
-    pad_g = 6
-    pad = pad_g * SCALE
-    ft0 = CADRE_FT
+    canvas = Image.new("RGBA", (W, H), (0, 0, 0, 255))
     for bbox, mask in masks:
         name = which_panel(bbox)
         if not name:
@@ -494,53 +492,45 @@ def paint_net(gabarit: Image.Image, masks, arts: dict, slices, logo, logo_ligne)
         x0, y0, x1, y1 = bbox
         pw, ph = (x1 - x0 + 1) * SCALE, (y1 - y0 + 1) * SCALE
         sx0, sy0 = x0 * SCALE, y0 * SCALE
-        x0p, y0p = max(0, x0 - pad_g), max(0, y0 - pad_g)
-        x1p, y1p = min(gw - 1, x1 + pad_g), min(gh - 1, y1 + pad_g)
-        pl, pt = (x0 - x0p) * SCALE, (y0 - y0p) * SCALE
-        pr, pb = (x1p - x1) * SCALE, (y1p - y1) * SCALE
-        tw, th = pw + pl + pr, ph + pt + pb
-        ft = ft0 + pad
-
-        def make(scene, bias, deco=None):
-            return frame_panel(scene, tw, th, slices, ft, bias, deco)
 
         if name == "dessus":
-            tile = make(arts["scene_b"], 0.42, lambda im: decorate_cover(im, logo))
+            tile = lift(cover(arts["scene_b"], pw, ph, 0.42))
+            tile = decorate_cover(tile, logo)
         elif name == "dessous":
-            tile = make(arts["scene_e"], 0.50)
+            tile = lift(cover(arts["scene_e"], pw, ph, 0.50))
         elif name == "rabat_couvercle":
-            tile = make(arts["scene_magie"], 0.42, lambda im: decorate_bande(im, logo_ligne))
+            tile = decorate_bande(lift(cover(arts["scene_magie"], pw, ph, 0.42)), logo_ligne)
         elif name == "dos":
-            tile = make(arts["scene_choc"], 0.48, lambda im: decorate_bande(im, logo_ligne))
+            tile = decorate_bande(lift(cover(arts["scene_choc"], pw, ph, 0.48)), logo_ligne)
         elif name == "avant":
-            tile = make(arts["scene_apres"], 0.62, lambda im: decorate_bande(im, logo_ligne))
+            tile = decorate_bande(lift(cover(arts["scene_apres"], pw, ph, 0.62)), logo_ligne)
         elif name in ("flap_dos_g", "flap_dos_d", "flap_avant_g", "flap_avant_d"):
-            tile = make(arts["scene_choc"], 0.50)
+            tile = lift(cover(arts["scene_choc"], pw, ph, 0.50))
         elif name in ("oreille_gauche", "oreille_droite"):
-            tile = make(arts["scene_magie"], 0.42)
+            tile = lift(cover(arts["scene_magie"], pw, ph, 0.42))
         elif name in ("cote_int_g", "cote_int_d"):
-            tile = make(arts["scene_choc"], 0.48)
+            tile = lift(cover(arts["scene_choc"], pw, ph, 0.48))
         elif name in ("cote_ext_g", "cote_ext_d"):
-            tile = make(arts["scene_apres"], 0.55)
+            tile = lift(cover(arts["scene_apres"], pw, ph, 0.55))
         else:
             continue
 
         if name in ROT180:
             tile = tile.rotate(180)
-        if tile.size != (tw, th):
-            tile = tile.resize((tw, th), Image.Resampling.LANCZOS)
+        if tile.size != (pw, ph):
+            tile = tile.resize((pw, ph), Image.Resampling.LANCZOS)
 
-        msmall = Image.fromarray(mask).crop((x0p, y0p, x1p + 1, y1p + 1))
-        msmall = msmall.filter(ImageFilter.MaxFilter(pad_g * 2 + 1))
-        mlocal = msmall.resize((tw, th), Image.Resampling.NEAREST)
+        mlocal = (
+            Image.fromarray(mask)
+            .crop((x0, y0, x1 + 1, y1 + 1))
+            .resize((pw, ph), Image.Resampling.NEAREST)
+        )
         tarr = np.array(tile.convert("RGBA"))
         tarr[:, :, 3] = (tarr[:, :, 3].astype(np.float32) * np.array(mlocal).astype(np.float32) / 255.0).astype(np.uint8)
-        canvas.alpha_composite(Image.fromarray(tarr), (sx0 - pl, sy0 - pt))
-        print("  painted", name, bbox, f"{tw}x{th}")
+        canvas.alpha_composite(Image.fromarray(tarr), (sx0, sy0))
+        print("  painted", name, bbox, f"{pw}x{ph}")
 
-    out = canvas.convert("RGB")
-    out = fill_interior_black(out, gabarit, slices)
-    return out
+    return canvas.convert("RGB")
 
 
 def mockup(top: Image.Image, bot: Image.Image, front: Image.Image, stone, logo) -> Image.Image:
@@ -577,19 +567,18 @@ def main() -> None:
     logo_ligne = logo_from_white(LOGO_LIGNE)
 
     print("compose…")
-    slices = cadre_slices(scene1)
     arts = {
-        "scene_b": strip_cadre(scene1, 28),
-        "scene_e": strip_cadre(e_chevalier, 28),
-        "scene_magie": strip_cadre(bande_magie, 42),
-        "scene_choc": strip_cadre(bande_choc, 42),
-        "scene_apres": strip_cadre(bande_apres, 42),
+        "scene_b": scene1,
+        "scene_e": e_chevalier,
+        "scene_magie": bande_magie,
+        "scene_choc": bande_choc,
+        "scene_apres": bande_apres,
     }
 
     print("masks…")
     masks = interior_masks(gabarit)
     print("net…")
-    net_c = paint_net(gabarit, masks, arts, slices, logo, logo_ligne)
+    net_c = paint_net(gabarit, masks, arts, logo, logo_ligne)
     save_jpeg(net_c, OUT / "boite.jpg", quality=86)
     print("done", net_c.size)
 
