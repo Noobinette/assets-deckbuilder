@@ -93,6 +93,88 @@ def lift(im: Image.Image, factor: float = LIFT) -> Image.Image:
     return ImageEnhance.Brightness(im.convert("RGBA")).enhance(factor)
 
 
+CADRE_FT_SRC = 28
+
+
+def cadre_slices(cadre: Image.Image, ft_src: int = CADRE_FT_SRC) -> dict[str, Image.Image]:
+    c = cadre.convert("RGBA")
+    cw, ch = c.size
+    ft = min(ft_src, cw // 4, ch // 4)
+    return {
+        "tl": c.crop((0, 0, ft, ft)),
+        "tr": c.crop((cw - ft, 0, cw, ft)),
+        "bl": c.crop((0, ch - ft, ft, ch)),
+        "br": c.crop((cw - ft, ch - ft, cw, ch)),
+        "top": c.crop((ft, 0, cw - ft, ft)),
+        "bot": c.crop((ft, ch - ft, cw - ft, ch)),
+        "left": c.crop((0, ft, ft, ch - ft)),
+        "right": c.crop((cw - ft, ft, cw, ch - ft)),
+    }
+
+
+def apply_cadre(tile: Image.Image, slices: dict[str, Image.Image], ft: int) -> Image.Image:
+    """Pose le cadre bois (celui du dessus) sur les 4 bords du panneau."""
+    tile = tile.convert("RGBA")
+    w, h = tile.size
+    ft = int(ft)
+    ft = min(ft, max(4, w // 5), max(4, h // 5))
+    if w < ft * 2 + 8 or h < ft * 2 + 8:
+        return tile
+
+    def rz(im: Image.Image, size: tuple[int, int]) -> Image.Image:
+        return im.resize(size, Image.Resampling.LANCZOS)
+
+    top = rz(slices["top"], (max(1, w - 2 * ft), ft))
+    bot = rz(slices["bot"], (max(1, w - 2 * ft), ft))
+    left = rz(slices["left"], (ft, max(1, h - 2 * ft)))
+    right = rz(slices["right"], (ft, max(1, h - 2 * ft)))
+    tl = rz(slices["tl"], (ft, ft))
+    tr = rz(slices["tr"], (ft, ft))
+    bl = rz(slices["bl"], (ft, ft))
+    br = rz(slices["br"], (ft, ft))
+    tile.paste(top, (ft, 0))
+    tile.paste(bot, (ft, h - ft))
+    tile.paste(left, (0, ft))
+    tile.paste(right, (w - ft, ft))
+    tile.paste(tl, (0, 0))
+    tile.paste(tr, (w - ft, 0))
+    tile.paste(bl, (0, h - ft))
+    tile.paste(br, (w - ft, h - ft))
+    return tile
+
+
+def fill_interior_black(
+    rgb: Image.Image, gabarit: Image.Image, slices: dict[str, Image.Image]
+) -> Image.Image:
+    """Bouche uniquement les trous de fond (encoches) isolés dans le filet."""
+    gw, gh = gabarit.size
+    small = np.array(rgb.resize((gw, gh), Image.Resampling.BOX))
+    bg = np.abs(small.astype(np.int16) - np.array([10, 10, 14])).sum(axis=2) < 24
+    sh, sw = bg.shape
+    ext = np.zeros((sh, sw), dtype=bool)
+    stack = [(0, 0)]
+    ext[0, 0] = True
+    while stack:
+        y, x = stack.pop()
+        for ny, nx in ((y - 1, x), (y + 1, x), (y, x - 1), (y, x + 1)):
+            if 0 <= ny < sh and 0 <= nx < sw and not ext[ny, nx] and bg[ny, nx]:
+                ext[ny, nx] = True
+                stack.append((ny, nx))
+    holes = bg & ~ext
+    if not holes.any():
+        return rgb
+    arr = np.array(rgb.convert("RGB"))
+    H, W = arr.shape[:2]
+    hole_hi = np.array(
+        Image.fromarray(holes.astype(np.uint8) * 255).resize((W, H), Image.Resampling.NEAREST)
+    ) > 127
+    wood = np.array(slices["top"].convert("RGB"))
+    row = wood[wood.shape[0] // 2]
+    ys, xs = np.where(hole_hi)
+    arr[ys, xs] = row[xs % len(row)]
+    return Image.fromarray(arr)
+
+
 def chroma_magenta(im: Image.Image) -> Image.Image:
     arr = np.array(im.convert("RGBA"))
     rgb = arr[:, :, :3].astype(np.float32)
@@ -367,11 +449,14 @@ def save_png(im: Image.Image, path: Path, dpi: int = DPI_PRINT) -> None:
     im.save(path, "PNG", optimize=True, dpi=(dpi, dpi))
 
 
-def paint_net(gabarit: Image.Image, masks, arts: dict, stone, logo, logo_ligne) -> Image.Image:
+def paint_net(gabarit: Image.Image, masks, arts: dict, stone, logo, logo_ligne, slices) -> Image.Image:
     gw, gh = gabarit.size
     W, H = gw * SCALE, gh * SCALE
     canvas = Image.new("RGBA", (W, H), (10, 10, 14, 255))
-    odd = 21 if SCALE >= 8 else 11
+    pad_g = 8
+    pad = pad_g * SCALE
+    ft = pad + 2 * SCALE
+    odd = 11
     for bbox, mask in masks:
         name = which_panel(bbox)
         if not name:
@@ -410,18 +495,27 @@ def paint_net(gabarit: Image.Image, masks, arts: dict, stone, logo, logo_ligne) 
         if tile.size != (pw, ph):
             tile = tile.resize((pw, ph), Image.Resampling.LANCZOS)
 
-        mlocal = (
-            Image.fromarray(mask)
-            .crop((x0, y0, x1 + 1, y1 + 1))
-            .resize((pw, ph), Image.Resampling.NEAREST)
-            .filter(ImageFilter.MaxFilter(odd))
-        )
-        tarr = np.array(tile.convert("RGBA"))
+        x0p, y0p = max(0, x0 - pad_g), max(0, y0 - pad_g)
+        x1p, y1p = min(gw - 1, x1 + pad_g), min(gh - 1, y1 + pad_g)
+        pl, pt = (x0 - x0p) * SCALE, (y0 - y0p) * SCALE
+        pr, pb = (x1p - x1) * SCALE, (y1p - y1) * SCALE
+        big = Image.new("RGBA", (pw + pl + pr, ph + pt + pb), (0, 0, 0, 0))
+        inner = tile.convert("RGBA")
+        big.paste(inner, (pl, pt))
+        big = apply_cadre(big, slices, ft)
+        big.paste(inner, (pl, pt))
+
+        msmall = Image.fromarray(mask).crop((x0p, y0p, x1p + 1, y1p + 1))
+        msmall = msmall.filter(ImageFilter.MaxFilter(pad_g * 2 + 1))
+        mlocal = msmall.resize(big.size, Image.Resampling.NEAREST).filter(ImageFilter.MaxFilter(odd))
+        tarr = np.array(big.convert("RGBA"))
         tarr[:, :, 3] = (tarr[:, :, 3].astype(np.float32) * np.array(mlocal).astype(np.float32) / 255.0).astype(np.uint8)
-        canvas.alpha_composite(Image.fromarray(tarr), (sx0, sy0))
+        canvas.alpha_composite(Image.fromarray(tarr), (sx0 - pl, sy0 - pt))
         print("  painted", name, bbox, f"{pw}x{ph}")
 
-    return canvas.convert("RGB")
+    out = canvas.convert("RGB")
+    out = fill_interior_black(out, gabarit, slices)
+    return out
 
 
 def mockup(top: Image.Image, bot: Image.Image, front: Image.Image, stone, logo) -> Image.Image:
@@ -466,6 +560,7 @@ def main() -> None:
     print("compose cover + back…")
     cover_b = compose_cover(scene1, logo, dw, dh)
     back_e = lift(cover(e_chevalier, bw, bh, bias_y=0.50))
+    slices = cadre_slices(scene1)
 
     print("masks…")
     masks = interior_masks(gabarit)
@@ -481,7 +576,7 @@ def main() -> None:
     }
 
     print("net combat…")
-    net_c = paint_net(gabarit, masks, arts_combat, stone, logo, logo_ligne)
+    net_c = paint_net(gabarit, masks, arts_combat, stone, logo, logo_ligne, slices)
     save_jpeg(net_c, OUT / "boite.jpg", quality=86)
     print("done", cover_b.size, back_e.size, net_c.size)
 
