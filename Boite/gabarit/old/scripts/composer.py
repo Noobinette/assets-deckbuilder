@@ -480,11 +480,34 @@ def save_png(im: Image.Image, path: Path, dpi: int = DPI_PRINT) -> None:
     im.save(path, "PNG", optimize=True, dpi=(dpi, dpi))
 
 
-def paint_net(gabarit: Image.Image, masks, arts: dict, logo, logo_ligne) -> Image.Image:
-    """Une seule image : visuels dans la forme, fond noir, aucun trait."""
+def frame_colors(scene: Image.Image) -> np.ndarray:
+    """Plat du cadre bois, sans les filets sombres."""
+    im = np.array(scene.convert("RGB"))
+    rail = im[15:22, 80 : im.shape[1] - 80]
+    colors = rail.reshape(-1, 3)
+    keep = (colors[:, 0] > 110) & (colors[:, 1] > 80) & (colors[:, 2] > 60)
+    colors = colors[keep]
+    if len(colors) < 16:
+        colors = rail.reshape(-1, 3)
+    return colors
+
+
+def fill_unpainted(rgb: np.ndarray, painted: np.ndarray, colors: np.ndarray) -> np.ndarray:
+    """Remplace uniquement le fond non peint par le bois du cadre."""
+    empty = ~painted
+    if not empty.any():
+        return rgb
+    out = rgb.copy()
+    pick = np.random.default_rng(7).integers(0, len(colors), size=int(empty.sum()))
+    out[empty] = colors[pick]
+    return out
+
+
+def paint_net(gabarit: Image.Image, masks, arts: dict, logo, logo_ligne, colors: np.ndarray) -> Image.Image:
+    """Une seule image : visuels bord à bord, aucun trait, aucun fond noir."""
     gw, gh = gabarit.size
     W, H = gw * SCALE, gh * SCALE
-    canvas = Image.new("RGBA", (W, H), (0, 0, 0, 255))
+    canvas = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     for bbox, mask in masks:
         name = which_panel(bbox)
         if not name:
@@ -530,7 +553,10 @@ def paint_net(gabarit: Image.Image, masks, arts: dict, logo, logo_ligne) -> Imag
         canvas.alpha_composite(Image.fromarray(tarr), (sx0, sy0))
         print("  painted", name, bbox, f"{pw}x{ph}")
 
-    return canvas.convert("RGB")
+    rgba = np.array(canvas)
+    painted = rgba[:, :, 3] > 0
+    rgb = fill_unpainted(rgba[:, :, :3], painted, colors)
+    return Image.fromarray(rgb, "RGB")
 
 
 def mockup(top: Image.Image, bot: Image.Image, front: Image.Image, stone, logo) -> Image.Image:
@@ -578,7 +604,7 @@ def main() -> None:
     print("masks…")
     masks = interior_masks(gabarit)
     print("net…")
-    net_c = paint_net(gabarit, masks, arts, logo, logo_ligne)
+    net_c = paint_net(gabarit, masks, arts, logo, logo_ligne, frame_colors(scene1))
     save_jpeg(net_c, OUT / "boite.jpg", quality=86)
     print("done", net_c.size)
 
